@@ -22,9 +22,10 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val navController = rememberNavController()
 
-                    NavHost(navController = navController, startDestination = "SplashScreen"){
+                    NavHost(navController = navController, startDestination = "Perfil"){
                         composable("SplashScreen"){MySplashScreen(navController, Modifier.padding(innerPadding))}
                         composable("MenuPrincipal"){MenuPrincipal(navController, Modifier.padding(innerPadding))}
+                        composable("Perfil"){Perfil(navController, Modifier.padding(innerPadding))}
                     }
                 }
             }
