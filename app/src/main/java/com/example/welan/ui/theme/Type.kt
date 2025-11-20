@@ -41,8 +41,14 @@ val Typography = Typography(
         fontFamily = displayFontFamily,
         fontWeight = FontWeight.Bold
         ),
-    titleMedium = baseline.titleMedium.copy(fontFamily = displayFontFamily),
-    titleSmall = baseline.titleSmall.copy(fontFamily = displayFontFamily),
+    titleMedium = baseline.titleMedium.copy(
+        fontFamily = displayFontFamily,
+        fontWeight = FontWeight.Bold
+        ),
+    titleSmall = baseline.titleSmall.copy(
+        fontFamily = displayFontFamily,
+        fontWeight = FontWeight.Bold
+        ),
     bodyLarge = baseline.bodyLarge.copy(fontFamily = bodyFontFamily),
     bodyMedium = baseline.bodyMedium.copy(fontFamily = bodyFontFamily),
     bodySmall = baseline.bodySmall.copy(fontFamily = bodyFontFamily),
