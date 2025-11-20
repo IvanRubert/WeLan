@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -19,11 +20,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             WeLanTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(containerColor = Color.Transparent,
+                    modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val navController = rememberNavController()
 
-                    NavHost(navController = navController, startDestination = "Comtenedor_Principal"){
+                    NavHost(navController = navController, startDestination = "SplashScreen"){
                         composable("SplashScreen"){MySplashScreen(navController, Modifier.padding(innerPadding))}
+                        composable("Login") { Comtenedor_Principal() }
                         composable("MenuPrincipal"){MenuPrincipal(Modifier.padding(innerPadding))}
                         composable("Comtenedor_Principal"){Comtenedor_Principal()}
                     }

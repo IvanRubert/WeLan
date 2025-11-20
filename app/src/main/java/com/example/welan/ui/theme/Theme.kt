@@ -12,7 +12,7 @@ private val DarkColorScheme = darkColorScheme(
     background = background,
     surface = cardBackground,
     surfaceVariant = cardBackground,
-    surfaceContainerHighest = cardBackground
+    surfaceContainerHighest = cardBackground,
 )
 
 @Composable
