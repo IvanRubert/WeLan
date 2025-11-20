@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MultiChoiceSegmentedButtonRow
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonColors
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,102 +42,134 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.welan.ui.theme.WeLanTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CrearCuentaEmpresa(navController: NavController, modifier: Modifier = Modifier) {
 
-    var selected by remember { mutableStateOf(setOf(1)) }   // Empresa por defecto
+    var choose by remember { mutableStateOf(false) }
     var email by remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-
-        Image(
-            painter = painterResource(id = R.drawable.welan_logo_text),
-            contentDescription = null,
-            modifier = Modifier.size(120.dp)
-        )
-
-        Spacer(Modifier.height(24.dp))
-
-        MultiChoiceSegmentedButtonRow {
-            SegmentedButton(
-                checked = 0 in selected,
-                onCheckedChange = {
-                    selected = setOf(0)
-                },
-                shape = SegmentedButtonDefaults.itemShape(0, 2)
-            ) {
-                Text("Usuario")
-            }
-
-            SegmentedButton(
-                checked = 1 in selected,
-                onCheckedChange = {
-                    selected = setOf(1)
-                },
-                shape = SegmentedButtonDefaults.itemShape(1, 2)
-            ) {
-                Text("Empresa")
-            }
-        }
-
-        Spacer(Modifier.height(24.dp))
-
-        Card(
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFF3F3F3F)),
-            modifier = Modifier.fillMaxWidth()
+    WeLanTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Column(modifier = Modifier.padding(16.dp)) {
 
-                OutlinedTextField(
-                    value = email,
-                    onValueChange = { email = it },
-                    label = { Text("Correo corporativo") },
-                    modifier = Modifier.fillMaxWidth()
-                )
+            Image(
+                painter = painterResource(id = R.drawable.welan_logo_text),
+                contentDescription = null,
+                modifier = Modifier.size(120.dp)
+            )
 
-                Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(24.dp))
 
-                Button(onClick = { /* subir archivo */ }) {
-                    Icon(Icons.Filled.Add, contentDescription = null)
-                    Spacer(Modifier.width(8.dp))
-                    Text("Subir certificado")
+            MultiChoiceSegmentedButtonRow(modifier = modifier.fillMaxWidth(0.6f)) {
+                SegmentedButton(
+                    checked = false,
+                    onCheckedChange = {
+                        choose = true
+                    },
+                    shape = RoundedCornerShape(topStart = 10.dp, bottomStart = 10.dp),
+                    colors = SegmentedButtonColors(
+                        activeBorderColor = Color.Unspecified,
+                        activeContainerColor = Color.Unspecified,
+                        activeContentColor = Color.Unspecified,
+                        inactiveContainerColor = if (choose) Color(0xABFC5656) else Color.Unspecified,
+                        inactiveContentColor = Color.Unspecified,
+                        inactiveBorderColor = Color(0xFF000000),
+                        disabledActiveContainerColor = Color.Unspecified,
+                        disabledActiveContentColor = Color.Unspecified,
+                        disabledActiveBorderColor = Color(0xFF000000),
+                        disabledInactiveContainerColor = Color.Unspecified,
+                        disabledInactiveContentColor = Color.Unspecified,
+                        disabledInactiveBorderColor = Color(0xFF000000)
+                    ),
+                    modifier = Modifier.height(60.dp)
+                ){
+                        Text("Usuario")
                 }
 
-                Spacer(Modifier.height(16.dp))
-
-                ClickableText(
-                    text = buildAnnotatedString {
-                        append("¿Tienes cuenta? ")
-                        pushStringAnnotation("login", "login")
-                        withStyle(SpanStyle(color = Color(0xFF4BA3FF))) {
-                            append("Inicia Sesión")
-                        }
-                        pop()
+                SegmentedButton(
+                    checked = false,
+                    onCheckedChange = {
+                        choose = false
                     },
-                    onClick = { /* nav */ }
-                )
+                    shape = RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp),
+                    colors = SegmentedButtonColors(
+                        activeBorderColor = Color.Unspecified,
+                        activeContainerColor = Color.Unspecified,
+                        activeContentColor =  Color.Unspecified,
+                        inactiveContainerColor = if (!choose) Color(0xABFC5656) else Color.Unspecified,
+                        inactiveContentColor =Color.Unspecified,
+                        inactiveBorderColor = Color(0xFF000000),
+                        disabledActiveContainerColor = Color.Unspecified,
+                        disabledActiveContentColor = Color.Unspecified,
+                        disabledActiveBorderColor = Color(0xFF000000),
+                        disabledInactiveContainerColor = Color.Unspecified,
+                        disabledInactiveContentColor = Color.Unspecified,
+                        disabledInactiveBorderColor = Color(0xFF000000)
+                    ),
+                    modifier = Modifier.height(60.dp)
+                ) {
+                    Text("Empresa")
+                }
             }
-        }
 
-        Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(24.dp))
 
-        Button(
-            onClick = { /* acción */ },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp)
-        ) {
-            Text("Iniciar sesión")
+            Card(
+                shape = RoundedCornerShape(16.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+
+                Column(modifier = Modifier.padding(16.dp)) {
+
+                    OutlinedTextField(
+                        value = email,
+                        onValueChange = { email = it },
+                        label = { Text("Correo corporativo") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(Modifier.height(16.dp))
+
+                    Button(onClick = { /* subir archivo */ }) {
+                        Icon(Icons.Filled.Add, contentDescription = null)
+                        Spacer(Modifier.width(8.dp))
+                        Text("Subir certificado")
+                    }
+
+                    Spacer(Modifier.height(16.dp))
+
+                    ClickableText(
+                        text = buildAnnotatedString {
+                            append("¿Tienes cuenta? ")
+                            pushStringAnnotation("login", "login")
+                            withStyle(SpanStyle(color = Color(0xFF4BA3FF))) {
+                                append("Inicia Sesión")
+                            }
+                            pop()
+                        },
+                        onClick = { /* nav */ }
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Button(
+                onClick = { /* acción */ },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+            ) {
+                Text("Iniciar sesión")
+            }
         }
     }
 }
