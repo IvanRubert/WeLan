@@ -89,7 +89,6 @@ fun CrearCuentaEmpresa(navController: NavController, modifier: Modifier = Modifi
 
         Spacer(Modifier.height(24.dp))
 
-        // Card del formulario
         Card(
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(containerColor = Color(0xFF3F3F3F)),
