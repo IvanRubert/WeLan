@@ -68,13 +68,13 @@ fun CrearCuentaEmpresa(navController: NavController, modifier: Modifier = Modifi
 
             Spacer(Modifier.height(24.dp))
 
-            MultiChoiceSegmentedButtonRow {
+            MultiChoiceSegmentedButtonRow(modifier = modifier.fillMaxWidth(0.6f)) {
                 SegmentedButton(
                     checked = false,
                     onCheckedChange = {
                         choose = true
                     },
-                    shape = SegmentedButtonDefaults.itemShape(0, 2),
+                    shape = RoundedCornerShape(topStart = 10.dp, bottomStart = 10.dp),
                     colors = SegmentedButtonColors(
                         activeBorderColor = Color.Unspecified,
                         activeContainerColor = Color.Unspecified,
@@ -88,7 +88,8 @@ fun CrearCuentaEmpresa(navController: NavController, modifier: Modifier = Modifi
                         disabledInactiveContainerColor = Color.Unspecified,
                         disabledInactiveContentColor = Color.Unspecified,
                         disabledInactiveBorderColor = Color(0xFF000000)
-                    )
+                    ),
+                    modifier = Modifier.height(60.dp)
                 ){
                         Text("Usuario")
                 }
@@ -98,7 +99,7 @@ fun CrearCuentaEmpresa(navController: NavController, modifier: Modifier = Modifi
                     onCheckedChange = {
                         choose = false
                     },
-                    shape = SegmentedButtonDefaults.itemShape(1, 2),
+                    shape = RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp),
                     colors = SegmentedButtonColors(
                         activeBorderColor = Color.Unspecified,
                         activeContainerColor = Color.Unspecified,
@@ -112,7 +113,8 @@ fun CrearCuentaEmpresa(navController: NavController, modifier: Modifier = Modifi
                         disabledInactiveContainerColor = Color.Unspecified,
                         disabledInactiveContentColor = Color.Unspecified,
                         disabledInactiveBorderColor = Color(0xFF000000)
-                    )
+                    ),
+                    modifier = Modifier.height(60.dp)
                 ) {
                     Text("Empresa")
                 }
