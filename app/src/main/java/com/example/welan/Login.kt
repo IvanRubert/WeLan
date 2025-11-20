@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MultiChoiceSegmentedButtonRow
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonColors
@@ -37,9 +38,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 
 @Composable
-fun Login(modifier: Modifier){
+fun Login(navController: NavController,modifier: Modifier){
     var choose by remember { mutableStateOf(false) }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -48,31 +50,32 @@ fun Login(modifier: Modifier){
         Image(
             painter = painterResource(id = R.drawable.welan_logo_text),
             contentDescription = "",
-            modifier = Modifier.size(50.dp),
+            modifier = Modifier.size(100.dp),
             contentScale = ContentScale.Crop
         )
         Spacer(modifier = Modifier.height(30.dp))
-        MultiChoiceSegmentedButtonRow {
+        MultiChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth(0.6f)) {
             SegmentedButton(
                 checked = false,
                 onCheckedChange = {
                     choose = true
                 },
-                shape = SegmentedButtonDefaults.itemShape(0, 2),
+                shape = RoundedCornerShape(topStart = 10.dp, bottomStart = 10.dp),
                 colors = SegmentedButtonColors(
                     activeBorderColor = Color.Unspecified,
                     activeContainerColor = Color.Unspecified,
                     activeContentColor =  Color.Unspecified,
-                    inactiveContainerColor = if (choose) Color(0xFFFFEB3B) else Color.Unspecified,
+                    inactiveContainerColor = if (choose) MaterialTheme.colorScheme.primary else Color.White,
                     inactiveContentColor =Color.Unspecified,
-                    inactiveBorderColor = Color(0xFF000000),
+                    inactiveBorderColor = Color.Unspecified,
                     disabledActiveContainerColor = Color.Unspecified,
                     disabledActiveContentColor = Color.Unspecified,
-                    disabledActiveBorderColor = Color(0xFF000000),
+                    disabledActiveBorderColor = Color.Unspecified,
                     disabledInactiveContainerColor = Color.Unspecified,
                     disabledInactiveContentColor = Color.Unspecified,
-                    disabledInactiveBorderColor = Color(0xFF000000)
-                )
+                    disabledInactiveBorderColor = Color.Unspecified
+                ),
+                modifier = Modifier.height(60.dp)
             ) {
                 Text("Usuario")
             }
@@ -82,21 +85,22 @@ fun Login(modifier: Modifier){
                 onCheckedChange = {
                     choose = false
                 },
-                shape = SegmentedButtonDefaults.itemShape(1, 2),
+                shape = RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp),
                 colors = SegmentedButtonColors(
                     activeBorderColor = Color.Unspecified,
                     activeContainerColor = Color.Unspecified,
                     activeContentColor =  Color.Unspecified,
-                    inactiveContainerColor = if (!choose) Color(0xFFFFEB3B) else Color.Unspecified,
+                    inactiveContainerColor = if (!choose) MaterialTheme.colorScheme.primary  else Color.White,
                     inactiveContentColor =Color.Unspecified,
-                    inactiveBorderColor = Color(0xFF000000),
+                    inactiveBorderColor = Color.Unspecified,
                     disabledActiveContainerColor = Color.Unspecified,
                     disabledActiveContentColor = Color.Unspecified,
                     disabledActiveBorderColor = Color(0xFF000000),
                     disabledInactiveContainerColor = Color.Unspecified,
                     disabledInactiveContentColor = Color.Unspecified,
                     disabledInactiveBorderColor = Color(0xFF000000)
-                )
+                ),
+                modifier = Modifier.height(60.dp)
             ) {
                 Text("Empresa",
 
