@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -52,7 +54,10 @@ fun getNoticias(): List<Noticia> {
 fun ItemNoticia(noticia: Noticia) {
     var visibility by remember { mutableStateOf(true) }
 
-    Card (modifier = Modifier.padding(20.dp).clickable { visibility = !visibility }){
+    Card (colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
+        modifier = Modifier.padding(20.dp)
+                        .clickable { visibility = !visibility },
+    ){
         Box (
             modifier = Modifier.fillMaxWidth()
         ){
@@ -81,14 +86,12 @@ fun ItemNoticia(noticia: Noticia) {
                 text = stringResource(id = noticia.Titulo),
                 fontSize = 25.sp,
                 modifier = Modifier.padding(15.dp),
-                color = White
             )
 
             Text(
                 text = stringResource(id = noticia.Descripción),
                 fontSize = 15.sp,
                 modifier = Modifier.padding(15.dp),
-                color = White
             )
         }
     }
