@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
                         intereses = listOf("Construcción", "Reformas", "Bricolaje")
                     )
 
-                    NavHost(navController = navController, startDestination = "Perfil") {
+                    NavHost(navController = navController, startDestination = "SplashScreen") {
                         composable("SplashScreen") {
                             MySplashScreen(
                                 navController,
