@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
                         composable("SplashScreen"){MySplashScreen(navController, Modifier.padding(innerPadding))}
                         composable("MenuPrincipal"){MenuPrincipal(navController, Modifier.padding(innerPadding))}
                         composable("Login"){Login(navController, Modifier.padding(innerPadding))}
-
+                        composable("register") {  }
                         }
                     }
                 }
