@@ -124,7 +124,7 @@ fun CrearCuentaEmpresa(navController: NavController, modifier: Modifier = Modifi
 
             Card(
                 shape = RoundedCornerShape(16.dp),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
 
                 Column(modifier = Modifier.padding(16.dp)) {
