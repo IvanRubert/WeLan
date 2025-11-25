@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -75,6 +76,8 @@ fun ItemNoticia(noticia: Noticia) {
                     Text(
                         text = stringResource(id = noticia.Titulo),
                         fontSize = 25.sp,
+                        maxLines = 3,
+                        lineHeight = 32.sp,
                         modifier = Modifier.padding(15.dp),
                         color = White
                     )
@@ -86,7 +89,9 @@ fun ItemNoticia(noticia: Noticia) {
                 text = stringResource(id = noticia.Titulo),
                 fontSize = 25.sp,
                 modifier = Modifier.padding(15.dp),
-            )
+                maxLines = 3,
+                lineHeight = 32.sp,
+                )
 
             Text(
                 text = stringResource(id = noticia.Descripción),
