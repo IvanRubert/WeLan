@@ -38,8 +38,6 @@ fun CrearCuentaScreen(navController: NavController, modifier: Modifier = Modifie
     var emailUsuario by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
-
-
     var emailEmpresa by remember { mutableStateOf("") }
 
     WeLanTheme {
@@ -66,20 +64,23 @@ fun CrearCuentaScreen(navController: NavController, modifier: Modifier = Modifie
                     onCheckedChange = { choose = false },
                     shape = SegmentedButtonDefaults.itemShape(0, 2),
                     colors = SegmentedButtonColors(
-                        activeBorderColor = Color.Unspecified,
-                        activeContainerColor = Color.Unspecified,
-                        activeContentColor = Color.Unspecified,
-                        inactiveContainerColor = if (choose) Color(0xABFC5656) else Color.Unspecified,
-                        inactiveContentColor = Color.Unspecified,
-                        inactiveBorderColor = Color(0xFF000000),
-                        disabledActiveContainerColor = Color.Unspecified,
-                        disabledActiveContentColor = Color.Unspecified,
-                        disabledActiveBorderColor = Color(0xFF000000),
-                        disabledInactiveContainerColor = Color.Unspecified,
-                        disabledInactiveContentColor = Color.Unspecified,
-                        disabledInactiveBorderColor = Color(0xFF000000)
+                        activeBorderColor = Color.Black,
+                        activeContainerColor = Color(0xABFC5656),
+                        activeContentColor = Color.White,
+
+                        inactiveContainerColor = Color.Transparent,
+                        inactiveContentColor = Color.White,
+                        inactiveBorderColor = Color.Black,
+
+                        disabledActiveContainerColor = Color.Transparent,
+                        disabledActiveContentColor = Color.White,
+                        disabledActiveBorderColor = Color.Black,
+                        disabledInactiveContainerColor = Color.Transparent,
+                        disabledInactiveContentColor = Color.White,
+                        disabledInactiveBorderColor = Color.Black
                     ),
-                    modifier = Modifier.height(50.dp)
+                    modifier = Modifier.height(50.dp),
+                    icon = {}
                 ) {
                     Text("Usuario")
                 }
@@ -89,20 +90,23 @@ fun CrearCuentaScreen(navController: NavController, modifier: Modifier = Modifie
                     onCheckedChange = { choose = true },
                     shape = SegmentedButtonDefaults.itemShape(1, 2),
                     colors = SegmentedButtonColors(
-                        activeBorderColor = Color.Unspecified,
-                        activeContainerColor = Color.Unspecified,
-                        activeContentColor = Color.Unspecified,
-                        inactiveContainerColor = if (choose) Color(0xABFC5656) else Color.Unspecified,
-                        inactiveContentColor = Color.Unspecified,
-                        inactiveBorderColor = Color(0xFF000000),
-                        disabledActiveContainerColor = Color.Unspecified,
-                        disabledActiveContentColor = Color.Unspecified,
-                        disabledActiveBorderColor = Color(0xFF000000),
-                        disabledInactiveContainerColor = Color.Unspecified,
-                        disabledInactiveContentColor = Color.Unspecified,
-                        disabledInactiveBorderColor = Color(0xFF000000)
+                        activeBorderColor = Color.Black,
+                        activeContainerColor = Color(0xABFC5656),
+                        activeContentColor = Color.White,
+
+                        inactiveContainerColor = Color.Transparent,
+                        inactiveContentColor = Color.White,
+                        inactiveBorderColor = Color.Black,
+
+                        disabledActiveContainerColor = Color.Transparent,
+                        disabledActiveContentColor = Color.White,
+                        disabledActiveBorderColor = Color.Black,
+                        disabledInactiveContainerColor = Color.Transparent,
+                        disabledInactiveContentColor = Color.White,
+                        disabledInactiveBorderColor = Color.Black
                     ),
-                    modifier = Modifier.height(50.dp)
+                    modifier = Modifier.height(50.dp),
+                    icon = {}
                 ) {
                     Text("Empresa")
                 }
