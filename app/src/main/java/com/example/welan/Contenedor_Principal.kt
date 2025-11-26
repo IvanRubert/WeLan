@@ -7,13 +7,11 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Business
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Forum
+import androidx.compose.material.icons.automirrored.filled.Chat
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.People
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,14 +29,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.welan.data.User
 import com.example.welan.ui.theme.appBarGradient
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Comtenedor_Principal() {
+fun Contenedor_Principal() {
+
+    val navController = rememberNavController()
+
     Scaffold (
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -65,17 +72,30 @@ fun Comtenedor_Principal() {
                     }
                 },
             )
+        },
+        bottomBar = { MyNaviagationBar(navController) }
+    ) { innerPadding ->
+
+        val user = User(
+            imageRes = R.drawable.welan_logo,
+            name = "Pepe Gil",
+            email = "pepe123@example.com",
+            descripcion = "Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción",
+            intereses = listOf("Construcción", "Reformas", "Bricolaje")
+        )
+
+        NavHost(navController = navController, startDestination = "MenuPrincipal"){
+            composable("MenuPrincipal"){MenuPrincipal(Modifier.padding(innerPadding))}
+            composable ("PerfilUser") { PerfilUser(user, navController, Modifier.padding(innerPadding))  }
         }
-    ) { innerpading ->
-        MenuPrincipal(Modifier.padding(innerpading))
     }
 }
 
 @Composable
 fun MyNaviagationBar (navController: NavHostController) {
     var selectedItem by remember { mutableIntStateOf(0) }
-    val selectedIcons = listOf(Icons.Filled.Home, Icons.Filled.Forum, Icons.)
-    val items = listOf("MenuPrincipal", )
+    val selectedIcons: List<ImageVector> = listOf(Icons.Filled.Home, Icons.Filled.People, ImageVector.vectorResource(R.drawable.producto_servicio), Icons.AutoMirrored.Filled.Chat, Icons.Filled.AccountCircle)
+    val items = listOf("MenuPrincipal", "Foros", "ServiciosProductos", "Chat", "PerfilUser")
     NavigationBar {
         items.forEachIndexed { index, item ->
             NavigationBarItem(

@@ -26,9 +26,8 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(navController = navController, startDestination = "SplashScreen"){
                         composable("SplashScreen"){MySplashScreen(navController, Modifier.padding(innerPadding))}
-                        composable("Login") { Comtenedor_Principal() }
-                        composable("MenuPrincipal"){MenuPrincipal(Modifier.padding(innerPadding))}
-                        composable("Comtenedor_Principal"){Comtenedor_Principal()}
+                        composable("Login") {  }
+                        composable("Contenedor_Principal"){Contenedor_Principal()}
                     }
                 }
             }

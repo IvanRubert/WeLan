@@ -62,11 +62,6 @@ fun PerfilUser(user: User, navController: NavController, modifier: Modifier){
                 )
                 Text(text = user.email, modifier = Modifier.padding(bottom = 16.dp))
 
-                Text(
-                    text = "Ocupación",
-                    style = MaterialTheme.typography.titleLarge
-                )
-                Text(text = user.occupation, modifier = Modifier.padding(bottom = 16.dp))
             }
         }
         Text(
