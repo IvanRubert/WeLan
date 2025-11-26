@@ -54,7 +54,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable("Login"){Login(navController, Modifier.padding(innerPadding))}
-                        composable("register") {  }
+                        composable("register") { CrearCuentaScreen(navController, Modifier.padding(innerPadding))}
 
                     }
                 }
