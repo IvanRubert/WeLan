@@ -125,8 +125,15 @@ fun MyNaviagationBar (navController: NavHostController) {
                     )
                 },
                 selected = selectedItem == index,
-                onClick = { selectedItem = index
-                    navController.navigate(item)  },
+                onClick = {
+                    if (selectedItem != index) {
+                        selectedItem = index
+                        navController.navigate(item) {
+                            popUpTo(0)
+                            launchSingleTop = true
+                        }
+                    }
+                }
             )
         }
     }
