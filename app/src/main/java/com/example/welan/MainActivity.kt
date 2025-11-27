@@ -23,14 +23,6 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val navController = rememberNavController()
 
-                    val user = User(
-                        imageRes = R.drawable.welan_logo,
-                        name = "Pepe Gil",
-                        email = "pepe123@example.com",
-                        descripcion = "Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción",
-                        intereses = listOf("Construcción", "Reformas", "Bricolaje")
-                    )
-
                     NavHost(navController = navController, startDestination = "SplashScreen") {
                         composable("SplashScreen") {
                             MySplashScreen(
@@ -38,24 +30,15 @@ class MainActivity : ComponentActivity() {
                                 Modifier.padding(innerPadding)
                             )
                         }
-                        composable("MenuPrincipal") {
-                            MenuPrincipal(
-                                navController,
-                                Modifier.padding(innerPadding)
-                            )
+                        composable("Login"){
+                            Login(navController, Modifier.padding(innerPadding))
                         }
-                        composable("Perfil") {
-                            if (user.type == "User") {
-                                PerfilUser(user, navController, Modifier.padding(innerPadding))
-                            } else PerfilEmpresa(
-                                user,
-                                navController,
-                                Modifier.padding(innerPadding)
-                            )
+                        composable("register") {
+                            CrearCuentaScreen(navController, Modifier.padding(innerPadding))
                         }
-                        composable("Login"){Login(navController, Modifier.padding(innerPadding))}
-                        composable("register") { CrearCuentaScreen(navController, Modifier.padding(innerPadding))}
-
+                        composable("Contenedor_Principal") {
+                            Contenedor_Principal()
+                        }
                     }
                 }
             }

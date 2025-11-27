@@ -196,7 +196,7 @@ fun Login(navController: NavController,modifier: Modifier){
         }
         Spacer(modifier = Modifier.weight(0.5f))
         Button(
-            onClick = {navController.navigate("MenuPrincipal") },
+            onClick = {navController.navigate("Contenedor_Principal") },
             modifier = Modifier
                 .fillMaxWidth(0.8f)
                 .height(50.dp)

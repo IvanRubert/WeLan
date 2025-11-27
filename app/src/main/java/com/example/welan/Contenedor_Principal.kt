@@ -88,8 +88,18 @@ fun Contenedor_Principal() {
         )
 
         NavHost(navController = navController, startDestination = "MenuPrincipal"){
-            composable("MenuPrincipal"){MenuPrincipal(Modifier.padding(innerPadding))}
-            composable ("PerfilUser") { PerfilUser(user, navController, Modifier.padding(innerPadding))  }
+            composable("MenuPrincipal") {
+                MenuPrincipal(Modifier.padding(innerPadding))
+            }
+            composable("Perfil") {
+                if (user.type == "User") {
+                    PerfilUser(user, navController, Modifier.padding(innerPadding))
+                } else PerfilEmpresa(
+                    user,
+                    navController,
+                    Modifier.padding(innerPadding)
+                )
+            }
         }
     }
 }
