@@ -51,6 +51,7 @@ fun Contenedor_Principal() {
 
     Scaffold (
         modifier = Modifier.fillMaxSize(),
+        containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
                 modifier = Modifier.background(apptopBarGradient),
