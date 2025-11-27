@@ -1,5 +1,6 @@
 package com.example.welan.ui.theme
 
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 val background = Color(0xBA000000)
@@ -10,10 +11,21 @@ val secondaryColor = Color(0xAB00C2C2)
 val topAppBarPrimary = Color(0x54121212)
 val topAppBarSecondary = Color(0xFFB32424)
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+val apptopBarGradient = Brush.verticalGradient(
+    colorStops = arrayOf(
+        0.00f to topAppBarSecondary,
+        0.35f to topAppBarSecondary,
+        0.95f to topAppBarPrimary,
+        1.00f to topAppBarPrimary
+    )
+)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val appbootomBarGradient = Brush.verticalGradient(
+    colorStops = arrayOf(
+        0.00f to topAppBarPrimary,
+        0.05f to topAppBarPrimary,
+        0.35f to topAppBarSecondary,
+        0.75f to topAppBarSecondary,
+        1.00f to topAppBarPrimary
+    )
+)

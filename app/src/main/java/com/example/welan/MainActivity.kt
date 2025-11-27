@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.welan.data.User
 import com.example.welan.ui.theme.WeLanTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,9 +23,22 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val navController = rememberNavController()
 
-                    NavHost(navController = navController, startDestination = "SplashScreen"){
-                        composable("SplashScreen"){MySplashScreen(navController, Modifier.padding(innerPadding))}
-                        composable("MenuPrincipal"){MenuPrincipal(Modifier.padding(innerPadding))}
+                    NavHost(navController = navController, startDestination = "SplashScreen") {
+                        composable("SplashScreen") {
+                            MySplashScreen(
+                                navController,
+                                Modifier.padding(innerPadding)
+                            )
+                        }
+                        composable("Login"){
+                            Login(navController, Modifier.padding(innerPadding))
+                        }
+                        composable("register") {
+                            CrearCuentaScreen(navController, Modifier.padding(innerPadding))
+                        }
+                        composable("Contenedor_Principal") {
+                            Contenedor_Principal()
+                        }
                     }
                 }
             }

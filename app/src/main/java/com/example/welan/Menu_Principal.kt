@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,6 +26,7 @@ import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -35,6 +38,11 @@ data class Noticia(
 
 fun getNoticias(): List<Noticia> {
     return listOf(
+        Noticia(
+            Titulo = R.string.noticia3_titulo,
+            Photo = R.drawable.usuarios_nuevos,
+            Descripción = R.string.noticia3_descripcion
+        ),
         Noticia(
             Titulo = R.string.noticia2_titulo,
             Photo = R.drawable.puntuacion,
@@ -52,14 +60,17 @@ fun getNoticias(): List<Noticia> {
 fun ItemNoticia(noticia: Noticia) {
     var visibility by remember { mutableStateOf(true) }
 
-    Card (modifier = Modifier.padding(20.dp).clickable { visibility = !visibility }){
+    Card (colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
+        modifier = Modifier.padding(20.dp)
+                        .clickable { visibility = !visibility },
+    ){
         Box (
             modifier = Modifier.fillMaxWidth()
         ){
             Image(
                 painter = painterResource(id = noticia.Photo),
                 contentDescription = "Contactos",
-                contentScale = ContentScale.Fit,
+                contentScale = ContentScale.FillWidth,
                 modifier = Modifier
                     .fillMaxWidth()
             )
@@ -70,6 +81,8 @@ fun ItemNoticia(noticia: Noticia) {
                     Text(
                         text = stringResource(id = noticia.Titulo),
                         fontSize = 25.sp,
+                        maxLines = 3,
+                        lineHeight = 32.sp,
                         modifier = Modifier.padding(15.dp),
                         color = White
                     )
@@ -81,14 +94,14 @@ fun ItemNoticia(noticia: Noticia) {
                 text = stringResource(id = noticia.Titulo),
                 fontSize = 25.sp,
                 modifier = Modifier.padding(15.dp),
-                color = White
-            )
+                maxLines = 3,
+                lineHeight = 32.sp,
+                )
 
             Text(
                 text = stringResource(id = noticia.Descripción),
                 fontSize = 15.sp,
                 modifier = Modifier.padding(15.dp),
-                color = White
             )
         }
     }
