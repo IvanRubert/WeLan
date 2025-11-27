@@ -109,7 +109,7 @@ fun Contenedor_Principal() {
 fun MyNaviagationBar (navController: NavHostController) {
     var selectedItem by remember { mutableIntStateOf(0) }
     val selectedIcons: List<ImageVector> = listOf(Icons.Filled.Home, Icons.Filled.People, ImageVector.vectorResource(R.drawable.producto_servicio), Icons.AutoMirrored.Filled.Chat, Icons.Filled.AccountCircle)
-    val items = listOf("MenuPrincipal", "Foros", "ServiciosProductos", "Chat", "PerfilUser")
+    val items = listOf("MenuPrincipal", "Foros", "ServiciosProductos", "Chat", "Perfil")
     NavigationBar (
         modifier = Modifier.background(appbootomBarGradient),
         containerColor = Color.Transparent,
