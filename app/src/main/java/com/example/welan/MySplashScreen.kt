@@ -30,7 +30,7 @@ fun MySplashScreen(navController: NavController, modifier: Modifier = Modifier){
     }
     LaunchedEffect(true) {
         delay(2000)
-        navController.navigate("Contenedor_Principal") {
+        navController.navigate("Login") {
             popUpTo("SplashScreen"){
                 inclusive = true
             }

@@ -39,6 +39,11 @@ data class Noticia(
 fun getNoticias(): List<Noticia> {
     return listOf(
         Noticia(
+            Titulo = R.string.noticia3_titulo,
+            Photo = R.drawable.usuarios_nuevos,
+            Descripción = R.string.noticia3_descripcion
+        ),
+        Noticia(
             Titulo = R.string.noticia2_titulo,
             Photo = R.drawable.puntuacion,
             Descripción = R.string.noticia2_descripcion
@@ -65,7 +70,7 @@ fun ItemNoticia(noticia: Noticia) {
             Image(
                 painter = painterResource(id = noticia.Photo),
                 contentDescription = "Contactos",
-                contentScale = ContentScale.Fit,
+                contentScale = ContentScale.FillWidth,
                 modifier = Modifier
                     .fillMaxWidth()
             )

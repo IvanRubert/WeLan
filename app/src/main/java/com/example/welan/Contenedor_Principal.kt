@@ -17,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -38,7 +39,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.welan.data.User
-import com.example.welan.ui.theme.appBarGradient
+import com.example.welan.ui.theme.appbootomBarGradient
+import com.example.welan.ui.theme.apptopBarGradient
+import com.example.welan.ui.theme.secondaryColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,7 +53,7 @@ fun Contenedor_Principal() {
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                modifier = Modifier.background(appBarGradient),
+                modifier = Modifier.background(apptopBarGradient),
                 title = { Text(text = "") },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = Color.Transparent
@@ -96,13 +99,18 @@ fun MyNaviagationBar (navController: NavHostController) {
     var selectedItem by remember { mutableIntStateOf(0) }
     val selectedIcons: List<ImageVector> = listOf(Icons.Filled.Home, Icons.Filled.People, ImageVector.vectorResource(R.drawable.producto_servicio), Icons.AutoMirrored.Filled.Chat, Icons.Filled.AccountCircle)
     val items = listOf("MenuPrincipal", "Foros", "ServiciosProductos", "Chat", "PerfilUser")
-    NavigationBar {
+    NavigationBar (
+        modifier = Modifier.background(appbootomBarGradient),
+        containerColor = Color.Transparent,
+        ) {
         items.forEachIndexed { index, item ->
             NavigationBarItem(
+                colors = NavigationBarItemDefaults.colors(indicatorColor = secondaryColor),
                 icon = {
                     Icon(
                         imageVector = selectedIcons[index],
                         contentDescription = item,
+                        tint = Black
                     )
                 },
                 selected = selectedItem == index,

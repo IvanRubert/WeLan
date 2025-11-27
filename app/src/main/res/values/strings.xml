@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">WeLan</string>
+    <string name="noticia3_titulo">¿Nuevos Usuarios?</string>
+    <string name="noticia3_descripcion">Estamos creando nuevas funciones para loggs ¿Ya tienes tu cuenta?</string>
     <string name="noticia2_titulo">Te gusta visualmente WeLan</string>
     <string name="noticia2_descripcion">Como desarroladores de WeLan te animamos a poner una valoracion positiva en la App Store</string>
     <string name="noticia1_titulo">La nueva actualizacion 0.0.1</string>
