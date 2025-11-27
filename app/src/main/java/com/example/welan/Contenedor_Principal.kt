@@ -101,6 +101,8 @@ fun Contenedor_Principal() {
                     Modifier.padding(innerPadding)
                 )
             }
+            composable("UserEdit") { UserEdit(user, navController, Modifier.padding(innerPadding)) }
+            composable("BusinessEdit") { BusinessEdit(user, navController, Modifier.padding(innerPadding)) }
         }
     }
 }
