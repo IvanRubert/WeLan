@@ -1,5 +1,12 @@
 <resources>
     <string name="app_name">WeLan</string>
+    <string name="user">Usuario</string>
+    <string name="business">Empresa</string>
+    <string name="IniciarSesión">Iniciar Sesión</string>
+    <string name="fileduse">Usuario:</string>
+    <string name="paswdField">Contraseña:</string>
+    <string name="notCount">¿No tienes cuenta?</string>
+    <string name="registrate">Regístrate</string>
     <string name="noticia3_titulo">¿Nuevos Usuarios?</string>
     <string name="noticia3_descripcion">Estamos creando nuevas funciones para loggs ¿Ya tienes tu cuenta?</string>
     <string name="noticia2_titulo">Te gusta visualmente WeLan</string>
