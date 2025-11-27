@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -109,9 +110,9 @@ fun Contenedor_Principal() {
 
 @Composable
 fun MyNaviagationBar (navController: NavHostController) {
-    var selectedItem by remember { mutableIntStateOf(0) }
+    var selectedItem by rememberSaveable { mutableIntStateOf(0) }
     val selectedIcons: List<ImageVector> = listOf(Icons.Filled.Home, Icons.Filled.People, ImageVector.vectorResource(R.drawable.producto_servicio), Icons.AutoMirrored.Filled.Chat, Icons.Filled.AccountCircle)
-    val items = listOf("MenuPrincipal", "Foros", "ServiciosProductos", "Chat", "Perfil")
+    val items = listOf("MenuPrincipal", "Foros", "ServiciosProductos", "Mensaje", "Perfil")
     NavigationBar (
         modifier = Modifier.background(appbootomBarGradient),
         containerColor = Color.Transparent,
