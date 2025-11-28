@@ -104,6 +104,7 @@ fun Contenedor_Principal() {
             }
             composable("UserEdit") { UserEdit(user, navController, Modifier.padding(innerPadding)) }
             composable("BusinessEdit") { BusinessEdit(user, navController, Modifier.padding(innerPadding)) }
+            composable("Mensajes") { Mensajes(navController, Modifier.padding(innerPadding)) }
         }
     }
 }
@@ -112,7 +113,7 @@ fun Contenedor_Principal() {
 fun MyNaviagationBar (navController: NavHostController) {
     var selectedItem by rememberSaveable { mutableIntStateOf(0) }
     val selectedIcons: List<ImageVector> = listOf(Icons.Filled.Home, Icons.Filled.People, ImageVector.vectorResource(R.drawable.producto_servicio), Icons.AutoMirrored.Filled.Chat, Icons.Filled.AccountCircle)
-    val items = listOf("MenuPrincipal", "Foros", "ServiciosProductos", "Mensaje", "Perfil")
+    val items = listOf("MenuPrincipal", "Foros", "ServiciosProductos", "Mensajes", "Perfil")
     NavigationBar (
         modifier = Modifier.background(appbootomBarGradient),
         containerColor = Color.Transparent,
