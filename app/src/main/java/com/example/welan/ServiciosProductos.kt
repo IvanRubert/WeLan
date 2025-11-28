@@ -5,9 +5,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -108,32 +111,38 @@ fun BuscarServicioProducto(modifier: Modifier, navController: NavHostController,
     val textFieldState = remember { TextFieldState() }
     var searchResults by remember { mutableStateOf(emptyList<ServicioOProductos>()) }
 
-    val filtroComentarios = if (searchResults.isEmpty() && textFieldState.text.isEmpty()) {
+    var filtroComentarios: List<ServicioOProductos> = if (searchResults.isEmpty() && textFieldState.text.isEmpty()) {
         getServicioProductos()
     } else {
-        filtro(textFieldState)
+       filtro(textFieldState)
     }
 
 
 
     Box (modifier = modifier.fillMaxWidth()) {
         Column {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 SimpleSearchBar(
                     textFieldState = textFieldState,
                     onSearch = { query ->
                         searchResults = if (query.isNotBlank()) {
-                            filtro(textFieldState)
+                            filtroComentarios
                         } else emptyList()
                     },
                     modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .fillMaxWidth().weight(0.17f)
+                        .padding(start = 10.dp, bottom = 10.dp, end = 10.dp)
+                        .weight(0.85f)
                 )
                 Icon(
                     imageVector = Icons.Filled.FilterAlt,
                     contentDescription = "Filtrado",
-                    tint = Black
+                    tint = Black,
+                    modifier = Modifier
+                        .padding(top = 20.dp, end = 10.dp, bottom = 10.dp)
+                        .weight(0.15f)
+                        .height(50.dp)
                 )
             }
 
@@ -170,13 +179,11 @@ fun FABS(modifier: Modifier, navController: NavHostController) {
 @Composable
 fun SimpleSearchBar(
     textFieldState: TextFieldState,
-    onSearch: @Composable (String) -> Unit,
+    onSearch: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier
-            .fillMaxSize()
-            .semantics { isTraversalGroup = true }
+        modifier.semantics { isTraversalGroup = true }
     ) {
         SearchBar(
             modifier = Modifier
