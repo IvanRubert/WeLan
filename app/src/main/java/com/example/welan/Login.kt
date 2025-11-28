@@ -196,7 +196,13 @@ fun Login(navController: NavController,modifier: Modifier){
         }
         Spacer(modifier = Modifier.weight(0.5f))
         Button(
-            onClick = {navController.navigate("Contenedor_Principal") },
+            onClick = {
+                navController.navigate("Contenedor_Principal") {
+                    popUpTo("Login"){
+                        inclusive = true
+                    }
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth(0.8f)
                 .height(50.dp)
