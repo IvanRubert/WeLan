@@ -1,7 +1,5 @@
 package com.example.welan
 
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,35 +24,10 @@ import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-data class Noticia(
-    @StringRes var Titulo: Int,
-    @DrawableRes var Photo: Int,
-    @StringRes var Descripción: Int,
-)
-
-fun getNoticias(): List<Noticia> {
-    return listOf(
-        Noticia(
-            Titulo = R.string.noticia3_titulo,
-            Photo = R.drawable.usuarios_nuevos,
-            Descripción = R.string.noticia3_descripcion
-        ),
-        Noticia(
-            Titulo = R.string.noticia2_titulo,
-            Photo = R.drawable.puntuacion,
-            Descripción = R.string.noticia2_descripcion
-        ),
-        Noticia(
-            Titulo = R.string.noticia1_titulo,
-            Photo = R.drawable.actualizacion001,
-            Descripción = R.string.noticia1_descripcion
-        )
-    )
-}
+import com.example.welan.data.Noticia
+import com.example.welan.data.getNoticias
 
 @Composable
 fun ItemNoticia(noticia: Noticia) {
@@ -112,7 +85,7 @@ fun MenuPrincipal(modifier: Modifier) {
     LazyColumn (
         modifier = modifier.fillMaxWidth()
     ) {
-        items(getNoticias()) { noticia ->
+        items(items = getNoticias()) { noticia ->
             ItemNoticia(noticia)
         }
     }
