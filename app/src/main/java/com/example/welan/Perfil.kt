@@ -60,6 +60,7 @@ import com.example.welan.data.User
 
 var interestList: List<String> = emptyList()
 var name: String = ""
+var descripcion: String = ""
 @Composable
 fun PerfilUser(user: User, navController: NavController, modifier: Modifier) {
     if (interestList.isEmpty()) interestList = getInterests(user)
@@ -134,6 +135,10 @@ fun PerfilUser(user: User, navController: NavController, modifier: Modifier) {
 
 @Composable
 fun PerfilEmpresa(user: User, navController: NavController, modifier: Modifier) {
+    if (interestList.isEmpty()) {
+        interestList = getInterests(user)
+        descripcion = user.descripcion ?: ""
+    }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
@@ -168,7 +173,7 @@ fun PerfilEmpresa(user: User, navController: NavController, modifier: Modifier) 
                     text = "Nombre completo",
                     style = MaterialTheme.typography.titleLarge
                 )
-                Text(text = user.name, modifier = Modifier.padding(bottom = 16.dp))
+                Text(text = name, modifier = Modifier.padding(bottom = 16.dp))
 
                 Text(
                     text = "Email",
@@ -189,7 +194,7 @@ fun PerfilEmpresa(user: User, navController: NavController, modifier: Modifier) 
                         .padding(top = 8.dp)
                 ) {
                     Text(
-                        text = user.descripcion ?: "", modifier = Modifier
+                        text = descripcion, modifier = Modifier
                             .padding(horizontal = 16.dp, vertical = 8.dp)
                             .verticalScroll(rememberScrollState())
                     )
@@ -202,7 +207,7 @@ fun PerfilEmpresa(user: User, navController: NavController, modifier: Modifier) 
         )
         Card(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
             LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Fixed(2)) {
-                items(user.intereses) { interes ->
+                items(interestList) { interes ->
                     Card(
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.primary
@@ -225,8 +230,8 @@ fun PerfilEmpresa(user: User, navController: NavController, modifier: Modifier) 
 @Composable
 fun UserEdit(user: User, navController: NavController, modifier: Modifier = Modifier) {
     var passTF by rememberSaveable { mutableStateOf("") }
-    var nameTF by rememberSaveable { mutableStateOf(user.name) }
     var showPass by rememberSaveable { mutableStateOf(false) }
+    var nameTF by rememberSaveable { mutableStateOf(name) }
     val interests = rememberSaveable { mutableStateListOf<String>().apply{addAll(interestList)} }
     Box {
         Column(
@@ -368,7 +373,136 @@ fun UserEdit(user: User, navController: NavController, modifier: Modifier = Modi
 
 @Composable
 fun BusinessEdit(user: User, navController: NavController, modifier: Modifier = Modifier) {
+    var nameTF by rememberSaveable { mutableStateOf(name) }
+    var descripcionTF by rememberSaveable { mutableStateOf(descripcion) }
+    val interests = rememberSaveable { mutableStateListOf<String>().apply{addAll(interestList)} }
+    Box() {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier.fillMaxSize()
+        ) {
+            Text(
+                text = "Tu Perfil",
+                style = MaterialTheme.typography.titleLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+            Row {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Image(
+                        painter = painterResource(user.imageRes),
+                        contentDescription = user.name,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(100.dp)
+                            .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
+                    )
+                    Button(
+                        onClick = { },
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
+                    ) { Text("Cambiar imagen") }
+                }
+                Column(modifier = Modifier.padding(top = 8.dp, end = 16.dp, bottom = 16.dp)) {
+                    Text(
+                        text = "Nombre completo",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                    OutlinedTextField(
+                        value = nameTF,
+                        onValueChange = { nameTF = it },
+                        maxLines = 1,
+                        modifier = Modifier
+                            .padding(bottom = 16.dp)
+                            .width(200.dp),
+                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimary)
+                    )
 
+                    Text(
+                        text = "Email",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                    Text(text = user.email, modifier = Modifier.padding(bottom = 16.dp))
+
+                    Text(
+                        text = "Descripción",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                    OutlinedTextField(
+                        value = descripcionTF,
+                        onValueChange = { descripcionTF = it },
+                        maxLines = 2,
+                        modifier = Modifier
+                            .padding(bottom = 16.dp)
+                            .width(200.dp),
+                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimary)
+                    )
+                }
+            }
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Servicios",
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Spacer(Modifier.padding(16.dp))
+                Button(
+                    onClick = { interests.add("a") },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
+                    shape = RoundedCornerShape(8.dp)
+                ) { Text("Añadir servicio") }
+            }
+            Card(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp).requiredHeight(170.dp)) {
+                Spacer(Modifier.height(8.dp).fillMaxWidth())
+                LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Fixed(2)) {
+                    items(interests) { interes ->
+                        Card(
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.primary
+                            ),
+                            modifier = Modifier.padding(8.dp)
+                        ) {
+                            Box(Modifier.fillMaxWidth()) {
+                                Text(
+                                    text = interes, textAlign = TextAlign.Center,
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(top = 10.dp, bottom = 8.dp, start = 8.dp, end = 40.dp)
+                                )
+                                IconButton(onClick = { interests.remove(interes) },
+                                    modifier = Modifier.align(Alignment.TopEnd)) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Close,
+                                        contentDescription = "Delete service"
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        Button(
+            onClick = {
+                interestList = interests
+                name = nameTF
+                descripcion = descripcionTF
+                navController.navigate("Perfil") {
+                    popUpTo("Perfil"){
+                        inclusive = true
+                    }
+                }
+            },
+            modifier = modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(horizontal = 16.dp)
+        ) {
+            Text("Guardar cambios")
+        }
+    }
 }
 
 fun getInterests(user: User): List<String>{
