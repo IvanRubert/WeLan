@@ -23,10 +23,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.welan.data.User
 import com.example.welan.ui.theme.appbootomBarGradient
@@ -104,19 +105,32 @@ fun Contenedor_Principal() {
             }
             composable("UserEdit") { UserEdit(user, navController, Modifier.padding(innerPadding)) }
             composable("BusinessEdit") { BusinessEdit(user, navController, Modifier.padding(innerPadding)) }
+            composable("BuscarServicioProducto") { BuscarServicioProducto(Modifier.padding(innerPadding), navController, user) }
+            composable("ServicioProducto") {  }
         }
     }
 }
 
 @Composable
 fun MyNaviagationBar (navController: NavHostController) {
-    var selectedItem by rememberSaveable { mutableIntStateOf(0) }
+    var selectedItem by remember { mutableIntStateOf(0) }
     val selectedIcons: List<ImageVector> = listOf(Icons.Filled.Home, Icons.Filled.People, ImageVector.vectorResource(R.drawable.producto_servicio), Icons.AutoMirrored.Filled.Chat, Icons.Filled.AccountCircle)
-    val items = listOf("MenuPrincipal", "Foros", "ServiciosProductos", "Mensaje", "Perfil")
-    NavigationBar (
+    val items = listOf("MenuPrincipal", "Foros", "BuscarServicioProducto", "Mensajes", "Perfil")
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+
+    LaunchedEffect(currentDestination) {
+        currentDestination?.route?.let { route ->
+            val index = items.indexOf(route)
+            if (index != -1) selectedItem = index
+        }
+    }
+
+    NavigationBar(
         modifier = Modifier.background(appbootomBarGradient),
         containerColor = Color.Transparent,
-        ) {
+    ) {
         items.forEachIndexed { index, item ->
             NavigationBarItem(
                 colors = NavigationBarItemDefaults.colors(indicatorColor = secondaryColor),
@@ -132,8 +146,10 @@ fun MyNaviagationBar (navController: NavHostController) {
                     if (selectedItem != index) {
                         selectedItem = index
                         navController.navigate(item) {
-                            popUpTo(0)
-                            launchSingleTop = true
+                            if (item == "MenuPrincipal") {
+                                popUpTo(0)
+                                launchSingleTop = true
+                            }
                         }
                     }
                 }

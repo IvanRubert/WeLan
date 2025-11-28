@@ -10,7 +10,15 @@
     <string name="noticia3_titulo">¿Nuevos Usuarios?</string>
     <string name="noticia3_descripcion">Estamos creando nuevas funciones para loggs ¿Ya tienes tu cuenta?</string>
     <string name="noticia2_titulo">Te gusta visualmente WeLan</string>
-    <string name="noticia2_descripcion">Como desarroladores de WeLan te animamos a poner una valoracion positiva en la App Store</string>
+    <string name="noticia2_descripcion">Como desarroladores de WeLan te animamos a poner una valoracion positiva en la Play Store</string>
     <string name="noticia1_titulo">La nueva actualizacion 0.0.1</string>
     <string name="noticia1_descripcion">Los primeros pasos para la crecion de WeLan por ahora no hay funcionalidad pero sigan viendo</string>
+    <string name="servicioproducto1_titulo">Pintamos casas a Domicilio</string>
+    <string name="servicioproducto1_descripcion">Ofrecemos un servicio profesional de pintura a domicilio para renovar interiores y exteriores de tu hogar. Garantizamos acabados de calidad, puntualidad y atención personalizada.</string>
+    <string name="servicioproducto2_titulo">Tomates de la Huerta</string>
+    <string name="servicioproducto2_descripcion">Ofrecemos tomates frescos, perfectos para una buena ensalada o para un buen zumo</string>
+    <string name="servicioproducto3_titulo">Servicio de limpieza</string>
+    <string name="servicioproducto3_descripcion">Brindamos servicio de limpieza a domicilio con atención detallada y productos de calidad para dejar cada espacio impecable. Garantizamos puntualidad, confianza y resultados profesionales.</string>
+    <string name="servicioproducto4_titulo">Bolsas de hielo frio</string>
+    <string name="servicioproducto4_descripcion">Ofrecemos bolsas de hielo frío ideales para conservar alimentos, bebidas o aliviar molestias corporales. Son prácticas, duraderas y perfectas para uso doméstico o actividades al aire libre.</string>
 </resources>

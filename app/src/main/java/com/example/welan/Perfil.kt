@@ -233,7 +233,7 @@ fun UserEdit(user: User, navController: NavController, modifier: Modifier = Modi
     var showPass by rememberSaveable { mutableStateOf(false) }
     var nameTF by rememberSaveable { mutableStateOf(name) }
     val interests = rememberSaveable { mutableStateListOf<String>().apply{addAll(interestList)} }
-    Box() {
+    Box {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = modifier.fillMaxSize()
