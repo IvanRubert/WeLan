@@ -19,3 +19,19 @@ fun getMessages(): List<MensajesData>{
         MensajesData(R.drawable.usuarios_nuevos, "Carlos GarcíaGarcíaGarcíaGarcíaGarcíaGarcíaGarcía", true),
     )
 }
+
+data class ChatMessage(
+    val origin: String,
+    val message: String
+)
+
+fun getChatMessages(): List<ChatMessage>{
+    return listOf(
+        ChatMessage("Pepe Gil", "Hola, como estas?"),
+        ChatMessage("Carlos García", "Bien, y tu?"),
+        ChatMessage("Carlos García", "Como va el trabajo?"),
+        ChatMessage("Pepe Gil", "Es un poco estresante como siempre"),
+        ChatMessage("Pepe Gil", "pero me adapto bien"),
+        ChatMessage("Carlos García", "Quedamos para tomar algo?")
+    )
+}
