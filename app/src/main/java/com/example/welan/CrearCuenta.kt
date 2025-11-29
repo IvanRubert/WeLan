@@ -251,7 +251,13 @@ fun CrearCuentaScreen(navController: NavController, modifier: Modifier = Modifie
             Spacer(Modifier.height(40.dp))
 
             Button(
-                onClick = { navController.navigate("Contenedor_Principal") },
+                onClick = {
+                    navController.navigate("Contenedor_Principal") {
+                        popUpTo (0){
+                            inclusive = true
+                        }
+                    }
+                },
                 shape = RoundedCornerShape(50),
                 modifier = Modifier
                     .fillMaxWidth()

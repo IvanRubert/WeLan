@@ -199,7 +199,7 @@ fun Login(navController: NavController,modifier: Modifier){
         Button(
             onClick = {
                 navController.navigate("Contenedor_Principal") {
-                    popUpTo("Login"){
+                    popUpTo(0){
                         inclusive = true
                     }
                 }
