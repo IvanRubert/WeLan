@@ -41,12 +41,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.welan.data.User
+import com.example.welan.model.MessagesViewModel
 import com.example.welan.ui.theme.appbootomBarGradient
 import com.example.welan.ui.theme.apptopBarGradient
 import com.example.welan.ui.theme.secondaryColor
@@ -89,7 +91,7 @@ fun Contenedor_Principal() {
         },
         bottomBar = { MyNaviagationBar(navController) }
     ) { innerPadding ->
-
+        val vm: MessagesViewModel = viewModel()
         var showDialogChanges by remember { mutableStateOf(false) }
 
         val user = User(
@@ -127,7 +129,8 @@ fun Contenedor_Principal() {
             }
             composable("BuscarServicioProducto") { BuscarServicioProducto(Modifier.padding(innerPadding), navController, user) }
             composable("ServicioProducto") {  }
-            composable("Mensajes") { Mensajes(navController, Modifier.padding(innerPadding)) }
+            composable("Mensajes") {
+                Mensajes(navController, Modifier.padding(innerPadding), vm) }
         }
         if (showDialogChanges) {
             DialogDiscardChanges(
