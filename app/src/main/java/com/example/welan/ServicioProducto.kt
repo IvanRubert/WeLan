@@ -34,6 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.welan.data.Envio
 import com.example.welan.data.ServOProd
 import com.example.welan.data.ServicioOProductos
 import com.example.welan.ui.theme.primaryColor
@@ -74,9 +75,9 @@ fun SevicioProducto(servoprod: ServicioOProductos, modifier: Modifier, navContro
         }
         Column (modifier = Modifier.align(Alignment.BottomEnd)){
             Row (modifier = Modifier.fillMaxWidth()) {
-                if (servoprod.Servoprod == ServOProd.PRODUCTO && servoprod.Envio != null) {
+                if (servoprod.Servoprod == ServOProd.PRODUCTO && servoprod.Envio != Envio.NOENVIO) {
                     Column (modifier = Modifier.padding(start = 20.dp).weight(0.55f)) {
-                        if (servoprod.Envio == false) {
+                        if (servoprod.Envio == Envio.POSSIBILIDADENVIO) {
                             Row ( verticalAlignment = Alignment.CenterVertically){
                                 Text(text = "¿Enviar a casa?")
                                 Switch(
@@ -134,7 +135,7 @@ fun SevicioProducto(servoprod: ServicioOProductos, modifier: Modifier, navContro
 
             Button(
                 onClick = {
-                    if ((direccion == "" && envio) || (direccion == "" && servoprod.Envio == true)) {
+                    if ((direccion == "" && envio) || (direccion == "" && servoprod.Envio == Envio.OBLIGACIONENVIO)) {
                         errorDireccion = true
                     } else {
                         navController.navigate("BuscarServicioProducto") {

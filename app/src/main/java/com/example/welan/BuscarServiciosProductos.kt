@@ -44,6 +44,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.welan.data.Envio
 import com.example.welan.data.ServOProd
 import com.example.welan.data.ServicioOProductos
 import com.example.welan.data.User
@@ -61,7 +62,7 @@ fun ItemServicioProducto(servicioproducto: ServicioOProductos, navController: Na
                     "/${servicioproducto.Titulo}" +
                     "/${servicioproducto.Photo}" +
                     "/${servicioproducto.Descripcion}" +
-                    "/${servicioproducto.Envio.toString()}" +
+                    "/${servicioproducto.Envio}" +
                     "/${servicioproducto.Precio.toFloat()}" +
                     "/${servicioproducto.Unidad.unidad}"
             )
@@ -92,7 +93,7 @@ fun ItemServicioProducto(servicioproducto: ServicioOProductos, navController: Na
                     .padding(bottom = 20.dp)
             ) {
                 if (servicioproducto.Servoprod == ServOProd.PRODUCTO) {
-                    if (servicioproducto.Envio == false) {
+                    if (servicioproducto.Envio == Envio.POSSIBILIDADENVIO) {
                         Text(
                             text = "Posibilidad de envio",
                             fontSize = 10.sp,
@@ -104,7 +105,7 @@ fun ItemServicioProducto(servicioproducto: ServicioOProductos, navController: Na
                             color = White,
                             textAlign = TextAlign.Center
                         )
-                    } else if (servicioproducto.Envio == true) {
+                    } else if (servicioproducto.Envio == Envio.OBLIGACIONENVIO) {
                         Text(
                             text = "Envio obligatorio",
                             fontSize = 10.sp,

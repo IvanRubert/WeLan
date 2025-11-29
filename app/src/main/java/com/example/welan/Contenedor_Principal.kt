@@ -42,6 +42,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.welan.data.Envio
 import com.example.welan.data.ServOProd
 import com.example.welan.data.ServicioOProductos
 import com.example.welan.data.Unidad
@@ -132,10 +133,12 @@ fun Contenedor_Principal() {
                 val titulo = backStackEntry.arguments?.getInt("Titulo")!!
                 val photo = backStackEntry.arguments?.getInt("Photo")!!
                 val descripcion = backStackEntry.arguments?.getInt("Descripcion")!!
-                val envio: Boolean? = if (backStackEntry.arguments?.getString("Envio") == "null") {
-                        null
+                val envio: Envio = if (backStackEntry.arguments?.getString("Envio") == "NOENVIO") {
+                        Envio.NOENVIO
+                } else if (backStackEntry.arguments?.getString("Envio") == "POSSIBILIDADENVIO") {
+                    Envio.POSSIBILIDADENVIO
                 } else {
-                    backStackEntry.arguments?.getString("Envio").toBoolean()
+                    Envio.OBLIGACIONENVIO
                 }
                 val precio = (backStackEntry.arguments?.getFloat("Precio")!!)
                 val unidad = if (backStackEntry.arguments?.getString("Unidad")!! == "h") {
