@@ -4,17 +4,25 @@ import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,7 +32,6 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,63 +40,46 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.welan.data.User
+import com.example.welan.model.MessagesViewModel
 import com.example.welan.ui.theme.appbootomBarGradient
 import com.example.welan.ui.theme.apptopBarGradient
 import com.example.welan.ui.theme.secondaryColor
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Contenedor_Principal() {
 
     val navController = rememberNavController()
+    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+    var topBarTitle by remember { mutableStateOf("") }
+    var topBarImg by remember { mutableIntStateOf(R.drawable.welan_logo) }
 
     Scaffold (
         modifier = Modifier.fillMaxSize(),
         containerColor = Color.Transparent,
-        topBar = {
-            TopAppBar(
-                modifier = Modifier.background(apptopBarGradient),
-                title = { Text(text = "") },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Transparent
-                ),
-                navigationIcon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.welan_logo),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(40.dp)
-                            .offset(x = 20.dp)
-                    )
-                },
-                actions = {
-                    IconButton(onClick = { }) {
-                        Icon(
-                            imageVector = Icons.Filled.Notifications,
-                            contentDescription = "Localized description",
-                            tint = Black
-                        )
-                    }
-                },
-            )
-        },
+        topBar = { MyTopAppBar(currentRoute, navController, topBarImg, topBarTitle) },
         bottomBar = { MyNaviagationBar(navController) }
     ) { innerPadding ->
-
+        val vm: MessagesViewModel = viewModel()
         var showDialogChanges by remember { mutableStateOf(false) }
 
         val user = User(
@@ -127,7 +117,19 @@ fun Contenedor_Principal() {
             }
             composable("BuscarServicioProducto") { BuscarServicioProducto(Modifier.padding(innerPadding), navController, user) }
             composable("ServicioProducto") {  }
-            composable("Mensajes") { Mensajes(navController, Modifier.padding(innerPadding)) }
+            composable("Mensajes") { Mensajes(navController, Modifier.padding(innerPadding), vm) }
+            composable("Chat/{destinationImgRef}/{destinationName}", arguments = listOf(
+                navArgument("destinationImgRef") { type = NavType.IntType},
+                navArgument("destinationName") { type = NavType.StringType}
+            )) { backStackEntry ->
+                val img = backStackEntry.arguments?.getInt("destinationImgRef")
+                val nameDestination = backStackEntry.arguments?.getString("destinationName")
+
+                topBarTitle = nameDestination ?: ""
+                topBarImg = img!!
+
+                Chat(user, img, nameDestination?:"", navController, Modifier.padding(innerPadding))
+            }
         }
         if (showDialogChanges) {
             DialogDiscardChanges(
@@ -136,6 +138,92 @@ fun Contenedor_Principal() {
                     showDialogChanges = false
                     navController.popBackStack()
                 }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MyTopAppBar(
+    currentRoute: String?,
+    navController: NavHostController,
+    image: Int,
+    title: String
+) {
+    when (currentRoute) {
+        "Chat/{destinationImgRef}/{destinationName}" -> {
+            CenterAlignedTopAppBar(
+                modifier = Modifier.background(apptopBarGradient),
+                title = {
+                    Row (verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center){
+                        Image(
+                            painter = painterResource(image),
+                            contentDescription = title,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                        )
+                        Spacer(Modifier.padding(8.dp))
+                        if (title.length > 20) {
+                            Text(text = "${title.take(15)}...")
+                        } else {
+                            Text(text = title)
+                        }
+                    }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.Transparent
+                ),
+                navigationIcon = {
+                    Image(
+                        Icons.Filled.ArrowBackIosNew,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clickable{
+                                navController.popBackStack()
+                            }
+                    )
+                },
+                actions = {
+                    IconButton(onClick = { }) {
+                        Icon(
+                            imageVector = Icons.Filled.MoreHoriz,
+                            contentDescription = "More options",
+                            tint = Black
+                        )
+                    }
+                },
+            )
+        }
+        else -> {
+            CenterAlignedTopAppBar(
+                modifier = Modifier.background(apptopBarGradient),
+                title = { Text(text = "") },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.Transparent
+                ),
+                navigationIcon = {
+                    Image(
+                        painter = painterResource(id = R.drawable.welan_logo),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .offset(x = 20.dp)
+                    )
+                },
+                actions = {
+                    IconButton(onClick = { }) {
+                        Icon(
+                            imageVector = Icons.Filled.Notifications,
+                            contentDescription = "Localized description",
+                            tint = Black
+                        )
+                    }
+                },
             )
         }
     }
