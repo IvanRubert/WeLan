@@ -128,7 +128,7 @@ fun Contenedor_Principal() {
                 topBarTitle = nameDestination ?: ""
                 topBarImg = img!!
 
-                Chat(user, img!!, nameDestination?:"", navController, Modifier.padding(innerPadding))
+                Chat(user, img, nameDestination?:"", navController, Modifier.padding(innerPadding))
             }
         }
         if (showDialogChanges) {
