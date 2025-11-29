@@ -61,7 +61,7 @@ fun ItemServicioProducto(servicioproducto: ServicioOProductos, navController: Na
                     "/${servicioproducto.Titulo}" +
                     "/${servicioproducto.Photo}" +
                     "/${servicioproducto.Descripcion}" +
-                    "/${servicioproducto.Envio}" +
+                    "/${servicioproducto.Envio.toString()}" +
                     "/${servicioproducto.Precio.toFloat()}" +
                     "/${servicioproducto.Unidad.unidad}"
             )

@@ -12,7 +12,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchColors
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.graphics.DefaultShadowColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -33,6 +37,7 @@ import androidx.navigation.NavHostController
 import com.example.welan.data.ServOProd
 import com.example.welan.data.ServicioOProductos
 import com.example.welan.ui.theme.primaryColor
+import com.example.welan.ui.theme.secondaryColor
 
 @Composable
 fun SevicioProducto(servoprod: ServicioOProductos, modifier: Modifier, navController: NavHostController) {
@@ -77,7 +82,8 @@ fun SevicioProducto(servoprod: ServicioOProductos, modifier: Modifier, navContro
                                 Switch(
                                     checked = envio,
                                     onCheckedChange = { envio = !envio},
-                                    modifier = Modifier.padding(start = 10.dp)
+                                    modifier = Modifier.padding(start = 10.dp),
+                                    colors = SwitchDefaults.colors(uncheckedIconColor = secondaryColor)
                                 )
                             }
                             OutlinedTextField(
@@ -85,7 +91,8 @@ fun SevicioProducto(servoprod: ServicioOProductos, modifier: Modifier, navContro
                                 value = direccion,
                                 label = { Text("Direccion de envio") },
                                 onValueChange = { direccion = it },
-                                modifier = Modifier.border(1.dp, if (!errorDireccion) White else primaryColor).fillMaxWidth()
+                                isError = errorDireccion,
+                                colors = OutlinedTextFieldDefaults.colors(errorBorderColor = primaryColor, focusedBorderColor = White),
                             )
                             if (envio) {
                                 Text(
@@ -101,7 +108,9 @@ fun SevicioProducto(servoprod: ServicioOProductos, modifier: Modifier, navContro
                                 value = direccion,
                                 label = { Text("Direccion de envio") },
                                 onValueChange = { direccion = it },
-                                modifier = Modifier.border(1.dp, if (!errorDireccion) White else primaryColor).fillMaxWidth()
+                                isError = errorDireccion,
+                                colors = OutlinedTextFieldDefaults.colors(errorBorderColor = primaryColor, focusedBorderColor = White),
+
                             )
                             Text(
                                 text = if (errorDireccion) "Error: Obligatorio" else "",

@@ -143,7 +143,7 @@ fun CrearServicioProducto(modifier: Modifier, navController: NavHostController) 
                         readOnly = true,
                         modifier = Modifier
                             .clickable { visibilidad = true },
-                        label = { Text(text = "Email") }
+                        label = { Text(text = "Unidad") }
                     )
                     DropdownMenu(
                         expanded = visibilidad,

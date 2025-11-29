@@ -119,7 +119,7 @@ fun Contenedor_Principal() {
                     navArgument("Titulo") { type = NavType.IntType },
                     navArgument("Photo") { type = NavType.IntType },
                     navArgument("Descripcion") { type = NavType.IntType },
-                    navArgument("Envio") { type = NavType.BoolType },
+                    navArgument("Envio") { type = NavType.StringType },
                     navArgument("Precio") { type = NavType.FloatType },
                     navArgument("Unidad") { type = NavType.StringType },
                 )
@@ -132,7 +132,11 @@ fun Contenedor_Principal() {
                 val titulo = backStackEntry.arguments?.getInt("Titulo")!!
                 val photo = backStackEntry.arguments?.getInt("Photo")!!
                 val descripcion = backStackEntry.arguments?.getInt("Descripcion")!!
-                val envio: Boolean? = backStackEntry.arguments?.getBoolean("Envio")
+                val envio: Boolean? = if (backStackEntry.arguments?.getString("Envio") == "null") {
+                        null
+                } else {
+                    backStackEntry.arguments?.getString("Envio").toBoolean()
+                }
                 val precio = (backStackEntry.arguments?.getFloat("Precio")!!)
                 val unidad = if (backStackEntry.arguments?.getString("Unidad")!! == "h") {
                     Unidad.HORAS
