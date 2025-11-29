@@ -164,7 +164,7 @@ fun Contenedor_Principal() {
                     Envio.OBLIGACIONENVIO
                 }
                 val precio = (backStackEntry.arguments?.getFloat("Precio")!!)
-                val unidad = if (backStackEntry.arguments?.getString("Unidad")!! == "h") {
+                val unidad = if (backStackEntry.arguments?.getString("Unidad")!! == "H") {
                     Unidad.HORAS
                 } else if (backStackEntry.arguments?.getString("Unidad")!! == "Kg") {
                     Unidad.KILOGRAMOS
@@ -235,7 +235,7 @@ fun MyTopAppBar(
                         Icons.Filled.ArrowBackIosNew,
                         contentDescription = null,
                         modifier = Modifier
-                            .size(32.dp)
+                            .size(24.dp)
                             .clickable{
                                 navController.popBackStack()
                             }
@@ -264,7 +264,7 @@ fun MyTopAppBar(
                         Icons.Filled.ArrowBackIosNew,
                         contentDescription = null,
                         modifier = Modifier
-                            .size(32.dp)
+                            .size(24.dp)
                             .clickable{
                                 navController.popBackStack()
                             }
@@ -284,7 +284,7 @@ fun MyTopAppBar(
         "CrearServicioProducto" -> {
             CenterAlignedTopAppBar(
                 modifier = Modifier.background(apptopBarGradient),
-                title = { Text(text = "") },
+                title = { Text(text = "Crear Servicio o Producto") },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = Color.Transparent
                 ),
@@ -293,7 +293,7 @@ fun MyTopAppBar(
                         Icons.Filled.ArrowBackIosNew,
                         contentDescription = null,
                         modifier = Modifier
-                            .size(32.dp)
+                            .size(24.dp)
                             .clickable{
                                 navController.popBackStack()
                             }

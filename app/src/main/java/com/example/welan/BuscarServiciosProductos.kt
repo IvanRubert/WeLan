@@ -47,6 +47,7 @@ import androidx.navigation.NavHostController
 import com.example.welan.data.Envio
 import com.example.welan.data.ServOProd
 import com.example.welan.data.ServicioOProductos
+import com.example.welan.data.Unidad
 import com.example.welan.data.User
 import com.example.welan.data.getServicioProductos
 
@@ -124,7 +125,15 @@ fun ItemServicioProducto(servicioproducto: ServicioOProductos, navController: Na
                     Spacer(modifier = Modifier.weight(0.5f))
                 }
                 Text(
-                    text = "${servicioproducto.Precio}€/${servicioproducto.Unidad.unidad}",
+                    text = if (servicioproducto.Servoprod == ServOProd.SERVICIO) {
+                        if (servicioproducto.Unidad == Unidad.UNIDADES) {
+                            "${servicioproducto.Precio}€/Ser"
+                        } else {
+                            "${servicioproducto.Precio}€/${servicioproducto.Unidad.unidad}"
+                        }
+                    } else {
+                        "${servicioproducto.Precio}€/${servicioproducto.Unidad.unidad}"
+                    },
                     fontSize = 18.sp,
                     maxLines = 3,
                     lineHeight = 32.sp,
