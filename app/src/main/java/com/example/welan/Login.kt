@@ -82,57 +82,58 @@ fun Login(navController: NavController,modifier: Modifier){
             contentScale = ContentScale.Crop
         )
         Spacer(modifier = Modifier.height(30.dp))
-        MultiChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth(0.6f)) {
+        MultiChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth(0.7f)) {
+
             SegmentedButton(
-                checked = false,
-                onCheckedChange = {
-                    choose = true
-                },
-                shape = RoundedCornerShape(topStart = 10.dp, bottomStart = 10.dp),
+                checked = !choose,
+                onCheckedChange = { choose = false },
+                shape = SegmentedButtonDefaults.itemShape(0, 2),
                 colors = SegmentedButtonColors(
-                    activeBorderColor = Color.Unspecified,
-                    activeContainerColor = Color.Unspecified,
-                    activeContentColor =  Color.Unspecified,
-                    inactiveContainerColor = if (choose) MaterialTheme.colorScheme.primary else Color.White,
-                    inactiveContentColor =Color.Unspecified,
-                    inactiveBorderColor = Color.Unspecified,
-                    disabledActiveContainerColor = Color.Unspecified,
-                    disabledActiveContentColor = Color.Unspecified,
-                    disabledActiveBorderColor = Color.Unspecified,
-                    disabledInactiveContainerColor = Color.Unspecified,
-                    disabledInactiveContentColor = Color.Unspecified,
-                    disabledInactiveBorderColor = Color.Unspecified
+                    activeBorderColor = Color.Black,
+                    activeContainerColor = Color(0xABFC5656),
+                    activeContentColor = Color.White,
+
+                    inactiveContainerColor = Color.Transparent,
+                    inactiveContentColor = Color.White,
+                    inactiveBorderColor = Color.Black,
+
+                    disabledActiveContainerColor = Color.Transparent,
+                    disabledActiveContentColor = Color.White,
+                    disabledActiveBorderColor = Color.Black,
+                    disabledInactiveContainerColor = Color.Transparent,
+                    disabledInactiveContentColor = Color.White,
+                    disabledInactiveBorderColor = Color.Black
                 ),
-                modifier = Modifier.height(60.dp)
+                modifier = Modifier.height(50.dp),
+                icon = {}
             ) {
                 Text("Usuario")
             }
 
             SegmentedButton(
-                checked = false,
-                onCheckedChange = {
-                    choose = false
-                },
-                shape = RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp),
+                checked = choose,
+                onCheckedChange = { choose = true },
+                shape = SegmentedButtonDefaults.itemShape(1, 2),
                 colors = SegmentedButtonColors(
-                    activeBorderColor = Color.Unspecified,
-                    activeContainerColor = Color.Unspecified,
-                    activeContentColor =  Color.Unspecified,
-                    inactiveContainerColor = if (!choose) MaterialTheme.colorScheme.primary  else Color.White,
-                    inactiveContentColor =Color.Unspecified,
-                    inactiveBorderColor = Color.Unspecified,
-                    disabledActiveContainerColor = Color.Unspecified,
-                    disabledActiveContentColor = Color.Unspecified,
-                    disabledActiveBorderColor = Color(0xFF000000),
-                    disabledInactiveContainerColor = Color.Unspecified,
-                    disabledInactiveContentColor = Color.Unspecified,
-                    disabledInactiveBorderColor = Color(0xFF000000)
-                ),
-                modifier = Modifier.height(60.dp)
-            ) {
-                Text("Empresa",
+                    activeBorderColor = Color.Black,
+                    activeContainerColor = Color(0xABFC5656),
+                    activeContentColor = Color.White,
 
-                    )
+                    inactiveContainerColor = Color.Transparent,
+                    inactiveContentColor = Color.White,
+                    inactiveBorderColor = Color.Black,
+
+                    disabledActiveContainerColor = Color.Transparent,
+                    disabledActiveContentColor = Color.White,
+                    disabledActiveBorderColor = Color.Black,
+                    disabledInactiveContainerColor = Color.Transparent,
+                    disabledInactiveContentColor = Color.White,
+                    disabledInactiveBorderColor = Color.Black
+                ),
+                modifier = Modifier.height(50.dp),
+                icon = {}
+            ) {
+                Text("Empresa")
             }
         }
         Spacer(Modifier.height((50.dp)))
