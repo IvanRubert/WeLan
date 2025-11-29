@@ -39,6 +39,7 @@ fun Mensajes(navController: NavController, modifier: Modifier = Modifier,
                     .clickable{
                         val index = viewModel.messages.indexOf(message)
                         viewModel.markAsRead(index)
+                        navController.navigate("Chat/${message.imageUserRef}/${message.nameUser}")
                     }) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,

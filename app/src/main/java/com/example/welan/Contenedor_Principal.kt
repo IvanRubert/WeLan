@@ -43,10 +43,12 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.welan.data.User
 import com.example.welan.model.MessagesViewModel
 import com.example.welan.ui.theme.appbootomBarGradient
@@ -130,7 +132,16 @@ fun Contenedor_Principal() {
             composable("BuscarServicioProducto") { BuscarServicioProducto(Modifier.padding(innerPadding), navController, user) }
             composable("ServicioProducto") {  }
             composable("Mensajes") {
-                Mensajes(navController, Modifier.padding(innerPadding), vm) }
+                Mensajes(navController, Modifier.padding(innerPadding), vm)
+            }
+            composable("Chat/{destinationImgRef}/{destinationName}", arguments = listOf(
+                navArgument("destinationImgRef") { type = NavType.IntType},
+                navArgument("destinationName") { type = NavType.StringType}
+            )) { backStackEntry ->
+                val img = backStackEntry.arguments?.getInt("destinationImgRef")
+                val nameDestination = backStackEntry.arguments?.getString("destinationName")
+                Chat(user, img!!, nameDestination!!, navController, Modifier.padding(innerPadding))
+            }
         }
         if (showDialogChanges) {
             DialogDiscardChanges(
