@@ -5,7 +5,7 @@ import androidx.annotation.StringRes
 import com.example.welan.R
 
 enum class Unidad (val unidad: String) {
-    HORAS("h"),
+    HORAS("H"),
     KILOGRAMOS("Kg"),
     UNIDADES("U")
 }
@@ -59,6 +59,15 @@ fun getServicioProductos(): List<ServicioOProductos> {
             Envio = Envio.OBLIGACIONENVIO,
             Precio = 1.05,
             Unidad = Unidad.UNIDADES
-        )
+        ),
+        ServicioOProductos(
+            Servoprod = ServOProd.SERVICIO,
+            Titulo = R.string.servicioproducto3_titulo,
+            Photo = R.drawable.serviciolimpieza,
+            Descripcion = R.string.servicioproducto3_descripcion,
+            Envio = Envio.NOENVIO,
+            Precio = 10.00,
+            Unidad = Unidad.UNIDADES
+        ),
     )
 }

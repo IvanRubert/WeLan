@@ -4,20 +4,29 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.MultiChoiceSegmentedButtonRow
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonColors
+import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,9 +40,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.welan.data.ServOProd
+import com.example.welan.data.ServicioOProductos
+import com.example.welan.ui.theme.primaryColor
 
 @Composable
 fun CrearServicioProducto(modifier: Modifier, navController: NavHostController) {
@@ -43,138 +57,268 @@ fun CrearServicioProducto(modifier: Modifier, navController: NavHostController) 
     var unidadmedida by remember { mutableStateOf("") }
     var envio by rememberSaveable { mutableStateOf("") }
     var visibilidad by remember { mutableStateOf(false) }
-    val series = listOf("Unidad", "Horas", "Kilogramos")
+    var choose by remember { mutableStateOf(false) }
+    val series = listOf("Unidad", "Servicio", "Horas", "Kilogramos")
+    var errortitulo by remember { mutableStateOf(false) }
+    var errordescripcion by remember { mutableStateOf(false) }
+    var errorprecio by remember { mutableStateOf(false) }
+    var errorunidadmedida by remember { mutableStateOf(false) }
+    var errorenvio by remember { mutableStateOf(false) }
 
-
-    Column (modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "Crear Servicio",
-            fontSize = 30.sp,
-            color = White,
-            modifier = Modifier.padding(15.dp)
-        )
-        Text(
-            text = "Titulo:",
-            fontSize = 18.sp,
-            color = White,
-            modifier = Modifier.padding(bottom = 10.dp, end = 200.dp)
-        )
-        OutlinedTextField(
-            value = titulo,
-            onValueChange = { titulo = it },
-            modifier = Modifier.border(1.dp, White)
-        )
-
-        Row (verticalAlignment = Alignment.CenterVertically) {
-            Button(
-                onClick = {
-                },
-                modifier = Modifier.weight(0.4f)
-                    .height(40.dp)
-                    .size(20.dp)
-                    .padding(start = 40.dp, end = 40.dp)
-            ) {
-                Text("Subir Imagen")
-            }
-            Image(
-                painter = painterResource(id = R.drawable.tomates),
-                contentDescription = "Contactos",
-                contentScale = ContentScale.Fit,
-                modifier = Modifier.height(130.dp).weight(0.2f).padding(end = 20.dp)
-            )
-        }
-        Text(
-            text = "Descripcíon:",
-            fontSize = 18.sp,
-            color = White,
-            modifier = Modifier.padding(bottom = 10.dp, end = 200.dp)
-        )
-        OutlinedTextField(
-            value = descripcion,
-            minLines = 2,
-            onValueChange = { descripcion = it },
-            modifier = Modifier.border(1.dp, White)
-        )
-
-        Spacer(modifier = Modifier.padding(bottom = 10.dp))
-
-        Row (verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth().padding(start = 40.dp, end = 40.dp, bottom = 5.dp)
+    Box(modifier = modifier.fillMaxSize()) {
+        Column (modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Column (modifier = Modifier.weight(0.5f).padding(20.dp)) {
-                Text(
-                    text = "Precio:",
-                    fontSize = 18.sp,
-                    color = White,
-                    modifier = Modifier.padding(bottom = 10.dp, end = 50.dp)
-                )
-                Row (verticalAlignment = Alignment.CenterVertically){
-                    OutlinedTextField(
-                        value = precio,
-                        onValueChange = { precio = it },
-                        modifier = Modifier.border(1.dp, White)
-                    )
-                    Text(
-                        text = "€",
-                        fontSize = 18.sp,
-                        color = White,
-                        modifier = Modifier.padding(start = 5.dp, bottom = 10.dp, end = 50.dp)
-                    )
+
+            MultiChoiceSegmentedButtonRow(
+                modifier = Modifier.fillMaxWidth(0.7f).padding(vertical = 10.dp)
+            ) {
+
+                SegmentedButton(
+                    checked = !choose,
+                    onCheckedChange = { choose = false
+                                      unidadmedida = if (unidadmedida == "Kilogramos") "" else unidadmedida
+                                      },
+                    shape = SegmentedButtonDefaults.itemShape(0, 2),
+                    colors = SegmentedButtonColors(
+                        activeBorderColor = Color.Black,
+                        activeContainerColor = Color(0xABFC5656),
+                        activeContentColor = Color.White,
+
+                        inactiveContainerColor = Color.Transparent,
+                        inactiveContentColor = Color.White,
+                        inactiveBorderColor = Color.Black,
+
+                        disabledActiveContainerColor = Color.Transparent,
+                        disabledActiveContentColor = Color.White,
+                        disabledActiveBorderColor = Color.Black,
+                        disabledInactiveContainerColor = Color.Transparent,
+                        disabledInactiveContentColor = Color.White,
+                        disabledInactiveBorderColor = Color.Black
+                    ),
+                    modifier = Modifier.height(50.dp),
+                    icon = {}
+                ) {
+                    Text("Servicio")
+                }
+
+                SegmentedButton(
+                    checked = choose,
+                    onCheckedChange = { choose = true },
+                    shape = SegmentedButtonDefaults.itemShape(1, 2),
+                    colors = SegmentedButtonColors(
+                        activeBorderColor = Color.Black,
+                        activeContainerColor = Color(0xABFC5656),
+                        activeContentColor = Color.White,
+
+                        inactiveContainerColor = Color.Transparent,
+                        inactiveContentColor = Color.White,
+                        inactiveBorderColor = Color.Black,
+
+                        disabledActiveContainerColor = Color.Transparent,
+                        disabledActiveContentColor = Color.White,
+                        disabledActiveBorderColor = Color.Black,
+                        disabledInactiveContainerColor = Color.Transparent,
+                        disabledInactiveContentColor = Color.White,
+                        disabledInactiveBorderColor = Color.Black
+                    ),
+                    modifier = Modifier.height(50.dp),
+                    icon = {}
+                ) {
+                    Text("Producto")
                 }
             }
+            Text(
+                text = "Titulo:",
+                fontSize = 18.sp,
+                color = White,
+                modifier = Modifier.padding(bottom = 10.dp, end = 200.dp)
+            )
+            OutlinedTextField(
+                value = titulo,
+                onValueChange = { titulo = it },
+                isError = errortitulo,
+                colors = OutlinedTextFieldDefaults.colors(errorBorderColor = primaryColor, focusedBorderColor = White),
+            )
+            Text(
+                text = if (errortitulo) "Error: Obligatorio" else "",
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.Red,
+                modifier = Modifier.fillMaxWidth(0.65f),
+                textAlign = TextAlign.Start
+            )
 
-            Column (modifier = Modifier.weight(0.5f)) {
-                Text(
-                    text = "Unidad de medida:",
-                    fontSize = 18.sp,
-                    color = White,
-                    modifier = Modifier.padding(bottom = 5.dp)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Button(
+                    onClick = {
+                    },
+                    modifier = Modifier.weight(0.4f)
+                        .height(40.dp)
+                        .size(20.dp)
+                        .padding(start = 40.dp, end = 40.dp)
+                ) {
+                    Text("Subir Imagen")
+                }
+                Image(
+                    painter = painterResource(id = R.drawable.welan_logo),
+                    contentDescription = "imagen Servicio o Productos",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.height(100.dp).weight(0.2f).padding(end = 20.dp)
                 )
-                Column {
-                    OutlinedTextField(
-                        value = unidadmedida,
-                        onValueChange = {
-                            unidadmedida = it
-                        },
-                        enabled = false,
-                        readOnly = true,
-                        modifier = Modifier
-                            .clickable { visibilidad = true },
-                        label = { Text(text = "Unidad") }
+            }
+            Text(
+                text = "Descripcíon:",
+                fontSize = 18.sp,
+                color = White,
+                modifier = Modifier.padding(bottom = 10.dp, end = 200.dp)
+            )
+            OutlinedTextField(
+                value = descripcion,
+                minLines = 2,
+                onValueChange = { descripcion = it },
+                isError = errordescripcion,
+                colors = OutlinedTextFieldDefaults.colors(errorBorderColor = primaryColor, focusedBorderColor = White),
+            )
+            Text(
+                text = if (errordescripcion) "Error: Obligatorio" else "",
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.Red,
+                modifier = Modifier.fillMaxWidth(0.65f),
+                textAlign = TextAlign.Start
+            )
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth().padding(start = 40.dp, end = 40.dp, bottom = 5.dp)
+            ) {
+                Column(modifier = Modifier.weight(0.5f).padding(20.dp)) {
+                    Text(
+                        text = "Precio:",
+                        fontSize = 18.sp,
+                        color = White,
+                        modifier = Modifier.padding(bottom = 10.dp, end = 50.dp)
                     )
-                    DropdownMenu(
-                        expanded = visibilidad,
-                        onDismissRequest = { visibilidad = false },
-                        modifier = Modifier.width(300.dp)
-                    ) {
-                        series.forEach { serie ->
-                            DropdownMenuItem(
-                                onClick = {
-                                    visibilidad = false
-                                    unidadmedida = serie
-                                },
-                                text = {Text(serie)}
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Column {
+                            OutlinedTextField(
+                                value = precio,
+                                onValueChange = { precio = it },
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                isError = errorprecio,
+                                colors = OutlinedTextFieldDefaults.colors(errorBorderColor = primaryColor, focusedBorderColor = White),
+                            )
+                            Text(
+                                text = if (errorprecio) "Error: Obligatorio" else "",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color.Red
                             )
                         }
+                        Text(
+                            text = "€",
+                            fontSize = 18.sp,
+                            color = White,
+                            modifier = Modifier.padding(start = 5.dp, end = 50.dp)
+                        )
+                    }
+                }
+
+                Column(modifier = Modifier.weight(0.5f)) {
+                    if (choose) {
+                        Text(
+                            text = "Tipo de Unidad:",
+                            fontSize = 18.sp,
+                            color = White,
+                            modifier = Modifier.padding(bottom = 5.dp)
+                        )
+                    } else {
+                        Text(
+                            text = "Forma de Cobro:",
+                            fontSize = 18.sp,
+                            color = White,
+                            modifier = Modifier.padding(bottom = 5.dp)
+                        )
+                    }
+                    Column {
+                        OutlinedTextField(
+                            value = unidadmedida,
+                            onValueChange = {
+                                unidadmedida = it
+                            },
+                            enabled = false,
+                            readOnly = true,
+                            modifier = Modifier
+                                .clickable { visibilidad = true },
+                            label = { Text(text = "Tipo") },
+                            isError = errorunidadmedida,
+                            colors = OutlinedTextFieldDefaults.colors(errorBorderColor = primaryColor, focusedBorderColor = White),
+                        )
+                        DropdownMenu(
+                            expanded = visibilidad,
+                            onDismissRequest = { visibilidad = false },
+                            modifier = Modifier.width(300.dp)
+                        ) {
+                            series.forEach { serie ->
+                                if (!choose) {
+                                    if (serie != "Kilogramos" && serie != "Unidad") {
+                                        DropdownMenuItem(
+                                            onClick = {
+                                                visibilidad = false
+                                                unidadmedida = serie
+                                            },
+                                            text = { Text(serie) }
+                                        )
+                                    }
+                                } else if (serie != "Servicio") {
+                                    DropdownMenuItem(
+                                        onClick = {
+                                            visibilidad = false
+                                            unidadmedida = serie
+                                        },
+                                        text = { Text(serie) }
+                                    )
+                                }
+                            }
+                        }
+                        Text(
+                            text = if (errorunidadmedida) "Error: Obligatorio" else "",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.Red
+                        )
                     }
                 }
             }
+            if (choose) {
+                Row (verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = "Envio:",
+                        fontSize = 18.sp,
+                        color = White,
+                        modifier = Modifier.padding(end = 60.dp)
+                    )
+                    Text(
+                        text = if (errorenvio) "Error: Obligatorio" else "",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.Red,
+                        modifier = Modifier.padding(end = 60.dp)
+                    )
+                }
+                MyRadioButton(envio, { envio = it })
+                Spacer(Modifier.padding(bottom = 5.dp))
+            }
         }
-        Text(
-            text = "Envio:",
-            fontSize = 18.sp,
-            color = White,
-            modifier = Modifier.padding(end = 220.dp)
-        )
-        MyRadioButton(envio, { envio = it })
-        Spacer(Modifier.padding(bottom = 5.dp))
-
         Button(
-            onClick = { navController.navigate("BuscarServicioProducto") },
-            modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp)
+            onClick = {
+                if (titulo == "") errortitulo = true else errortitulo = false
+                if (descripcion == "") errordescripcion = true else errordescripcion = false
+                if (precio == "") errorprecio = true else errorprecio = false
+                if (unidadmedida == "") errorunidadmedida = true else errorunidadmedida = false
+                if (choose && envio == "") errorenvio = true else errorenvio = false
+                if (!errortitulo && !errordescripcion && !errorprecio && !errorunidadmedida && ((choose && !errorenvio) || (!choose))) {
+                    navController.popBackStack()
+                }
+            },
+            modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, bottom = 20.dp).align(Alignment.BottomEnd)
         ) {
             Text("Crear")
         }
@@ -195,5 +339,4 @@ fun MyRadioButton(envio: String, onItemSelected: (String) -> Unit) {
             }
         }
     }
-
 }
