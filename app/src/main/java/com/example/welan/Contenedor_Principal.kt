@@ -10,8 +10,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -36,10 +36,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.welan.data.ServOProd
+import com.example.welan.data.ServicioOProductos
+import com.example.welan.data.Unidad
 import com.example.welan.data.User
 import com.example.welan.ui.theme.appbootomBarGradient
 import com.example.welan.ui.theme.apptopBarGradient
@@ -71,7 +76,7 @@ fun Contenedor_Principal() {
                 actions = {
                     IconButton(onClick = { }) {
                         Icon(
-                            imageVector = Icons.Filled.Notifications,
+                            imageVector = Icons.Outlined.Notifications,
                             contentDescription = "Localized description",
                             tint = Black
                         )
@@ -87,7 +92,8 @@ fun Contenedor_Principal() {
             name = "Pepe Gil",
             email = "pepe123@example.com",
             descripcion = "Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción",
-            intereses = listOf("Construcción", "Reformas", "Bricolaje")
+            intereses = listOf("Construcción", "Reformas", "Bricolaje"),
+            type = "Bissness"
         )
 
         NavHost(navController = navController, startDestination = "MenuPrincipal"){
@@ -106,7 +112,47 @@ fun Contenedor_Principal() {
             composable("UserEdit") { UserEdit(user, navController, Modifier.padding(innerPadding)) }
             composable("BusinessEdit") { BusinessEdit(user, navController, Modifier.padding(innerPadding)) }
             composable("BuscarServicioProducto") { BuscarServicioProducto(Modifier.padding(innerPadding), navController, user) }
-            composable("ServicioProducto") {  }
+            composable(
+                route = "ServicioProducto/{ServoProdut}/{Titulo}/{Photo}/{Descripcion}/{Envio}/{Precio}/{Unidad}",
+                arguments = listOf(
+                    navArgument("ServoProdut") { type = NavType.StringType },
+                    navArgument("Titulo") { type = NavType.IntType },
+                    navArgument("Photo") { type = NavType.IntType },
+                    navArgument("Descripcion") { type = NavType.IntType },
+                    navArgument("Envio") { type = NavType.BoolType },
+                    navArgument("Precio") { type = NavType.FloatType },
+                    navArgument("Unidad") { type = NavType.StringType },
+                )
+            ) { backStackEntry ->
+                val servoProdut = if (backStackEntry.arguments?.getString("ServoProdut")!! == "SERVICIO") {
+                    ServOProd.SERVICIO
+                } else {
+                    ServOProd.PRODUCTO
+                }
+                val titulo = backStackEntry.arguments?.getInt("Titulo")!!
+                val photo = backStackEntry.arguments?.getInt("Photo")!!
+                val descripcion = backStackEntry.arguments?.getInt("Descripcion")!!
+                val envio: Boolean? = backStackEntry.arguments?.getBoolean("Envio")
+                val precio = (backStackEntry.arguments?.getFloat("Precio")!!)
+                val unidad = if (backStackEntry.arguments?.getString("Unidad")!! == "h") {
+                    Unidad.HORAS
+                } else if (backStackEntry.arguments?.getString("Unidad")!! == "Kg") {
+                    Unidad.KILOGRAMOS
+                } else {
+                    Unidad.UNIDADES
+                }
+                val servoprod = ServicioOProductos(
+                    Servoprod = servoProdut,
+                    Titulo = titulo,
+                    Photo = photo,
+                    Descripcion = descripcion,
+                    Envio = envio,
+                    Precio = precio.toDouble(),
+                    Unidad = unidad
+                )
+                SevicioProducto(servoprod, Modifier.padding(innerPadding), navController)
+            }
+            composable ("CrearServicioProducto") { CrearServicioProducto(Modifier.padding(innerPadding), navController) }
         }
     }
 }

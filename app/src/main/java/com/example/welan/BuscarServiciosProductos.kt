@@ -5,19 +5,18 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.FilterAlt
+import androidx.compose.material.icons.outlined.FilterAlt
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -41,6 +40,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -53,52 +53,85 @@ import com.example.welan.data.getServicioProductos
 @Composable
 fun ItemServicioProducto(servicioproducto: ServicioOProductos, navController: NavHostController) {
 
-    Card ( modifier = Modifier.padding(20.dp).clickable { navController.navigate("ServicioProducto") } ) {
-        Image(
-            painter = painterResource(id = servicioproducto.Photo),
-            contentDescription = "Contactos",
-            contentScale = ContentScale.FillWidth,
-            modifier = Modifier
-                .fillMaxWidth()
-        )
-        Text(
-            text = stringResource(id = servicioproducto.Titulo),
-            fontSize = 25.sp,
-            maxLines = 3,
-            lineHeight = 32.sp,
-            modifier = Modifier.padding(15.dp),
-            color = White
-        )
-        Row (verticalAlignment = Alignment.CenterVertically ) {
-            if (servicioproducto.Servoprod == ServOProd.PRODUCTO) {
-                if (servicioproducto.Envio == false) {
-                    Text(
-                        text = "Posibilidad de envio",
-                        fontSize = 13.sp,
-                        maxLines = 2,
-                        lineHeight = 22.sp,
-                        modifier = Modifier.padding(15.dp),
-                        color = White
-                    )
-                } else if (servicioproducto.Envio == true) {
-                    Text(
-                        text = "Envio obligatorio",
-                        fontSize = 13.sp,
-                        maxLines = 2,
-                        lineHeight = 22.sp,
-                        modifier = Modifier.padding(15.dp),
-                        color = White
-                    )
-                }
-            }
-            Text(
-                text = "${servicioproducto.Precio}€/${servicioproducto.Unidad}",
-                fontSize = 25.sp,
-                maxLines = 3,
-                lineHeight = 32.sp,
-                modifier = Modifier.padding(15.dp),
-                color = White
+    Card ( modifier = Modifier.padding(5.dp)
+        .height(210.dp)
+        .clickable {
+            navController.navigate("ServicioProducto" +
+                    "/${servicioproducto.Servoprod}" +
+                    "/${servicioproducto.Titulo}" +
+                    "/${servicioproducto.Photo}" +
+                    "/${servicioproducto.Descripcion}" +
+                    "/${servicioproducto.Envio}" +
+                    "/${servicioproducto.Precio.toFloat()}" +
+                    "/${servicioproducto.Unidad.unidad}"
             )
+        }
+    ) {
+        Box (modifier = Modifier.fillMaxWidth().fillMaxSize()) {
+            Column {
+                Image(
+                    painter = painterResource(id = servicioproducto.Photo),
+                    contentDescription = "Contactos",
+                    contentScale = ContentScale.FillWidth,
+                    modifier = Modifier
+                        .fillMaxWidth().height(110.dp)
+                )
+                Text(
+                    text = stringResource(id = servicioproducto.Titulo),
+                    fontSize = 13.sp,
+                    maxLines = 2,
+                    lineHeight = 15.sp,
+                    modifier = Modifier.padding(5.dp).fillMaxWidth(),
+                    color = White,
+                    textAlign = TextAlign.Center
+                )
+
+            }
+            Row (verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.align(Alignment.BottomEnd)
+                    .padding(bottom = 20.dp)
+            ) {
+                if (servicioproducto.Servoprod == ServOProd.PRODUCTO) {
+                    if (servicioproducto.Envio == false) {
+                        Text(
+                            text = "Posibilidad de envio",
+                            fontSize = 10.sp,
+                            maxLines = 2,
+                            lineHeight = 13.sp,
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(5.dp)
+                                .weight(0.5f),
+                            color = White,
+                            textAlign = TextAlign.Center
+                        )
+                    } else if (servicioproducto.Envio == true) {
+                        Text(
+                            text = "Envio obligatorio",
+                            fontSize = 10.sp,
+                            maxLines = 2,
+                            lineHeight = 13.sp,
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(start = 13.dp, top = 5.dp, bottom = 5.dp)
+                                .weight(0.5f),
+                            color = White,
+                            textAlign = TextAlign.Center
+                        )
+                    } else {
+                        Spacer(modifier = Modifier.weight(0.5f))
+                    }
+                } else {
+                    Spacer(modifier = Modifier.weight(0.5f))
+                }
+                Text(
+                    text = "${servicioproducto.Precio}€/${servicioproducto.Unidad.unidad}",
+                    fontSize = 18.sp,
+                    maxLines = 3,
+                    lineHeight = 32.sp,
+                    modifier = Modifier.padding(5.dp).weight(0.5f),
+                    color = White,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
     }
 }
@@ -119,7 +152,7 @@ fun BuscarServicioProducto(modifier: Modifier, navController: NavHostController,
 
 
 
-    Box (modifier = modifier.fillMaxWidth()) {
+    Box (modifier = modifier.fillMaxWidth().fillMaxSize()) {
         Column {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -132,29 +165,29 @@ fun BuscarServicioProducto(modifier: Modifier, navController: NavHostController,
                         } else emptyList()
                     },
                     modifier = Modifier
-                        .padding(start = 10.dp, bottom = 10.dp, end = 10.dp)
+                        .padding(start = 10.dp, bottom = 10.dp)
                         .weight(0.85f)
                 )
                 Icon(
-                    imageVector = Icons.Filled.FilterAlt,
+                    imageVector = Icons.Outlined.FilterAlt,
                     contentDescription = "Filtrado",
                     tint = Black,
                     modifier = Modifier
-                        .padding(top = 20.dp, end = 10.dp, bottom = 10.dp)
+                        .padding(top = 25.dp, end = 10.dp, bottom = 10.dp)
                         .weight(0.15f)
                         .height(50.dp)
                 )
             }
-
             LazyVerticalGrid(
-                columns = GridCells.Fixed(2)
+                columns = GridCells.Fixed(2),
+                modifier = Modifier.padding(5.dp)
             ) {
                 items(filtroComentarios) { elemento ->
                     ItemServicioProducto(elemento, navController)
                 }
             }
         }
-        if (user.type == "User") {
+        if (user.type != "User") {
             FABS(modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp), navController)
         }
     }
