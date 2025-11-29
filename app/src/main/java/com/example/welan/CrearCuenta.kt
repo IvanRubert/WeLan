@@ -153,23 +153,25 @@ fun CrearCuentaScreen(navController: NavController, modifier: Modifier = Modifie
                         Spacer(Modifier.height(16.dp))
 
                         OutlinedTextField(
+                            colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimary, unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary),
                             value = emailUsuario,
                             onValueChange = { emailUsuario = it },
                             label = { Text("Correo electrónico:",
                                 color = Color.White)
                             },
-                            modifier = Modifier.fillMaxWidth().border(1.dp, Color.White)
+                            modifier = Modifier.fillMaxWidth()
                         )
 
                         Spacer(Modifier.height(16.dp))
 
                         OutlinedTextField(
+                            colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimary, unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary),
                             value = password,
                             onValueChange = { password = it },
                             label = { Text("Contraseña:",
                                 color = Color.White)
                             },
-                            modifier = Modifier.fillMaxWidth().border(1.dp, Color.White),
+                            modifier = Modifier.fillMaxWidth(),
                             visualTransformation =
                                 if (passwordVisible) VisualTransformation.None
                                 else PasswordVisualTransformation(),
@@ -191,12 +193,13 @@ fun CrearCuentaScreen(navController: NavController, modifier: Modifier = Modifie
                     if (choose) {
 
                         OutlinedTextField(
+                            colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimary, unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary),
                             value = emailEmpresa,
                             onValueChange = { emailEmpresa = it },
                             label = { Text("Correo corporativo",
                                 color = Color.White)
                             },
-                            modifier = Modifier.fillMaxWidth().border(1.dp, Color.White)
+                            modifier = Modifier.fillMaxWidth()
                         )
                         Spacer(Modifier.height(16.dp))
                         Text(
