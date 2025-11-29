@@ -4,7 +4,9 @@ package com.example.welan
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
@@ -22,6 +24,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -212,7 +215,7 @@ fun CrearCuentaScreen(navController: NavController, modifier: Modifier = Modifie
 
                         Spacer(Modifier.height(16.dp))
 
-                        Button(onClick = { /* subir archivo */ }) {
+                        Button(onClick = {  }, modifier = Modifier.align(Alignment.CenterHorizontally)) {
                             Icon(Icons.Default.Add, contentDescription = null)
                             Spacer(Modifier.width(8.dp))
                             Text("Subir certificado")
@@ -221,17 +224,27 @@ fun CrearCuentaScreen(navController: NavController, modifier: Modifier = Modifie
 
                     Spacer(Modifier.height(20.dp))
 
-                    ClickableText(
-                        text = buildAnnotatedString {
-                            append("¿Tienes cuenta? ")
-                            pushStringAnnotation("login","login")
-                            withStyle(SpanStyle(color = Color(0xFF4BA3FF))) {
-                                append("Inicia Sesión")
+                    Row (verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "¿Tienes cuenta?",
+                            modifier = Modifier.padding(end = 10.dp)
+                        )
+                        Text(
+                            text = "Inicia Sesión",
+                            color = Color.Blue,
+                            textDecoration = TextDecoration.Underline,
+                            modifier = Modifier.clickable {
+                                navController.navigate("Login") {
+                                    popUpTo("Register") {
+                                        inclusive = true
+                                    }
+                                }
                             }
-                            pop()
-                        },
-                        onClick = { navController.navigate("Login")}
-                    )
+                        )
+                    }
                 }
             }
 

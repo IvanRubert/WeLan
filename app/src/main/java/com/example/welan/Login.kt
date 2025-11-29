@@ -184,7 +184,7 @@ fun Login(navController: NavController,modifier: Modifier){
                         Text("¿No tienes una cuenta? ",
                             fontSize = 12.sp)
                         Text("Registrate",
-                            modifier = Modifier.clickable{navController.navigate("register")},
+                            modifier = Modifier.clickable{navController.navigate("Register")},
                             color = Color.Blue,
                             fontWeight = FontWeight.Bold,
                             textDecoration = TextDecoration.Underline,
