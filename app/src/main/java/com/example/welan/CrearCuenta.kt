@@ -3,6 +3,7 @@ package com.example.welan
 
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
@@ -112,13 +113,12 @@ fun CrearCuentaScreen(navController: NavController, modifier: Modifier = Modifie
                 }
             }
 
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(30.dp))
 
 
             Card(
                 shape = RoundedCornerShape(20.dp),
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFF3F3F3F))
             ) {
 
                 Column(
@@ -140,9 +140,13 @@ fun CrearCuentaScreen(navController: NavController, modifier: Modifier = Modifie
                     if (!choose) {
 
                         OutlinedTextField(
+                            colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimary, unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary),
                             value = usuario,
                             onValueChange = { usuario = it },
-                            label = { Text("Usuario:") },
+                            label = { Text(
+                                text ="Usuario:",
+                                color = Color.White)
+                                },
                             modifier = Modifier.fillMaxWidth()
                         )
 
@@ -151,8 +155,10 @@ fun CrearCuentaScreen(navController: NavController, modifier: Modifier = Modifie
                         OutlinedTextField(
                             value = emailUsuario,
                             onValueChange = { emailUsuario = it },
-                            label = { Text("Correo electrónico:") },
-                            modifier = Modifier.fillMaxWidth()
+                            label = { Text("Correo electrónico:",
+                                color = Color.White)
+                            },
+                            modifier = Modifier.fillMaxWidth().border(1.dp, Color.White)
                         )
 
                         Spacer(Modifier.height(16.dp))
@@ -160,8 +166,10 @@ fun CrearCuentaScreen(navController: NavController, modifier: Modifier = Modifie
                         OutlinedTextField(
                             value = password,
                             onValueChange = { password = it },
-                            label = { Text("Contraseña:") },
-                            modifier = Modifier.fillMaxWidth(),
+                            label = { Text("Contraseña:",
+                                color = Color.White)
+                            },
+                            modifier = Modifier.fillMaxWidth().border(1.dp, Color.White),
                             visualTransformation =
                                 if (passwordVisible) VisualTransformation.None
                                 else PasswordVisualTransformation(),
@@ -185,8 +193,18 @@ fun CrearCuentaScreen(navController: NavController, modifier: Modifier = Modifie
                         OutlinedTextField(
                             value = emailEmpresa,
                             onValueChange = { emailEmpresa = it },
-                            label = { Text("Correo corporativo") },
-                            modifier = Modifier.fillMaxWidth()
+                            label = { Text("Correo corporativo",
+                                color = Color.White)
+                            },
+                            modifier = Modifier.fillMaxWidth().border(1.dp, Color.White)
+                        )
+                        Spacer(Modifier.height(16.dp))
+                        Text(
+                            "Subir certificado",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
                         )
 
                         Spacer(Modifier.height(16.dp))
@@ -209,15 +227,15 @@ fun CrearCuentaScreen(navController: NavController, modifier: Modifier = Modifie
                             }
                             pop()
                         },
-                        onClick = { /* nav */ }
+                        onClick = { navController.navigate("Login")}
                     )
                 }
             }
 
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(40.dp))
 
             Button(
-                onClick = { /* acción */ },
+                onClick = { navController.navigate("Contenedor_Principal") },
                 shape = RoundedCornerShape(50),
                 modifier = Modifier
                     .fillMaxWidth()
