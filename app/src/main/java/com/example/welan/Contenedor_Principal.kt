@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -59,6 +60,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.welan.data.Envio
+import com.example.welan.data.ServOProd
+import com.example.welan.data.ServicioOProductos
+import com.example.welan.data.Unidad
 import com.example.welan.data.User
 import com.example.welan.model.MessagesViewModel
 import com.example.welan.ui.theme.appbootomBarGradient
@@ -87,7 +92,8 @@ fun Contenedor_Principal() {
             name = "Pepe Gil",
             email = "pepe123@example.com",
             descripcion = "Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción",
-            intereses = listOf("Construcción", "Reformas", "Bricolaje")
+            intereses = listOf("Construcción", "Reformas", "Bricolaje"),
+            type = "Bissness"
         )
 
         NavHost(navController = navController, startDestination = "MenuPrincipal"){
@@ -130,6 +136,53 @@ fun Contenedor_Principal() {
 
                 Chat(user, img, nameDestination?:"", navController, Modifier.padding(innerPadding))
             }
+            composable(
+                route = "ServicioProducto/{ServoProdut}/{Titulo}/{Photo}/{Descripcion}/{Envio}/{Precio}/{Unidad}",
+                arguments = listOf(
+                    navArgument("ServoProdut") { type = NavType.StringType },
+                    navArgument("Titulo") { type = NavType.IntType },
+                    navArgument("Photo") { type = NavType.IntType },
+                    navArgument("Descripcion") { type = NavType.IntType },
+                    navArgument("Envio") { type = NavType.StringType },
+                    navArgument("Precio") { type = NavType.FloatType },
+                    navArgument("Unidad") { type = NavType.StringType },
+                )
+            ) { backStackEntry ->
+                val servoProdut = if (backStackEntry.arguments?.getString("ServoProdut")!! == "SERVICIO") {
+                    ServOProd.SERVICIO
+                } else {
+                    ServOProd.PRODUCTO
+                }
+                val titulo = backStackEntry.arguments?.getInt("Titulo")!!
+                val photo = backStackEntry.arguments?.getInt("Photo")!!
+                val descripcion = backStackEntry.arguments?.getInt("Descripcion")!!
+                val envio: Envio = if (backStackEntry.arguments?.getString("Envio") == "NOENVIO") {
+                    Envio.NOENVIO
+                } else if (backStackEntry.arguments?.getString("Envio") == "POSSIBILIDADENVIO") {
+                    Envio.POSSIBILIDADENVIO
+                } else {
+                    Envio.OBLIGACIONENVIO
+                }
+                val precio = (backStackEntry.arguments?.getFloat("Precio")!!)
+                val unidad = if (backStackEntry.arguments?.getString("Unidad")!! == "h") {
+                    Unidad.HORAS
+                } else if (backStackEntry.arguments?.getString("Unidad")!! == "Kg") {
+                    Unidad.KILOGRAMOS
+                } else {
+                    Unidad.UNIDADES
+                }
+                val servoprod = ServicioOProductos(
+                    Servoprod = servoProdut,
+                    Titulo = titulo,
+                    Photo = photo,
+                    Descripcion = descripcion,
+                    Envio = envio,
+                    Precio = precio.toDouble(),
+                    Unidad = unidad
+                )
+                SevicioProducto(servoprod, Modifier.padding(innerPadding), navController)
+            }
+            composable ("CrearServicioProducto") { CrearServicioProducto(Modifier.padding(innerPadding), navController) }
         }
         if (showDialogChanges) {
             DialogDiscardChanges(
@@ -199,6 +252,64 @@ fun MyTopAppBar(
                 },
             )
         }
+        "ServicioProducto/{ServoProdut}/{Titulo}/{Photo}/{Descripcion}/{Envio}/{Precio}/{Unidad}" -> {
+            CenterAlignedTopAppBar(
+                modifier = Modifier.background(apptopBarGradient),
+                title = { Text(text = "") },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.Transparent
+                ),
+                navigationIcon = {
+                    Image(
+                        Icons.Filled.ArrowBackIosNew,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clickable{
+                                navController.popBackStack()
+                            }
+                    )
+                },
+                actions = {
+                    IconButton(onClick = { }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Notifications,
+                            contentDescription = "Localized description",
+                            tint = Black
+                        )
+                    }
+                },
+            )
+        }
+        "CrearServicioProducto" -> {
+            CenterAlignedTopAppBar(
+                modifier = Modifier.background(apptopBarGradient),
+                title = { Text(text = "") },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.Transparent
+                ),
+                navigationIcon = {
+                    Image(
+                        Icons.Filled.ArrowBackIosNew,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clickable{
+                                navController.popBackStack()
+                            }
+                    )
+                },
+                actions = {
+                    IconButton(onClick = { }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Notifications,
+                            contentDescription = "Localized description",
+                            tint = Black
+                        )
+                    }
+                },
+            )
+        }
         else -> {
             CenterAlignedTopAppBar(
                 modifier = Modifier.background(apptopBarGradient),
@@ -218,7 +329,7 @@ fun MyTopAppBar(
                 actions = {
                     IconButton(onClick = { }) {
                         Icon(
-                            imageVector = Icons.Filled.Notifications,
+                            imageVector = Icons.Outlined.Notifications,
                             contentDescription = "Localized description",
                             tint = Black
                         )

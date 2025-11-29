@@ -138,11 +138,7 @@ fun SevicioProducto(servoprod: ServicioOProductos, modifier: Modifier, navContro
                     if ((direccion == "" && envio) || (direccion == "" && servoprod.Envio == Envio.OBLIGACIONENVIO)) {
                         errorDireccion = true
                     } else {
-                        navController.navigate("BuscarServicioProducto") {
-                            popUpTo("ServicioProducto"){
-                                inclusive = true
-                            }
-                        }
+                        navController.popBackStack()
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
