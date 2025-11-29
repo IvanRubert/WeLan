@@ -9,20 +9,25 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Chat
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MoreHoriz
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -33,6 +38,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -51,6 +57,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -65,6 +72,7 @@ import com.example.welan.data.ServOProd
 import com.example.welan.data.ServicioOProductos
 import com.example.welan.data.Unidad
 import com.example.welan.data.User
+import com.example.welan.model.ChatViewModel
 import com.example.welan.model.MessagesViewModel
 import com.example.welan.ui.theme.appbootomBarGradient
 import com.example.welan.ui.theme.apptopBarGradient
@@ -78,25 +86,27 @@ fun Contenedor_Principal() {
     var topBarTitle by remember { mutableStateOf("") }
     var topBarImg by remember { mutableIntStateOf(R.drawable.welan_logo) }
 
-    Scaffold (
+    val messagesVm: MessagesViewModel = viewModel()
+    val chatVm: ChatViewModel = viewModel()
+
+    val user = User(
+        imageRes = R.drawable.welan_logo,
+        name = "Pepe Gil",
+        email = "pepe123@example.com",
+        descripcion = "Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción",
+        intereses = listOf("Construcción", "Reformas", "Bricolaje"),
+        type = "Bissness"
+    )
+
+    Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = Color.Transparent,
         topBar = { MyTopAppBar(currentRoute, navController, topBarImg, topBarTitle) },
-        bottomBar = { MyNaviagationBar(navController) }
+        bottomBar = { MyNaviagationBar(navController, currentRoute, user, chatVm) }
     ) { innerPadding ->
-        val vm: MessagesViewModel = viewModel()
         var showDialogChanges by remember { mutableStateOf(false) }
 
-        val user = User(
-            imageRes = R.drawable.welan_logo,
-            name = "Pepe Gil",
-            email = "pepe123@example.com",
-            descripcion = "Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción",
-            intereses = listOf("Construcción", "Reformas", "Bricolaje"),
-            type = "Bissness"
-        )
-
-        NavHost(navController = navController, startDestination = "MenuPrincipal"){
+        NavHost(navController = navController, startDestination = "MenuPrincipal") {
             composable("MenuPrincipal") {
                 MenuPrincipal(Modifier.padding(innerPadding))
             }
@@ -121,12 +131,25 @@ fun Contenedor_Principal() {
                 }
                 BusinessEdit(user, navController, Modifier.padding(innerPadding))
             }
-            composable("BuscarServicioProducto") { BuscarServicioProducto(Modifier.padding(innerPadding), navController, user) }
-            composable("ServicioProducto") {  }
-            composable("Mensajes") { Mensajes(navController, Modifier.padding(innerPadding), vm) }
-            composable("Chat/{destinationImgRef}/{destinationName}", arguments = listOf(
-                navArgument("destinationImgRef") { type = NavType.IntType},
-                navArgument("destinationName") { type = NavType.StringType}
+            composable("BuscarServicioProducto") {
+                BuscarServicioProducto(
+                    Modifier.padding(
+                        innerPadding
+                    ), navController, user
+                )
+            }
+            composable("ServicioProducto") { }
+            composable("Mensajes") {
+                Mensajes(
+                    navController,
+                    Modifier.padding(innerPadding),
+                    messagesVm
+                )
+            }
+            composable(
+                "Chat/{destinationImgRef}/{destinationName}", arguments = listOf(
+                navArgument("destinationImgRef") { type = NavType.IntType },
+                navArgument("destinationName") { type = NavType.StringType }
             )) { backStackEntry ->
                 val img = backStackEntry.arguments?.getInt("destinationImgRef")
                 val nameDestination = backStackEntry.arguments?.getString("destinationName")
@@ -134,7 +157,14 @@ fun Contenedor_Principal() {
                 topBarTitle = nameDestination ?: ""
                 topBarImg = img!!
 
-                Chat(user, img, nameDestination?:"", navController, Modifier.padding(innerPadding))
+                Chat(
+                    user,
+                    img,
+                    nameDestination ?: "",
+                    navController,
+                    Modifier.padding(innerPadding),
+                    chatVm
+                )
             }
             composable(
                 route = "ServicioProducto/{ServoProdut}/{Titulo}/{Photo}/{Descripcion}/{Envio}/{Precio}/{Unidad}",
@@ -148,11 +178,12 @@ fun Contenedor_Principal() {
                     navArgument("Unidad") { type = NavType.StringType },
                 )
             ) { backStackEntry ->
-                val servoProdut = if (backStackEntry.arguments?.getString("ServoProdut")!! == "SERVICIO") {
-                    ServOProd.SERVICIO
-                } else {
-                    ServOProd.PRODUCTO
-                }
+                val servoProdut =
+                    if (backStackEntry.arguments?.getString("ServoProdut")!! == "SERVICIO") {
+                        ServOProd.SERVICIO
+                    } else {
+                        ServOProd.PRODUCTO
+                    }
                 val titulo = backStackEntry.arguments?.getInt("Titulo")!!
                 val photo = backStackEntry.arguments?.getInt("Photo")!!
                 val descripcion = backStackEntry.arguments?.getInt("Descripcion")!!
@@ -182,7 +213,13 @@ fun Contenedor_Principal() {
                 )
                 SevicioProducto(servoprod, Modifier.padding(innerPadding), navController)
             }
-            composable ("CrearServicioProducto") { CrearServicioProducto(Modifier.padding(innerPadding), navController) }
+            composable("CrearServicioProducto") {
+                CrearServicioProducto(
+                    Modifier.padding(
+                        innerPadding
+                    ), navController
+                )
+            }
         }
         if (showDialogChanges) {
             DialogDiscardChanges(
@@ -209,8 +246,10 @@ fun MyTopAppBar(
             CenterAlignedTopAppBar(
                 modifier = Modifier.background(apptopBarGradient),
                 title = {
-                    Row (verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center){
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
                         Image(
                             painter = painterResource(image),
                             contentDescription = title,
@@ -236,7 +275,7 @@ fun MyTopAppBar(
                         contentDescription = null,
                         modifier = Modifier
                             .size(24.dp)
-                            .clickable{
+                            .clickable {
                                 navController.popBackStack()
                             }
                     )
@@ -252,6 +291,7 @@ fun MyTopAppBar(
                 },
             )
         }
+
         "ServicioProducto/{ServoProdut}/{Titulo}/{Photo}/{Descripcion}/{Envio}/{Precio}/{Unidad}" -> {
             CenterAlignedTopAppBar(
                 modifier = Modifier.background(apptopBarGradient),
@@ -265,7 +305,7 @@ fun MyTopAppBar(
                         contentDescription = null,
                         modifier = Modifier
                             .size(24.dp)
-                            .clickable{
+                            .clickable {
                                 navController.popBackStack()
                             }
                     )
@@ -281,6 +321,7 @@ fun MyTopAppBar(
                 },
             )
         }
+
         "CrearServicioProducto" -> {
             CenterAlignedTopAppBar(
                 modifier = Modifier.background(apptopBarGradient),
@@ -294,7 +335,7 @@ fun MyTopAppBar(
                         contentDescription = null,
                         modifier = Modifier
                             .size(24.dp)
-                            .clickable{
+                            .clickable {
                                 navController.popBackStack()
                             }
                     )
@@ -310,6 +351,7 @@ fun MyTopAppBar(
                 },
             )
         }
+
         else -> {
             CenterAlignedTopAppBar(
                 modifier = Modifier.background(apptopBarGradient),
@@ -341,48 +383,108 @@ fun MyTopAppBar(
 }
 
 @Composable
-fun MyNaviagationBar (navController: NavHostController) {
-    var selectedItem by remember { mutableIntStateOf(0) }
-    val selectedIcons: List<ImageVector> = listOf(Icons.Filled.Home, Icons.Filled.People, ImageVector.vectorResource(R.drawable.producto_servicio), Icons.AutoMirrored.Filled.Chat, Icons.Filled.AccountCircle)
-    val items = listOf("MenuPrincipal", "Foros", "BuscarServicioProducto", "Mensajes", "Perfil")
+fun MyNaviagationBar(
+    navController: NavHostController,
+    currentRoute: String?,
+    user: User,
+    vm: ChatViewModel
+) {
+    when (currentRoute) {
+        "Chat/{destinationImgRef}/{destinationName}" -> {
+            var textField by remember { mutableStateOf("") }
 
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
-
-    LaunchedEffect(currentDestination) {
-        currentDestination?.route?.let { route ->
-            val index = items.indexOf(route)
-            if (index != -1) selectedItem = index
-        }
-    }
-
-    NavigationBar(
-        modifier = Modifier.background(appbootomBarGradient),
-        containerColor = Color.Transparent,
-    ) {
-        items.forEachIndexed { index, item ->
-            NavigationBarItem(
-                colors = NavigationBarItemDefaults.colors(indicatorColor = secondaryColor),
-                icon = {
-                    Icon(
-                        imageVector = selectedIcons[index],
-                        contentDescription = item,
-                        tint = Black
-                    )
-                },
-                selected = selectedItem == index,
-                onClick = {
-                    if (selectedItem != index) {
-                        selectedItem = index
-                        navController.navigate(item) {
-                            if (item == "MenuPrincipal") {
-                                popUpTo(0)
-                                launchSingleTop = true
+            BottomAppBar(
+                modifier = Modifier.background(appbootomBarGradient),
+                containerColor = Color.Transparent
+            ) {
+                Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()) {
+                    TextField(
+                        value = textField,
+                        onValueChange = { textField = it },
+                        placeholder = { Text("Escribe un mensaje") },
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            imeAction = ImeAction.Send
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onSend = {
+                                if (textField.isNotBlank()) {
+                                    vm.addMessage(textField, user.name)
+                                }
+                                textField = ""
                             }
-                        }
+                        ),
+                        modifier = Modifier.padding(end = 16.dp)
+                    )
+                    IconButton(
+                        onClick = {
+                            if (textField.isNotBlank()) {
+                                vm.addMessage(textField, user.name)
+                            }
+                            textField = ""
+                        },
+                        modifier = Modifier.size(24.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.Send,
+                            contentDescription = "Send"
+                        )
                     }
                 }
+            }
+        }
+
+        else -> {
+            var selectedItem by remember { mutableIntStateOf(0) }
+            val selectedIcons: List<ImageVector> = listOf(
+                Icons.Filled.Home,
+                Icons.Filled.People,
+                ImageVector.vectorResource(R.drawable.producto_servicio),
+                Icons.AutoMirrored.Filled.Chat,
+                Icons.Filled.AccountCircle
             )
+            val items =
+                listOf("MenuPrincipal", "Foros", "BuscarServicioProducto", "Mensajes", "Perfil")
+
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentDestination = navBackStackEntry?.destination
+
+            LaunchedEffect(currentDestination) {
+                currentDestination?.route?.let { route ->
+                    val index = items.indexOf(route)
+                    if (index != -1) selectedItem = index
+                }
+            }
+
+            NavigationBar(
+                modifier = Modifier.background(appbootomBarGradient),
+                containerColor = Color.Transparent,
+            ) {
+                items.forEachIndexed { index, item ->
+                    NavigationBarItem(
+                        colors = NavigationBarItemDefaults.colors(indicatorColor = secondaryColor),
+                        icon = {
+                            Icon(
+                                imageVector = selectedIcons[index],
+                                contentDescription = item,
+                                tint = Black
+                            )
+                        },
+                        selected = selectedItem == index,
+                        onClick = {
+                            if (selectedItem != index) {
+                                selectedItem = index
+                                navController.navigate(item) {
+                                    if (item == "MenuPrincipal") {
+                                        popUpTo(0)
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
+                        }
+                    )
+                }
+            }
         }
     }
 }
@@ -391,7 +493,7 @@ fun MyNaviagationBar (navController: NavHostController) {
 fun DialogDiscardChanges(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
-){
+) {
     val openAlertDialog = remember { mutableStateOf(false) }
     val context = LocalContext.current
     val activity = context as Activity

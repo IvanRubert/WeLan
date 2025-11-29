@@ -29,11 +29,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.welan.data.User
 import com.example.welan.data.getChatMessages
+import com.example.welan.model.ChatViewModel
+import com.example.welan.model.MessagesViewModel
 
 @Composable
-fun Chat(originUser: User, destinationImgRef: Int, destinationName: String, navController: NavController, modifier: Modifier = Modifier){
+fun Chat(originUser: User, destinationImgRef: Int, destinationName: String, navController: NavController, modifier: Modifier = Modifier,
+         viewModel: ChatViewModel){
     LazyColumn(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.fillMaxSize()) {
-        items(getChatMessages()){ message ->
+        items(viewModel.chat){ message ->
             if (message.origin == originUser.name){
                 Row(horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth(0.8f).padding(vertical = 8.dp)) {
                     Surface(color = Color.Transparent,
