@@ -23,6 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
@@ -31,6 +32,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MultiChoiceSegmentedButtonRow
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonColors
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -64,11 +66,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @Composable
-fun Login(navController: NavController,modifier: Modifier){
+fun Login(navController: NavController,modifier: Modifier) {
     var choose by remember { mutableStateOf(false) }
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var visible by remember { mutableStateOf(false) }
+    var option by remember { mutableStateOf(true) }
+    var emailEmpresa by remember { mutableStateOf("") }
+
 
 
     Column(
@@ -86,7 +91,10 @@ fun Login(navController: NavController,modifier: Modifier){
 
             SegmentedButton(
                 checked = !choose,
-                onCheckedChange = { choose = false },
+                onCheckedChange = {
+                    choose = false
+                    option = true
+                },
                 shape = SegmentedButtonDefaults.itemShape(0, 2),
                 colors = SegmentedButtonColors(
                     activeBorderColor = Color.Black,
@@ -112,7 +120,10 @@ fun Login(navController: NavController,modifier: Modifier){
 
             SegmentedButton(
                 checked = choose,
-                onCheckedChange = { choose = true },
+                onCheckedChange = {
+                    choose = true
+                    option = false
+                },
                 shape = SegmentedButtonDefaults.itemShape(1, 2),
                 colors = SegmentedButtonColors(
                     activeBorderColor = Color.Black,
@@ -143,63 +154,100 @@ fun Login(navController: NavController,modifier: Modifier){
                 .fillMaxHeight(0.75f),
             shape = RoundedCornerShape(40.dp),
 
-        ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize().padding(top = 25.dp), verticalArrangement = Arrangement.spacedBy(35.dp)) {
+            ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxSize().padding(top = 25.dp),
+                verticalArrangement = Arrangement.spacedBy(35.dp)
+            ) {
                 Text(
                     text = stringResource(R.string.IniciarSesión),
                     fontSize = 20.sp
                 )
                 Column {
-                    Text(
-                        text = stringResource(id = R.string.fileduse)
-                    )
-                    OutlinedTextField(
-                        value = username,
-                        onValueChange = { username = it },
-                        modifier = Modifier.border(1.dp, Color.White).fillMaxWidth(0.9f)
-                    )
-                    Spacer(Modifier.height(30.dp))
-                    Text(
-                        text = stringResource(id = R.string.paswdField)
-                    )
-                    TextField(
-                        value = password,
-                        onValueChange = { password = it },
-                        label = { Text("Contraseña") },
-                        visualTransformation = if (visible) VisualTransformation.None else PasswordVisualTransformation(),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                        trailingIcon = {
-                            val icon =
-                                if (visible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                            IconButton(onClick = { visible = !visible }) {
-                                Icon(imageVector = icon, contentDescription = null)
+                    if (option) {
+                        Text(
+                            text = stringResource(id = R.string.fileduse)
+                        )
+                        OutlinedTextField(
+                            value = username,
+                            onValueChange = { username = it },
+                            modifier = Modifier.border(1.dp, Color.White).fillMaxWidth(0.9f)
+                        )
+                        Spacer(Modifier.height(30.dp))
+                        Text(
+                            text = stringResource(id = R.string.paswdField)
+                        )
+                        TextField(
+                            value = password,
+                            onValueChange = { password = it },
+                            label = { Text("Contraseña") },
+                            visualTransformation = if (visible) VisualTransformation.None else PasswordVisualTransformation(),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                            trailingIcon = {
+                                val icon =
+                                    if (visible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                                IconButton(onClick = { visible = !visible }) {
+                                    Icon(imageVector = icon, contentDescription = null)
+                                }
+                            },
+                            modifier = Modifier.border(1.dp, Color.White)
+                        )
+                    }else{
+                        OutlinedTextField(
+                            colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimary, unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary),
+                            value = emailEmpresa,
+                            onValueChange = { emailEmpresa = it },
+                            label = { Text("Correo corporativo",
+                                color = Color.White)
                             }
-                        },
-                        modifier = Modifier.border(1.dp, Color.White)
-                    )
+                        )
+                        Spacer(Modifier.height(16.dp))
+                        Text(
+                            "Subir certificado",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                        )
+
+                        Spacer(Modifier.height(16.dp))
+
+                        Button(onClick = {  },
+                            modifier = Modifier.align(alignment = Alignment.CenterHorizontally)) {
+                            Icon(Icons.Default.Add, contentDescription = null)
+                            Spacer(Modifier.width(8.dp))
+                            Text("Subir certificado")
+                        }
+                    }
                 }
                 Spacer(modifier = Modifier.weight(0.9f))
-                    Row(horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier.fillMaxWidth()
-                        ) {
-                        Text("¿No tienes una cuenta? ",
-                            fontSize = 12.sp)
-                        Text("Registrate",
-                            modifier = Modifier.clickable{navController.navigate("Register")},
-                            color = Color.Blue,
-                            fontWeight = FontWeight.Bold,
-                            textDecoration = TextDecoration.Underline,
-                            fontSize = 12.sp
-                            )
-                    }
-                    Spacer(modifier = Modifier.weight(0.1f))
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth()
+
+                ) {
+                    Text(
+                        "¿No tienes una cuenta? ",
+                        fontSize = 12.sp
+                    )
+                    Text(
+                        "Registrate",
+                        modifier = Modifier.clickable { navController.navigate("Register") },
+                        color = Color.Blue,
+                        fontWeight = FontWeight.Bold,
+                        textDecoration = TextDecoration.Underline,
+                        fontSize = 12.sp
+                    )
+                }
+                Spacer(modifier = Modifier.weight(0.1f))
             }
         }
         Spacer(modifier = Modifier.weight(0.5f))
         Button(
             onClick = {
                 navController.navigate("Contenedor_Principal") {
-                    popUpTo(0){
+                    popUpTo(0) {
                         inclusive = true
                     }
                 }
@@ -211,5 +259,6 @@ fun Login(navController: NavController,modifier: Modifier){
             Text("Iniciar sesión")
         }
         Spacer(modifier = Modifier.weight(0.5f))
+
     }
 }
