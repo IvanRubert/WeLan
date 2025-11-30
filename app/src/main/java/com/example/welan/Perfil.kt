@@ -27,6 +27,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -38,6 +39,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -45,9 +47,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -55,6 +59,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import com.example.welan.data.User
 
@@ -233,6 +238,7 @@ fun UserEdit(user: User, navController: NavController, modifier: Modifier = Modi
     var showPass by rememberSaveable { mutableStateOf(false) }
     var nameTF by rememberSaveable { mutableStateOf(name) }
     val interests = rememberSaveable { mutableStateListOf<String>().apply{addAll(interestList)} }
+    var showDialogAdd by remember { mutableStateOf(false) }
     Box {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -319,13 +325,17 @@ fun UserEdit(user: User, navController: NavController, modifier: Modifier = Modi
                 )
                 Spacer(Modifier.padding(16.dp))
                 Button(
-                    onClick = { interests.add("a") },
+                    onClick = { showDialogAdd = true },
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
                     shape = RoundedCornerShape(8.dp)
                 ) { Text("Añadir interés") }
             }
-            Card(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp).requiredHeight(190.dp)) {
-                Spacer(Modifier.height(8.dp).fillMaxWidth())
+            Card(Modifier
+                .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+                .requiredHeight(190.dp)) {
+                Spacer(Modifier
+                    .height(8.dp)
+                    .fillMaxWidth())
                 LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Fixed(2)) {
                     items(interests) { interes ->
                         Card(
@@ -339,7 +349,12 @@ fun UserEdit(user: User, navController: NavController, modifier: Modifier = Modi
                                     text = interes, textAlign = TextAlign.Center,
                                     modifier = Modifier
                                         .fillMaxSize()
-                                        .padding(top = 10.dp, bottom = 8.dp, start = 8.dp, end = 40.dp)
+                                        .padding(
+                                            top = 10.dp,
+                                            bottom = 8.dp,
+                                            start = 8.dp,
+                                            end = 40.dp
+                                        )
                                 )
                                 IconButton(onClick = { interests.remove(interes) },
                                     modifier = Modifier.align(Alignment.TopEnd)) {
@@ -364,9 +379,20 @@ fun UserEdit(user: User, navController: NavController, modifier: Modifier = Modi
                     }
                 }
             },
-            modifier = modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(horizontal = 16.dp)
+            modifier = modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
         ) {
             Text("Guardar cambios")
+        }
+
+        if (showDialogAdd){
+            AddInterestDialog(
+                type = "interés",
+                list = interests,
+                onDismiss = { showDialogAdd = false }
+            )
         }
     }
 }
@@ -376,6 +402,7 @@ fun BusinessEdit(user: User, navController: NavController, modifier: Modifier = 
     var nameTF by rememberSaveable { mutableStateOf(name) }
     var descripcionTF by rememberSaveable { mutableStateOf(descripcion) }
     val interests = rememberSaveable { mutableStateListOf<String>().apply{addAll(interestList)} }
+    var showDialogAdd by remember { mutableStateOf(false) }
     Box() {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -452,13 +479,17 @@ fun BusinessEdit(user: User, navController: NavController, modifier: Modifier = 
                 )
                 Spacer(Modifier.padding(16.dp))
                 Button(
-                    onClick = { interests.add("a") },
+                    onClick = { showDialogAdd = true },
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
                     shape = RoundedCornerShape(8.dp)
                 ) { Text("Añadir servicio") }
             }
-            Card(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp).requiredHeight(170.dp)) {
-                Spacer(Modifier.height(8.dp).fillMaxWidth())
+            Card(Modifier
+                .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+                .requiredHeight(170.dp)) {
+                Spacer(Modifier
+                    .height(8.dp)
+                    .fillMaxWidth())
                 LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Fixed(2)) {
                     items(interests) { interes ->
                         Card(
@@ -472,7 +503,12 @@ fun BusinessEdit(user: User, navController: NavController, modifier: Modifier = 
                                     text = interes, textAlign = TextAlign.Center,
                                     modifier = Modifier
                                         .fillMaxSize()
-                                        .padding(top = 10.dp, bottom = 8.dp, start = 8.dp, end = 40.dp)
+                                        .padding(
+                                            top = 10.dp,
+                                            bottom = 8.dp,
+                                            start = 8.dp,
+                                            end = 40.dp
+                                        )
                                 )
                                 IconButton(onClick = { interests.remove(interes) },
                                     modifier = Modifier.align(Alignment.TopEnd)) {
@@ -498,11 +534,85 @@ fun BusinessEdit(user: User, navController: NavController, modifier: Modifier = 
                     }
                 }
             },
-            modifier = modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(horizontal = 16.dp)
+            modifier = modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
         ) {
             Text("Guardar cambios")
         }
+        if (showDialogAdd){
+            AddInterestDialog(
+                type = "servicio",
+                list = interests,
+                onDismiss = { showDialogAdd = false }
+            )
+        }
     }
+}
+
+@Composable
+fun AddInterestDialog(type: String, list: SnapshotStateList<String>, onDismiss: () -> Unit){
+    var interestTF by remember { mutableStateOf("") }
+    var isError by remember { mutableStateOf(false) }
+    var eMessage = ""
+    AlertDialog(
+        title = {
+            Text(text = "Añadir $type")
+        },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = interestTF,
+                    onValueChange = { interestTF = it },
+                    isError = isError,
+                    label = {Text(text = type)},
+                    colors = OutlinedTextFieldDefaults.colors(
+                        errorBorderColor = Color.Red,
+                        focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary
+                    )
+                )
+                if (isError){
+                    Text(text = "Error: No se puede añadir un $type $eMessage",
+                        color = Color.Red)
+                }
+            }
+        },
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    if (interestTF.isNotBlank()){
+                        val temp = interestTF.trim().lowercase().toCharArray()
+                        temp[0] = temp[0].uppercaseChar()
+                        interestTF = String(temp)
+                        if (!list.contains(interestTF)){
+                            isError = false
+                            list.add(interestTF)
+                            onDismiss.invoke()
+                        }else {
+                            isError = true
+                            eMessage = "repetido"
+                        }
+                    } else {
+                        isError = true
+                        eMessage = "vacio"
+                    }
+
+                }
+            ) {
+                Text("Añadir")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss
+            ) {
+                Text("Cancelar")
+            }
+        }
+    )
 }
 
 fun getInterests(user: User): List<String>{
