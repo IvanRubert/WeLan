@@ -138,13 +138,21 @@ fun Contenedor_Principal() {
                     ), navController, user
                 )
             }
-            composable("ServicioProducto") { }
+            composable("CrearForo") {
+                CreateForo(Modifier.padding(innerPadding),navController)
+            }
             composable("Mensajes") {
                 Mensajes(
                     navController,
                     Modifier.padding(innerPadding),
                     messagesVm
                 )
+            }
+            composable("Foros"){
+                BackHandler {
+                    showDialogChanges = true
+                }
+                searchForum(navController, modifier = Modifier.padding(innerPadding))
             }
             composable(
                 "Chat/{destinationImgRef}/{destinationName}", arguments = listOf(
