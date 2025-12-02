@@ -4,11 +4,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -97,14 +100,16 @@ fun searchForum(navController: NavHostController, modifier: Modifier){
                         modifier = Modifier.padding(8.dp).fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Row(modifier = Modifier.fillMaxWidth()) {
+                        Row(modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
                             Image(
                                 painter = painterResource(foro.image),
                                 contentDescription = "",
                                 modifier = Modifier
-                                    .size(100.dp)
+                                    .fillMaxHeight()
+                                    .width(100.dp)
+                                    .heightIn(max = 120.dp)
                                     .clip(RoundedCornerShape(12.dp)),
-                                contentScale = ContentScale.FillHeight
+                                contentScale = ContentScale.Crop
 
                             )
                             Spacer(modifier = Modifier.width(20.dp))
