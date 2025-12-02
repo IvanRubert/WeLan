@@ -172,13 +172,16 @@ fun Login(navController: NavController,modifier: Modifier) {
                         OutlinedTextField(
                             value = username,
                             onValueChange = { username = it },
-                            modifier = Modifier.border(1.dp, Color.White).fillMaxWidth(0.9f)
-                        )
+                            modifier = Modifier.fillMaxWidth(0.9f),
+                            singleLine = true,
+                            colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimary, unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary),
+
+                            )
                         Spacer(Modifier.height(30.dp))
                         Text(
                             text = stringResource(id = R.string.paswdField)
                         )
-                        TextField(
+                        OutlinedTextField(
                             value = password,
                             onValueChange = { password = it },
                             label = { Text("Contraseña") },
@@ -191,8 +194,12 @@ fun Login(navController: NavController,modifier: Modifier) {
                                     Icon(imageVector = icon, contentDescription = null)
                                 }
                             },
-                            modifier = Modifier.border(1.dp, Color.White)
-                        )
+                            modifier = Modifier.fillMaxWidth(0.9f),
+                            singleLine = true,
+                            colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimary, unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary),
+
+
+                            )
                     }else{
                         OutlinedTextField(
                             colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimary, unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary),
@@ -200,8 +207,10 @@ fun Login(navController: NavController,modifier: Modifier) {
                             onValueChange = { emailEmpresa = it },
                             label = { Text("Correo corporativo",
                                 color = Color.White)
-                            }
-                        )
+                            },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                            singleLine = true
+                            )
                         Spacer(Modifier.height(16.dp))
                         Text(
                             "Subir certificado",
