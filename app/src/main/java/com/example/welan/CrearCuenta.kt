@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Visibility
@@ -22,6 +23,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
@@ -150,7 +153,8 @@ fun CrearCuentaScreen(navController: NavController, modifier: Modifier = Modifie
                                 text ="Usuario:",
                                 color = Color.White)
                                 },
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true,
                         )
 
                         Spacer(Modifier.height(16.dp))
@@ -162,7 +166,9 @@ fun CrearCuentaScreen(navController: NavController, modifier: Modifier = Modifie
                             label = { Text("Correo electrónico:",
                                 color = Color.White)
                             },
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
                         )
 
                         Spacer(Modifier.height(16.dp))
@@ -188,7 +194,8 @@ fun CrearCuentaScreen(navController: NavController, modifier: Modifier = Modifie
                                         contentDescription = null
                                     )
                                 }
-                            }
+                            },
+                            singleLine = true,
                         )
                     }
 
@@ -202,7 +209,9 @@ fun CrearCuentaScreen(navController: NavController, modifier: Modifier = Modifie
                             label = { Text("Correo corporativo",
                                 color = Color.White)
                             },
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
                         )
                         Spacer(Modifier.height(16.dp))
                         Text(
