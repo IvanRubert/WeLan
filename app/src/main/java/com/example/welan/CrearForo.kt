@@ -15,7 +15,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -45,14 +47,16 @@ fun CreateForo(modifier: Modifier, navController: NavHostController){
         Spacer(Modifier.padding(15.dp))
         Column  (modifier = Modifier.fillMaxWidth(0.8f).padding(start = 10.dp), horizontalAlignment = Alignment.CenterHorizontally){
             Text(
-                "Nombre:",
+                "Titulo:",
                 modifier = Modifier.align(Alignment.Start).padding(bottom = 5.dp)
             )
             OutlinedTextField(
                 value = titulo,
                 onValueChange = { titulo = it },
+                colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimary, unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary),
                 modifier = Modifier.fillMaxWidth(0.8f)
-                    .padding(start = 10.dp).height(20.dp)
+                    .padding(start = 10.dp)
+
             )
         }
         Spacer(modifier = Modifier.height(35.dp))
@@ -77,10 +81,13 @@ fun CreateForo(modifier: Modifier, navController: NavHostController){
                 modifier = Modifier.align(Alignment.Start).padding(bottom = 5.dp)
             )
             OutlinedTextField(
+                colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimary, unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary),
                 value = descripcion,
                 onValueChange = { descripcion = it },
-                modifier = Modifier.fillMaxWidth(0.8f).height(100.dp)
-                    .padding(start = 10.dp)
+                modifier = Modifier.fillMaxWidth(0.8f)
+                    .padding(start = 10.dp),
+                maxLines = 3,
+                minLines = 3
             )
         }
         Spacer(modifier = Modifier.height(35.dp))
@@ -111,7 +118,7 @@ fun CreateForo(modifier: Modifier, navController: NavHostController){
         }
         Spacer(modifier = Modifier.height(35.dp))
         Button(onClick = {},
-                modifier = Modifier.fillMaxWidth(0.25f)
+                modifier = Modifier.fillMaxWidth(0.30f)
             ) {
             Text("Crear")
         }
