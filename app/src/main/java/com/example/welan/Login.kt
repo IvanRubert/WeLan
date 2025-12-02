@@ -172,8 +172,7 @@ fun Login(navController: NavController,modifier: Modifier) {
                         OutlinedTextField(
                             value = username,
                             onValueChange = { username = it },
-                            modifier = Modifier.border(1.dp, Color.White).fillMaxWidth(0.9f),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                            modifier = Modifier.fillMaxWidth(0.9f),
                             singleLine = true,
                             colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimary, unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary),
 
@@ -199,6 +198,7 @@ fun Login(navController: NavController,modifier: Modifier) {
                             singleLine = true,
                             colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimary, unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary),
 
+
                             )
                     }else{
                         OutlinedTextField(
@@ -208,9 +208,8 @@ fun Login(navController: NavController,modifier: Modifier) {
                             label = { Text("Correo corporativo",
                                 color = Color.White)
                             },
-                            singleLine = true,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-
+                            singleLine = true
                             )
                         Spacer(Modifier.height(16.dp))
                         Text(
