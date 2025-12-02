@@ -138,6 +138,7 @@ fun CrearServicioProducto(modifier: Modifier, navController: NavHostController) 
             OutlinedTextField(
                 value = titulo,
                 onValueChange = { titulo = it },
+                singleLine = true,
                 isError = errortitulo,
                 colors = OutlinedTextFieldDefaults.colors(errorBorderColor = primaryColor, focusedBorderColor = White),
             )
@@ -176,6 +177,7 @@ fun CrearServicioProducto(modifier: Modifier, navController: NavHostController) 
             OutlinedTextField(
                 value = descripcion,
                 minLines = 2,
+                maxLines = 2,
                 onValueChange = { descripcion = it },
                 isError = errordescripcion,
                 colors = OutlinedTextFieldDefaults.colors(errorBorderColor = primaryColor, focusedBorderColor = White),
@@ -205,6 +207,7 @@ fun CrearServicioProducto(modifier: Modifier, navController: NavHostController) 
                                 value = precio,
                                 onValueChange = { precio = it },
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                singleLine = true,
                                 isError = errorprecio,
                                 colors = OutlinedTextFieldDefaults.colors(errorBorderColor = primaryColor, focusedBorderColor = White),
                             )

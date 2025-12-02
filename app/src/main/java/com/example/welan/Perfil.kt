@@ -277,7 +277,7 @@ fun UserEdit(user: User, navController: NavController, modifier: Modifier = Modi
                     OutlinedTextField(
                         value = nameTF,
                         onValueChange = { nameTF = it },
-                        maxLines = 1,
+                        singleLine = true,
                         modifier = Modifier
                             .padding(bottom = 16.dp)
                             .width(200.dp),
@@ -297,7 +297,7 @@ fun UserEdit(user: User, navController: NavController, modifier: Modifier = Modi
                     OutlinedTextField(
                         value = passTF,
                         onValueChange = { passTF = it },
-                        maxLines = 1,
+                        singleLine = true,
                         trailingIcon = {
                             IconButton(onClick = { showPass = !showPass }) {
                                 Icon(
@@ -441,7 +441,7 @@ fun BusinessEdit(user: User, navController: NavController, modifier: Modifier = 
                     OutlinedTextField(
                         value = nameTF,
                         onValueChange = { nameTF = it },
-                        maxLines = 1,
+                        singleLine = true,
                         modifier = Modifier
                             .padding(bottom = 16.dp)
                             .width(200.dp),
@@ -566,6 +566,7 @@ fun AddInterestDialog(type: String, list: SnapshotStateList<String>, onDismiss: 
                     value = interestTF,
                     onValueChange = { interestTF = it },
                     isError = isError,
+                    singleLine = true,
                     label = {Text(text = type)},
                     colors = OutlinedTextFieldDefaults.colors(
                         errorBorderColor = Color.Red,
