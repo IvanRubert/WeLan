@@ -360,6 +360,36 @@ fun MyTopAppBar(
             )
         }
 
+        "CrearForo" -> {
+            CenterAlignedTopAppBar(
+                modifier = Modifier.background(apptopBarGradient),
+                title = { Text(text = "Crear Foro") },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.Transparent
+                ),
+                navigationIcon = {
+                    Image(
+                        Icons.Filled.ArrowBackIosNew,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clickable {
+                                navController.popBackStack()
+                            }
+                    )
+                },
+                actions = {
+                    IconButton(onClick = { }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Notifications,
+                            contentDescription = "Localized description",
+                            tint = Black
+                        )
+                    }
+                },
+            )
+        }
+
         else -> {
             CenterAlignedTopAppBar(
                 modifier = Modifier.background(apptopBarGradient),

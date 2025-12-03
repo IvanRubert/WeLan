@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -66,7 +68,7 @@ fun CrearServicioProducto(modifier: Modifier, navController: NavHostController) 
     var errorenvio by remember { mutableStateOf(false) }
 
     Box(modifier = modifier.fillMaxSize()) {
-        Column (modifier = Modifier.fillMaxWidth(),
+        Column (modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -225,7 +227,7 @@ fun CrearServicioProducto(modifier: Modifier, navController: NavHostController) 
                         )
                     }
                 }
-
+                Spacer(Modifier.padding(end = 8.dp))
                 Column(modifier = Modifier.weight(0.5f)) {
                     if (choose) {
                         Text(
@@ -307,7 +309,7 @@ fun CrearServicioProducto(modifier: Modifier, navController: NavHostController) 
                     )
                 }
                 MyRadioButton(envio, { envio = it })
-                Spacer(Modifier.padding(bottom = 5.dp))
+                Spacer(Modifier.padding(bottom = 70.dp))
             }
         }
         Button(

@@ -134,8 +134,8 @@ fun ItemServicioProducto(servicioproducto: ServicioOProductos, navController: Na
                     } else {
                         "${servicioproducto.Precio}€/${servicioproducto.Unidad.unidad}"
                     },
-                    fontSize = 18.sp,
-                    maxLines = 3,
+                    fontSize = 16.sp,
+                    maxLines = 1,
                     lineHeight = 32.sp,
                     modifier = Modifier.padding(5.dp).weight(0.5f),
                     color = White,

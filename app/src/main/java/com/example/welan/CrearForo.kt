@@ -3,6 +3,7 @@ package com.example.welan
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
@@ -34,18 +37,20 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 
 @Composable
-fun CreateForo(modifier: Modifier, navController: NavHostController){
+fun CreateForo(modifier: Modifier, navController: NavHostController) {
     var titulo by rememberSaveable { mutableStateOf("") }
     var descripcion by rememberSaveable { mutableStateOf("") }
 
+    Box(modifier = modifier.fillMaxSize()){
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
-        Text("Crear Foro",
-            fontSize = 45.sp)
-        Spacer(Modifier.padding(15.dp))
-        Column  (modifier = Modifier.fillMaxWidth(0.8f).padding(start = 10.dp), horizontalAlignment = Alignment.CenterHorizontally){
+        Column(
+            modifier = Modifier.fillMaxWidth(0.8f).padding(start = 10.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Text(
                 "Titulo:",
                 modifier = Modifier.align(Alignment.Start).padding(bottom = 5.dp)
@@ -53,14 +58,21 @@ fun CreateForo(modifier: Modifier, navController: NavHostController){
             OutlinedTextField(
                 value = titulo,
                 onValueChange = { titulo = it },
-                colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimary, unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary
+                ),
                 modifier = Modifier.fillMaxWidth(0.8f)
                     .padding(start = 10.dp)
 
             )
         }
         Spacer(modifier = Modifier.height(35.dp))
-        Row  (modifier = Modifier.fillMaxWidth(0.8f).padding(start = 10.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center){
+        Row(
+            modifier = Modifier.fillMaxWidth(0.8f).padding(start = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
             Button(
                 onClick = {}
             ) {
@@ -75,13 +87,19 @@ fun CreateForo(modifier: Modifier, navController: NavHostController){
         }
         Spacer(modifier = Modifier.height(35.dp))
 
-        Column (modifier = Modifier.fillMaxWidth(0.8f).padding(start = 10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            modifier = Modifier.fillMaxWidth(0.8f).padding(start = 10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Text(
                 "Descripción:",
                 modifier = Modifier.align(Alignment.Start).padding(bottom = 5.dp)
             )
             OutlinedTextField(
-                colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimary, unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary
+                ),
                 value = descripcion,
                 onValueChange = { descripcion = it },
                 modifier = Modifier.fillMaxWidth(0.8f)
@@ -91,7 +109,10 @@ fun CreateForo(modifier: Modifier, navController: NavHostController){
             )
         }
         Spacer(modifier = Modifier.height(35.dp))
-        Column  (modifier = Modifier.fillMaxWidth(0.8f).padding(start = 10.dp), horizontalAlignment = Alignment.CenterHorizontally){
+        Column(
+            modifier = Modifier.fillMaxWidth(0.8f).padding(start = 10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Text(
                 "Administradores:",
                 modifier = Modifier.align(Alignment.Start).padding(bottom = 5.dp)
@@ -104,7 +125,10 @@ fun CreateForo(modifier: Modifier, navController: NavHostController){
             }
         }
         Spacer(modifier = Modifier.height(35.dp))
-        Column (modifier = Modifier.fillMaxWidth(0.8f).padding(start = 10.dp), horizontalAlignment = Alignment.CenterHorizontally){
+        Column(
+            modifier = Modifier.fillMaxWidth(0.8f).padding(start = 10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Text(
                 "Categoria:",
                 modifier = Modifier.align(Alignment.Start).padding(bottom = 5.dp)
@@ -117,11 +141,13 @@ fun CreateForo(modifier: Modifier, navController: NavHostController){
             }
         }
         Spacer(modifier = Modifier.height(35.dp))
-        Button(onClick = {},
-                modifier = Modifier.fillMaxWidth(0.30f)
-            ) {
-            Text("Crear")
-        }
     }
+    Button(
+        onClick = {},
+        modifier = Modifier.fillMaxWidth(0.9f).align(Alignment.BottomCenter)
+    ) {
+        Text("Crear")
+    }
+}
 
 }

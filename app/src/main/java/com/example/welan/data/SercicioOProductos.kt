@@ -66,7 +66,7 @@ fun getServicioProductos(): List<ServicioOProductos> {
             Photo = R.drawable.serviciolimpieza,
             Descripcion = R.string.servicioproducto3_descripcion,
             Envio = Envio.NOENVIO,
-            Precio = 10.00,
+            Precio = 40.00,
             Unidad = Unidad.UNIDADES
         ),
     )
