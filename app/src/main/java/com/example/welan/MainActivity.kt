@@ -38,7 +38,7 @@ class MainActivity : ComponentActivity() {
                             CrearCuentaScreen(navController, Modifier.padding(innerPadding))
                         }
                         composable("Contenedor_Principal") {
-                            Contenedor_Principal()
+                            Contenedor_Principal(navController)
                         }
                     }
                 }

@@ -24,7 +24,6 @@ import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.People
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
@@ -79,7 +78,7 @@ import com.example.welan.ui.theme.apptopBarGradient
 import com.example.welan.ui.theme.secondaryColor
 
 @Composable
-fun Contenedor_Principal() {
+fun Contenedor_Principal(navControllerPrincipal: NavHostController) {
 
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
@@ -112,11 +111,12 @@ fun Contenedor_Principal() {
             }
             composable("Perfil") {
                 if (user.type == "User") {
-                    PerfilUser(user, navController, Modifier.padding(innerPadding))
+                    PerfilUser(user, navController, Modifier.padding(innerPadding), navControllerPrincipal)
                 } else PerfilEmpresa(
                     user,
                     navController,
-                    Modifier.padding(innerPadding)
+                    Modifier.padding(innerPadding),
+                    navControllerPrincipal
                 )
             }
             composable("UserEdit") {

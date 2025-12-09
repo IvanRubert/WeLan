@@ -59,175 +59,209 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.welan.data.User
 
 var interestList: List<String> = emptyList()
 var name: String = ""
 var descripcion: String = ""
 @Composable
-fun PerfilUser(user: User, navController: NavController, modifier: Modifier) {
+fun PerfilUser(user: User, navController: NavController, modifier: Modifier, navControllerPrincipal: NavHostController) {
     if (interestList.isEmpty()) interestList = getInterests(user)
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxSize()
-    ) {
-        Text(
-            text = "Tu Perfil",
-            style = MaterialTheme.typography.titleLarge,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(vertical = 8.dp)
-        )
-        Row {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.weight(1f)
-            ) {
-                Image(
-                    painter = painterResource(user.imageRes),
-                    contentDescription = user.name,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .size(100.dp)
-                        .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
-                )
-                Button(
-                    onClick = { navController.navigate("UserEdit") },
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
-                ) { Text("Modificar perfil") }
-            }
-            Column(modifier = Modifier.padding(top = 8.dp, end = 16.dp, bottom = 16.dp)) {
-                Text(
-                    text = "Nombre completo",
-                    style = MaterialTheme.typography.titleLarge
-                )
-                Text(text = name, modifier = Modifier.padding(bottom = 16.dp))
+    Box {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier.fillMaxSize()
+        ) {
+            Text(
+                text = "Tu Perfil",
+                style = MaterialTheme.typography.titleLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+            Row {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Image(
+                        painter = painterResource(user.imageRes),
+                        contentDescription = user.name,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(100.dp)
+                            .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
+                    )
+                    Button(
+                        onClick = { navController.navigate("UserEdit") },
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
+                    ) { Text("Modificar perfil") }
+                }
+                Column(modifier = Modifier.padding(top = 8.dp, end = 16.dp, bottom = 16.dp)) {
+                    Text(
+                        text = "Nombre completo",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                    Text(text = name, modifier = Modifier.padding(bottom = 16.dp))
 
-                Text(
-                    text = "Email",
-                    style = MaterialTheme.typography.titleLarge
-                )
-                Text(text = user.email, modifier = Modifier.padding(bottom = 16.dp))
+                    Text(
+                        text = "Email",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                    Text(text = user.email, modifier = Modifier.padding(bottom = 16.dp))
+                }
             }
-        }
-        Text(
-            text = "Intereses",
-            style = MaterialTheme.typography.titleMedium
-        )
-        Card(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-            LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Fixed(2)) {
-                items(interestList) { interes ->
-                    Card(
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.primary
-                        ),
-                        modifier = Modifier.padding(8.dp)
-                    ) {
-                        Text(
-                            text = interes, textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                        )
+            Text(
+                text = "Intereses",
+                style = MaterialTheme.typography.titleMedium
+            )
+            Card(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+                LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Fixed(2)) {
+                    items(interestList) { interes ->
+                        Card(
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.primary
+                            ),
+                            modifier = Modifier.padding(8.dp)
+                        ) {
+                            Text(
+                                text = interes, textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp)
+                            )
+                        }
                     }
                 }
             }
+        }
+        Button(
+            onClick = {
+                navControllerPrincipal.navigate("Login") {
+                    popUpTo(0){
+                        inclusive = true
+                    }
+                }
+            },
+            modifier = modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        ) {
+            Text("Cerrar Sesión")
         }
     }
 }
 
 @Composable
-fun PerfilEmpresa(user: User, navController: NavController, modifier: Modifier) {
+fun PerfilEmpresa(user: User, navController: NavController, modifier: Modifier, navControllerPrincipal: NavHostController) {
     if (interestList.isEmpty()) {
         interestList = getInterests(user)
         descripcion = user.descripcion ?: ""
     }
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxSize()
-    ) {
-        Text(
-            text = "Tu Perfil",
-            style = MaterialTheme.typography.titleLarge,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(vertical = 8.dp)
-        )
-        Row {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.weight(1f)
-            ) {
-                Image(
-                    painter = painterResource(user.imageRes),
-                    contentDescription = user.name,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .size(100.dp)
-                        .padding(top = 16.dp, end = 16.dp)
-                )
-                Button(
-                    onClick = { navController.navigate("BusinessEdit") },
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
-                ) { Text("Modificar perfil") }
-            }
-            Column(modifier = Modifier.padding(top = 8.dp, end = 16.dp, bottom = 16.dp)) {
-                Text(
-                    text = "Nombre completo",
-                    style = MaterialTheme.typography.titleLarge
-                )
-                Text(text = name, modifier = Modifier.padding(bottom = 16.dp))
-
-                Text(
-                    text = "Email",
-                    style = MaterialTheme.typography.titleLarge
-                )
-                Text(text = user.email, modifier = Modifier.padding(bottom = 16.dp))
-
-                Text(
-                    text = "Descripción",
-                    style = MaterialTheme.typography.titleLarge
-                )
-                Surface(
-                    color = MaterialTheme.colorScheme.surface,
-                    shape = RoundedCornerShape(24.dp),
-                    modifier = Modifier
-                        .width(200.dp)
-                        .height(150.dp)
-                        .padding(top = 8.dp)
+    Box {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier.fillMaxSize()
+        ) {
+            Text(
+                text = "Tu Perfil",
+                style = MaterialTheme.typography.titleLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+            Row {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.weight(1f)
                 ) {
-                    Text(
-                        text = descripcion, modifier = Modifier
-                            .padding(horizontal = 16.dp, vertical = 8.dp)
-                            .verticalScroll(rememberScrollState())
+                    Image(
+                        painter = painterResource(user.imageRes),
+                        contentDescription = user.name,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(100.dp)
+                            .padding(top = 16.dp, end = 16.dp)
                     )
+                    Button(
+                        onClick = { navController.navigate("BusinessEdit") },
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
+                    ) { Text("Modificar perfil") }
                 }
-            }
-        }
-        Text(
-            text = "Servicios",
-            style = MaterialTheme.typography.titleMedium
-        )
-        Card(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-            LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Fixed(2)) {
-                items(interestList) { interes ->
-                    Card(
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.primary
-                        ),
-                        modifier = Modifier.padding(8.dp)
+                Column(modifier = Modifier.padding(top = 8.dp, end = 16.dp, bottom = 16.dp)) {
+                    Text(
+                        text = "Nombre completo",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                    Text(text = name, modifier = Modifier.padding(bottom = 16.dp))
+
+                    Text(
+                        text = "Email",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                    Text(text = user.email, modifier = Modifier.padding(bottom = 16.dp))
+
+                    Text(
+                        text = "Descripción",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                    Surface(
+                        color = MaterialTheme.colorScheme.surface,
+                        shape = RoundedCornerShape(24.dp),
+                        modifier = Modifier
+                            .width(200.dp)
+                            .height(150.dp)
+                            .padding(top = 8.dp)
                     ) {
                         Text(
-                            text = interes, textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
+                            text = descripcion, modifier = Modifier
+                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                                .verticalScroll(rememberScrollState())
                         )
                     }
                 }
             }
+            Text(
+                text = "Servicios",
+                style = MaterialTheme.typography.titleMedium
+            )
+            Card(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+                LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Fixed(2)) {
+                    items(interestList) { interes ->
+                        Card(
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.primary
+                            ),
+                            modifier = Modifier.padding(8.dp)
+                        ) {
+                            Text(
+                                text = interes, textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        Button(
+            onClick = {
+                navControllerPrincipal.navigate("Login") {
+                    popUpTo(0){
+                        inclusive = true
+                    }
+                }
+            },
+            modifier = modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        ) {
+            Text("Cerrar Sesión")
         }
     }
 }
