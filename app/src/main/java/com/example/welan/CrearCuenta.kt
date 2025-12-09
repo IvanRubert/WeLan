@@ -41,7 +41,7 @@ fun CrearCuentaScreen(navController: NavController, modifier: Modifier = Modifie
     var choose by remember { mutableStateOf(false) }
 
 
-    var usuario by remember { mutableStateOf("") }
+    var nombre by remember { mutableStateOf("") }
     var emailUsuario by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -147,10 +147,10 @@ fun CrearCuentaScreen(navController: NavController, modifier: Modifier = Modifie
 
                         OutlinedTextField(
                             colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimary, unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary),
-                            value = usuario,
-                            onValueChange = { usuario = it },
+                            value = nombre,
+                            onValueChange = { nombre = it },
                             label = { Text(
-                                text ="Usuario:",
+                                text ="Nombre:",
                                 color = Color.White)
                                 },
                             modifier = Modifier.fillMaxWidth(),
