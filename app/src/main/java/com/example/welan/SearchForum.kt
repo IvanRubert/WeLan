@@ -60,10 +60,10 @@ fun getListProvisianlList() : List<Foro>{
 }
 
 @Composable
-fun searchForum(navController: NavHostController, modifier: Modifier){
+fun SearchForum(navController: NavHostController, modifier: Modifier){
     val textFieldState = remember { TextFieldState() }
     var searchResults by remember { mutableStateOf(emptyList<Foro>()) }
-    var filtroComentarios: List<Foro> = if (searchResults.isEmpty() && textFieldState.text.isEmpty()) {
+    val filtroComentarios: List<Foro> = if (searchResults.isEmpty() && textFieldState.text.isEmpty()) {
         getListProvisianlList()
     } else {
         filtroForo(textFieldState)

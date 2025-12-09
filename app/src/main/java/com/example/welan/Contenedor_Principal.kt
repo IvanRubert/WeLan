@@ -152,7 +152,7 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController) {
                 BackHandler {
                     showDialogChanges = true
                 }
-                searchForum(navController, modifier = Modifier.padding(innerPadding))
+                SearchForum(navController, modifier = Modifier.padding(innerPadding))
             }
             composable(
                 "Chat/{destinationImgRef}/{destinationName}", arguments = listOf(
