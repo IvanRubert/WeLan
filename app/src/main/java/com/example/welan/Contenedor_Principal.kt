@@ -72,6 +72,7 @@ import com.example.welan.data.ServicioOProductos
 import com.example.welan.data.Unidad
 import com.example.welan.data.User
 import com.example.welan.model.ChatViewModel
+import com.example.welan.model.ForoViewModel
 import com.example.welan.model.MessagesViewModel
 import com.example.welan.ui.theme.appbootomBarGradient
 import com.example.welan.ui.theme.apptopBarGradient
@@ -87,6 +88,7 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController) {
 
     val messagesVm: MessagesViewModel = viewModel()
     val chatVm: ChatViewModel = viewModel()
+    val foroChatVm: ForoViewModel = viewModel()
 
     val user = User(
         imageRes = R.drawable.welan_logo,
@@ -101,7 +103,7 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController) {
         modifier = Modifier.fillMaxSize(),
         containerColor = Color.Transparent,
         topBar = { MyTopAppBar(currentRoute, navController, topBarImg, topBarTitle) },
-        bottomBar = { MyNaviagationBar(navController, currentRoute, user, chatVm) }
+        bottomBar = { MyNaviagationBar(navController, currentRoute, user, chatVm, foroChatVm) }
     ) { innerPadding ->
         var showDialogChanges by remember { mutableStateOf(false) }
 
@@ -111,7 +113,12 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController) {
             }
             composable("Perfil") {
                 if (user.type == "User") {
-                    PerfilUser(user, navController, Modifier.padding(innerPadding), navControllerPrincipal)
+                    PerfilUser(
+                        user,
+                        navController,
+                        Modifier.padding(innerPadding),
+                        navControllerPrincipal
+                    )
                 } else PerfilEmpresa(
                     user,
                     navController,
@@ -139,7 +146,7 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController) {
                 )
             }
             composable("CrearForo") {
-                CreateForo(Modifier.padding(innerPadding),navController)
+                CreateForo(Modifier.padding(innerPadding), navController)
             }
             composable("Mensajes") {
                 Mensajes(
@@ -148,17 +155,29 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController) {
                     messagesVm
                 )
             }
-            composable("Foros"){
+            composable("Foros") {
                 BackHandler {
                     showDialogChanges = true
                 }
                 SearchForum(navController, modifier = Modifier.padding(innerPadding))
             }
             composable(
-                "Chat/{destinationImgRef}/{destinationName}", arguments = listOf(
-                navArgument("destinationImgRef") { type = NavType.IntType },
-                navArgument("destinationName") { type = NavType.StringType }
+                "ForoChat/{title}", arguments = listOf(
+                navArgument("title") { type = NavType.StringType }
             )) { backStackEntry ->
+                val title = backStackEntry.arguments?.getString("title")
+                topBarTitle = title ?: ""
+
+                ForoChat(
+                    user, Modifier.padding(innerPadding),
+                    foroChatVm
+                )
+            }
+            composable(
+                "Chat/{destinationImgRef}/{destinationName}", arguments = listOf(
+                    navArgument("destinationImgRef") { type = NavType.IntType },
+                    navArgument("destinationName") { type = NavType.StringType }
+                )) { backStackEntry ->
                 val img = backStackEntry.arguments?.getInt("destinationImgRef")
                 val nameDestination = backStackEntry.arguments?.getString("destinationName")
 
@@ -250,6 +269,42 @@ fun MyTopAppBar(
     title: String
 ) {
     when (currentRoute) {
+        "ForoChat/{title}" -> {
+            CenterAlignedTopAppBar(
+                modifier = Modifier.background(apptopBarGradient),
+                title = {
+                    if (title.length > 30) {
+                        Text(text = "${title.take(25)}...")
+                    } else {
+                        Text(text = title)
+                    }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.Transparent
+                ),
+                navigationIcon = {
+                    Image(
+                        Icons.Filled.ArrowBackIosNew,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clickable {
+                                navController.popBackStack()
+                            }
+                    )
+                },
+                actions = {
+                    IconButton(onClick = { }) {
+                        Icon(
+                            imageVector = Icons.Filled.MoreHoriz,
+                            contentDescription = "More options",
+                            tint = Black
+                        )
+                    }
+                },
+            )
+        }
+
         "Chat/{destinationImgRef}/{destinationName}" -> {
             CenterAlignedTopAppBar(
                 modifier = Modifier.background(apptopBarGradient),
@@ -425,18 +480,23 @@ fun MyNaviagationBar(
     navController: NavHostController,
     currentRoute: String?,
     user: User,
-    vm: ChatViewModel
-) {
+    chatVm: ChatViewModel,
+    foroChatVm: ForoViewModel
+
+    ) {
     when (currentRoute) {
-        "Chat/{destinationImgRef}/{destinationName}" -> {
+        "ForoChat/{title}" -> {
             var textField by remember { mutableStateOf("") }
 
             BottomAppBar(
                 modifier = Modifier.background(appbootomBarGradient),
                 containerColor = Color.Transparent
             ) {
-                Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     TextField(
                         value = textField,
                         onValueChange = { textField = it },
@@ -447,7 +507,7 @@ fun MyNaviagationBar(
                         keyboardActions = KeyboardActions(
                             onSend = {
                                 if (textField.isNotBlank()) {
-                                    vm.addMessage(textField, user.name)
+                                    foroChatVm.addMessage(textField, user.name)
                                 }
                                 textField = ""
                             }
@@ -457,7 +517,53 @@ fun MyNaviagationBar(
                     IconButton(
                         onClick = {
                             if (textField.isNotBlank()) {
-                                vm.addMessage(textField, user.name)
+                                foroChatVm.addMessage(textField, user.name)
+                            }
+                            textField = ""
+                        },
+                        modifier = Modifier.size(24.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.Send,
+                            contentDescription = "Send"
+                        )
+                    }
+                }
+            }
+        }
+        "Chat/{destinationImgRef}/{destinationName}" -> {
+            var textField by remember { mutableStateOf("") }
+
+            BottomAppBar(
+                modifier = Modifier.background(appbootomBarGradient),
+                containerColor = Color.Transparent
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    TextField(
+                        value = textField,
+                        onValueChange = { textField = it },
+                        placeholder = { Text("Escribe un mensaje") },
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            imeAction = ImeAction.Send
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onSend = {
+                                if (textField.isNotBlank()) {
+                                    chatVm.addMessage(textField, user.name)
+                                }
+                                textField = ""
+                            }
+                        ),
+                        modifier = Modifier.padding(end = 16.dp)
+                    )
+                    IconButton(
+                        onClick = {
+                            if (textField.isNotBlank()) {
+                                chatVm.addMessage(textField, user.name)
                             }
                             textField = ""
                         },

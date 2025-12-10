@@ -2,18 +2,27 @@ package com.example.welan.model
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.welan.data.ChatMessage
-import com.example.welan.data.MensajesData
 import com.example.welan.data.getChatMessages
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
 
 class ChatViewModel: ViewModel() {
-    val chat = mutableStateListOf<ChatMessage>()
+    private val _chat = mutableStateListOf<ChatMessage>()
+    val chat = _chat
+
+    private val _scrollToEnd = MutableSharedFlow<Unit>()
+    val scrollToEnd = _scrollToEnd
 
     init {
-        chat.addAll(getChatMessages())
+        viewModelScope.launch {
+            _chat.addAll(getChatMessages())
+            _scrollToEnd.emit(Unit)
+        }
     }
 
     fun addMessage(message: String, originUser: String){
-        chat.add(ChatMessage(originUser, message))
+        _chat.add(ChatMessage(originUser, message))
     }
 }

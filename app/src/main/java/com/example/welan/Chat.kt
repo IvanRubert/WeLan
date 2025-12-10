@@ -13,12 +13,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,7 +37,24 @@ import com.example.welan.model.MessagesViewModel
 @Composable
 fun Chat(originUser: User, destinationImgRef: Int, destinationName: String, navController: NavController, modifier: Modifier = Modifier,
          viewModel: ChatViewModel){
-    LazyColumn(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.fillMaxSize()) {
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(viewModel.chat.size) {
+        if (viewModel.chat.isNotEmpty()) {
+            listState.scrollToItem(viewModel.chat.size - 1)
+        }
+    }
+
+    // ---- 2. Scroll cuando el ViewModel lo pida (al enviar mensaje) ----
+    LaunchedEffect(Unit) {
+        viewModel.scrollToEnd.collect {
+            if (viewModel.chat.isNotEmpty()) {
+                listState.animateScrollToItem(viewModel.chat.size - 1)
+            }
+        }
+    }
+    LazyColumn(state = listState,
+        horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.fillMaxSize()) {
         items(viewModel.chat){ message ->
             if (message.origin == originUser.name){
                 Row(horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth(0.8f).padding(vertical = 8.dp)) {

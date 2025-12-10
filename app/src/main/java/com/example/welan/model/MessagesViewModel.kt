@@ -6,13 +6,14 @@ import com.example.welan.data.MensajesData
 import com.example.welan.data.getMessages
 
 class MessagesViewModel : ViewModel() {
-    val messages = mutableStateListOf<MensajesData>()
+    private val _messages = mutableStateListOf<MensajesData>()
+    val messages = _messages
 
     init {
-        messages.addAll(getMessages())
+        _messages.addAll(getMessages())
     }
 
     fun markAsRead(index: Int) {
-        messages[index] = messages[index].copy(msgNoRead = false)
+        _messages[index] = _messages[index].copy(msgNoRead = false)
     }
 }
