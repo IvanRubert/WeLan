@@ -35,7 +35,7 @@ import com.example.welan.model.ChatViewModel
 import com.example.welan.model.MessagesViewModel
 
 @Composable
-fun Chat(originUser: User, destinationImgRef: Int, destinationName: String, navController: NavController, modifier: Modifier = Modifier,
+fun Chat(originUser: User, destinationImgRef: Int, destinationName: String, modifier: Modifier = Modifier,
          viewModel: ChatViewModel){
     val listState = rememberLazyListState()
 
@@ -45,7 +45,6 @@ fun Chat(originUser: User, destinationImgRef: Int, destinationName: String, navC
         }
     }
 
-    // ---- 2. Scroll cuando el ViewModel lo pida (al enviar mensaje) ----
     LaunchedEffect(Unit) {
         viewModel.scrollToEnd.collect {
             if (viewModel.chat.isNotEmpty()) {

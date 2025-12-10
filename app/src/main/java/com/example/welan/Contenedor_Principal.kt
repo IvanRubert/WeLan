@@ -188,7 +188,6 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController) {
                     user,
                     img,
                     nameDestination ?: "",
-                    navController,
                     Modifier.padding(innerPadding),
                     chatVm
                 )
