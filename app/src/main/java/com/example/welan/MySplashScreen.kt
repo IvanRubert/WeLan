@@ -1,5 +1,7 @@
 package com.example.welan
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +30,7 @@ fun MySplashScreen(navController: NavController, modifier: Modifier = Modifier){
                 .size(200.dp)
         )
     }
+    UsuarioJson()
     LaunchedEffect(true) {
         delay(2000)
         navController.navigate("Login") {

@@ -1,33 +1,30 @@
 package com.example.welan
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+import android.util.Log
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.Paths
 
 @Serializable
 data class Usuario(val name: String, val email: String, val descripcion: String, val intereses: List<String>, val type: String)
 
-@RequiresApi(Build.VERSION_CODES.O)
+@Composable
 fun UsuarioJson() {
-    val archivoPath: Path = Paths.get("data/usuario.json")
+    val context = LocalContext.current
 
-    if (Files.exists(archivoPath)) {
-        try {
-            if (Files.isReadable(archivoPath)) {
-                try {
-                    val jsonString = Files.readString(archivoPath)
+    LaunchedEffect(Unit) {
+        val jsonString = context.assets.open("usuario.json")
+            .bufferedReader()
+            .use { it.readText() }
 
-                    Json.decodeFromString<List<Usuario>>(jsonString)
-                }catch (e: Exception) {
-                    println("Error: El archivo $archivoPath no esta bien formado")
-                }
-            }
-        } catch (e: Exception) {
+        val dato = Json.decodeFromString<Usuario>(jsonString)
 
-        }
+        Log.d(
+            "prueba", "Nombre: ${dato.name}, Email: ${dato.email}, " +
+                    "Descripcion.: ${dato.descripcion}, Intereses:" +
+                    "${dato.intereses} Tipo: ${dato.type}"
+        )
     }
 }
