@@ -79,7 +79,7 @@ import com.example.welan.ui.theme.apptopBarGradient
 import com.example.welan.ui.theme.secondaryColor
 
 @Composable
-fun Contenedor_Principal(navControllerPrincipal: NavHostController) {
+fun Contenedor_Principal(navControllerPrincipal: NavHostController, user: User) {
 
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
@@ -89,15 +89,6 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController) {
     val messagesVm: MessagesViewModel = viewModel()
     val chatVm: ChatViewModel = viewModel()
     val foroChatVm: ForoViewModel = viewModel()
-
-    val user = User(
-        imageRes = R.drawable.welan_logo,
-        name = "Pepe Gil",
-        email = "pepe123@example.com",
-        descripcion = "Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción Esto es una prueba de descripción",
-        intereses = listOf("Construcción", "Reformas", "Bricolaje"),
-        type = "Bissness"
-    )
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
