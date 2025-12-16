@@ -52,7 +52,7 @@ fun MySplashScreen(navController: NavController, modifier: Modifier = Modifier){
                 }
             }
             val descripcionEncoded = Uri.encode(descripcionForNav)
-            val interesesEncoded = Uri.encode(usuario.intereses.joinToString("|"))
+            val interesesEncoded = Uri.encode(usuario.intereses.joinToString("→←"))
 
             navController.navigate(
                 "Contenedor_Principal" +

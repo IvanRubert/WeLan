@@ -282,7 +282,7 @@ fun Login(navController: NavController,modifier: Modifier) {
                     }
                 }
                 val descripcionEncoded = Uri.encode(descripcionForNav)
-                val interesesString = usuario.intereses.joinToString("|")
+                val interesesString = usuario.intereses.joinToString("→←")
                 val interesesEncoded = Uri.encode(interesesString)
                 navController.navigate("Contenedor_Principal" +
                         "/${usuario.imageRes}" +

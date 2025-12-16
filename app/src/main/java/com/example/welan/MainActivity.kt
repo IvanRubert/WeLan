@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
                             Login(navController, Modifier.padding(innerPadding))
                         }
                         composable("Register") {
-                            CrearCuentaScreen(navController, Modifier.padding(innerPadding))
+                            CrearCuentaScreen(navController)
                         }
                         composable(
                             route = "Contenedor_Principal/{Photo}/{Type}/{Name}/{Email}/{Descripcion}/{Intereses}",
@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
 
                             val interesesString = backStackEntry.arguments?.getString("Intereses") ?: ""
                             val intereses = if (interesesString.isNotEmpty()) {
-                                Uri.decode(interesesString).split("|")
+                                Uri.decode(interesesString).split("→←")
                             } else {
                                 emptyList()
                             }

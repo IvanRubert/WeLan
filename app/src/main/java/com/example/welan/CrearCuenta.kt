@@ -38,7 +38,7 @@ import com.example.welan.data.User
 import com.example.welan.ui.theme.WeLanTheme
 
 @Composable
-fun CrearCuentaScreen(navController: NavController, modifier: Modifier = Modifier) {
+fun CrearCuentaScreen(navController: NavController) {
 
     var choose by remember { mutableStateOf(false) }
 
@@ -298,7 +298,8 @@ fun CrearCuentaScreen(navController: NavController, modifier: Modifier = Modifie
                         else -> "_EMPTY_"
                     }
                     val descripcionEncoded = Uri.encode(descripcionForNav)
-                    val interesesEncoded = Uri.encode("")
+                    val interesesString = usuario.intereses.joinToString("→←")
+                    val interesesEncoded = Uri.encode(interesesString)
 
                     navController.navigate(
                         "Contenedor_Principal" +
