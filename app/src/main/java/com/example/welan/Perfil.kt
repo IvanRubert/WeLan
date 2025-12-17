@@ -69,6 +69,7 @@ var descripcion: String = ""
 @Composable
 fun PerfilUser(user: User, navController: NavController, modifier: Modifier, navControllerPrincipal: NavHostController) {
     if (interestList.isEmpty()) interestList = getInterests(user)
+    if (name.isBlank()) name = getName(user)
     Box {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -162,9 +163,10 @@ fun PerfilUser(user: User, navController: NavController, modifier: Modifier, nav
 
 @Composable
 fun PerfilEmpresa(user: User, navController: NavController, modifier: Modifier, navControllerPrincipal: NavHostController) {
+    if (name.isBlank()) name = getName(user)
+    if (descripcion.isBlank()) descripcion = user.descripcion ?: ""
     if (interestList.isEmpty()) {
         interestList = getInterests(user)
-        descripcion = if (descripcion == "") user.descripcion ?: "" else descripcion
     }
     Box {
         Column(
@@ -660,7 +662,10 @@ fun AddInterestDialog(type: String, list: SnapshotStateList<String>, onDismiss: 
     )
 }
 
+
+fun getName(user: User): String{
+    return user.name
+}
 fun getInterests(user: User): List<String>{
-    name = if (name == "") user.name else name
-    return if (interestList == emptyList<String>()) user.intereses else interestList
+    return user.intereses
 }
