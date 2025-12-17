@@ -117,7 +117,12 @@ fun PerfilUser(user: User, navController: NavController, modifier: Modifier, nav
                 text = "Intereses",
                 style = MaterialTheme.typography.titleMedium
             )
-            Card(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+            Card(Modifier
+                .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+                .requiredHeight(190.dp)) {
+                Spacer(Modifier
+                    .height(8.dp)
+                    .fillMaxWidth())
                 LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Fixed(2)) {
                     items(interestList) { interes ->
                         Card(
@@ -228,7 +233,12 @@ fun PerfilEmpresa(user: User, navController: NavController, modifier: Modifier, 
                 text = "Servicios",
                 style = MaterialTheme.typography.titleMedium
             )
-            Card(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+            Card(Modifier
+                .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+                .requiredHeight(170.dp)) {
+                Spacer(Modifier
+                    .height(8.dp)
+                    .fillMaxWidth())
                 LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Fixed(2)) {
                     items(interestList) { interes ->
                         Card(

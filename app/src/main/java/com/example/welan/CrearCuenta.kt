@@ -269,7 +269,7 @@ fun CrearCuentaScreen(navController: NavController) {
                     val usuario: User
 
                     if (!choose) {
-                        email = emailEmpresa.ifEmpty { "emaildefault@default.def2" }
+                        email = emailUsuario.ifEmpty { "emaildefault@default.def2" }
                         usuario = User(
                             imageRes = R.drawable.welan_logo,
                             type = "User",

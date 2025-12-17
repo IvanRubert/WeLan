@@ -1,11 +1,7 @@
 package com.example.welan
 
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
-
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,6 +18,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -35,7 +33,6 @@ import androidx.compose.material3.SegmentedButtonColors
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,8 +52,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.welan.data.User
-import kotlinx.serialization.json.Json
-import java.io.IOException
 
 @Composable
 fun Login(navController: NavController,modifier: Modifier) {
@@ -159,25 +154,23 @@ fun Login(navController: NavController,modifier: Modifier) {
                 )
                 Column {
                     if (option) {
-                        Text(
-                            text = stringResource(id = R.string.fileduse)
-                        )
                         OutlinedTextField(
                             value = email,
                             onValueChange = { email = it },
                             modifier = Modifier.fillMaxWidth(0.9f),
                             singleLine = true,
+                            label = {Text(text = stringResource(id = R.string.fileduse),
+                                color = Color.White)},
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                             colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimary, unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary),
 
                             )
                         Spacer(Modifier.height(30.dp))
-                        Text(
-                            text = stringResource(id = R.string.paswdField)
-                        )
                         OutlinedTextField(
                             value = password,
                             onValueChange = { password = it },
-                            label = { Text("Contraseña") },
+                            label = { Text(text = stringResource(id = R.string.paswdField),
+                                color = Color.White) },
                             visualTransformation = if (visible) VisualTransformation.None else PasswordVisualTransformation(),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                             trailingIcon = {
