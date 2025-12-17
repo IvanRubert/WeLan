@@ -164,7 +164,7 @@ fun PerfilUser(user: User, navController: NavController, modifier: Modifier, nav
 fun PerfilEmpresa(user: User, navController: NavController, modifier: Modifier, navControllerPrincipal: NavHostController) {
     if (interestList.isEmpty()) {
         interestList = getInterests(user)
-        descripcion = user.descripcion ?: ""
+        descripcion = if (descripcion == "") user.descripcion ?: "" else descripcion
     }
     Box {
         Column(
@@ -661,6 +661,6 @@ fun AddInterestDialog(type: String, list: SnapshotStateList<String>, onDismiss: 
 }
 
 fun getInterests(user: User): List<String>{
-    name = user.name
-    return user.intereses
+    name = if (name == "") user.name else name
+    return if (interestList == emptyList<String>()) user.intereses else interestList
 }

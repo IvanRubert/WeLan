@@ -259,7 +259,7 @@ fun Login(navController: NavController,modifier: Modifier) {
                         imageRes = R.drawable.welan_logo,
                         type = "Business",
                         name = "NameDefault",
-                        email = email,
+                        email = emailEmpresa,
                         descripcion = "",
                         intereses = emptyList()
                     )
