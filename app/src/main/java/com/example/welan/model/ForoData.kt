@@ -1,4 +1,4 @@
-package com.example.welan.data
+package com.example.welan.model
 
 import androidx.compose.ui.graphics.Color
 import com.example.welan.R

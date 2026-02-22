@@ -1,4 +1,4 @@
-package com.example.welan
+package com.example.welan.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -44,12 +44,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.welan.data.Envio
-import com.example.welan.data.ServOProd
-import com.example.welan.data.ServicioOProductos
-import com.example.welan.data.Unidad
-import com.example.welan.data.User
-import com.example.welan.data.getServicioProductos
+import com.example.welan.model.Envio
+import com.example.welan.model.ServOProd
+import com.example.welan.model.ServicioOProductos
+import com.example.welan.model.Unidad
+import com.example.welan.model.User
+import com.example.welan.model.getServicioProductos
 
 
 @Composable

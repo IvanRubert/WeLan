@@ -1,4 +1,4 @@
-package com.example.welan
+package com.example.welan.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,8 +26,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.welan.data.Noticia
-import com.example.welan.data.getNoticias
+import com.example.welan.model.Noticia
+import com.example.welan.model.getNoticias
 
 @Composable
 fun ItemNoticia(noticia: Noticia) {

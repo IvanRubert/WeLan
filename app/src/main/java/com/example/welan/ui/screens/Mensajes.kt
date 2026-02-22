@@ -1,4 +1,4 @@
-package com.example.welan
+package com.example.welan.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,9 +24,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.welan.model.MessagesViewModel
+import com.example.welan.ui.viewmodels.MessagesViewModel
 
 @Composable
 fun Mensajes(navController: NavController, modifier: Modifier = Modifier,

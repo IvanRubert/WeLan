@@ -3,26 +3,33 @@ package com.example.welan
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavType
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.example.welan.data.Envio
-import com.example.welan.data.ServOProd
-import com.example.welan.data.ServicioOProductos
-import com.example.welan.data.Unidad
-import com.example.welan.data.User
+import com.example.welan.ui.Contenedor_Principal
+import com.example.welan.ui.Contenedor_Screen
+import com.example.welan.ui.componentes.UserExist
+import com.example.welan.ui.componentes.UserType
+import com.example.welan.ui.componentes.UsuarioJson
+import com.example.welan.ui.screens.CrearCuentaScreen
+import com.example.welan.ui.screens.Login
+import com.example.welan.ui.screens.MySplashScreen
 import com.example.welan.ui.theme.WeLanTheme
-import java.io.IOException
+import com.example.welan.ui.viewmodels.BusinessUserUiState
+import com.example.welan.ui.viewmodels.CommonUserUiState
+import com.example.welan.ui.viewmodels.UserViewModel
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,55 +40,43 @@ class MainActivity : ComponentActivity() {
             WeLanTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val navController = rememberNavController()
+                    val userViewModel: UserViewModel = viewModel(factory = UserViewModel.Factory)
 
                     NavHost(navController = navController, startDestination = "SplashScreen") {
                         composable("SplashScreen") {
                             MySplashScreen(navController, Modifier.padding(innerPadding))
                         }
                         composable("Login"){
-                            Login(navController, Modifier.padding(innerPadding))
+                            Login(navController, Modifier.padding(innerPadding), userViewModel)
                         }
                         composable("Register") {
                             CrearCuentaScreen(navController)
                         }
                         composable(
-                            route = "Contenedor_Principal/{Photo}/{Type}/{Name}/{Email}/{Descripcion}/{Intereses}",
-                            arguments = listOf(
-                                navArgument("Photo") { type = NavType.IntType },
-                                navArgument("Type") { type = NavType.StringType },
-                                navArgument("Name") { type = NavType.StringType },
-                                navArgument("Email") { type = NavType.StringType },
-                                navArgument("Descripcion") { type = NavType.StringType },
-                                navArgument("Intereses") { type = NavType.StringType },
-                            )
-                        ) { backStackEntry ->
-                            val photo = backStackEntry.arguments?.getInt("Photo")!!
-                            val type = Uri.decode(backStackEntry.arguments?.getString("Type")!!)
-                            val name = Uri.decode(backStackEntry.arguments?.getString("Name")!!)
-                            val email = Uri.decode(backStackEntry.arguments?.getString("Email")!!)
-                            val descripcionRaw = Uri.decode(backStackEntry.arguments?.getString("Descripcion") ?: "")
-                            val descripcion = when (descripcionRaw) {
-                                "_NULL_" -> null
-                                "_EMPTY_" -> ""
-                                else -> descripcionRaw
-                            }
+                            route = "Contenedor_Principal",
+                        ) {
+                            val context = LocalContext.current
+                            if (UserExist(context)) {
+                                val email = UsuarioJson(context)
 
-                            val interesesString = backStackEntry.arguments?.getString("Intereses") ?: ""
-                            val intereses = if (interesesString.isNotEmpty()) {
-                                Uri.decode(interesesString).split("→←")
+                                if (UserType(context) == "User") {
+                                    userViewModel.getCommonUser(email)
+                                    Contenedor_Screen(
+                                        navController,
+                                        userViewModel,
+                                        retryAction = { userViewModel.getCommonUser(email) },
+                                    )
+                                } else {
+                                    userViewModel.getBusinessUser(email)
+                                    Contenedor_Screen(
+                                        navController,
+                                        userViewModel,
+                                        retryAction = { userViewModel.getBusinessUser(email) },
+                                    )
+                                }
                             } else {
-                                emptyList()
+                                Login(navController, Modifier.padding(innerPadding))
                             }
-
-                            val user = User(
-                                imageRes = photo,
-                                type = type,
-                                name = name,
-                                email = email,
-                                descripcion = descripcion,
-                                intereses = intereses
-                            )
-                            Contenedor_Principal(navController, user)
                         }
                     }
                 }
@@ -89,4 +84,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-

@@ -1,4 +1,4 @@
-package com.example.welan
+package com.example.welan.ui.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -28,11 +27,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.example.welan.data.User
-import com.example.welan.data.getChatMessages
-import com.example.welan.model.ChatViewModel
-import com.example.welan.model.MessagesViewModel
+import com.example.welan.model.User
+import com.example.welan.ui.viewmodels.ChatViewModel
 
 @Composable
 fun Chat(originUser: User, destinationImgRef: Int, destinationName: String, modifier: Modifier = Modifier,

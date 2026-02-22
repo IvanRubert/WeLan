@@ -1,10 +1,10 @@
-package com.example.welan.model
+package com.example.welan.ui.viewmodels
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.welan.data.ChatMessage
-import com.example.welan.data.getChatMessages
+import com.example.welan.model.ChatMessage
+import com.example.welan.model.getChatMessages
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 

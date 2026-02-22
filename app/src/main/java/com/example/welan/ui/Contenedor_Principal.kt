@@ -1,4 +1,4 @@
-package com.example.welan
+package com.example.welan.ui
 
 import android.app.Activity
 import androidx.activity.compose.BackHandler
@@ -66,20 +66,73 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.welan.data.Envio
-import com.example.welan.data.ServOProd
-import com.example.welan.data.ServicioOProductos
-import com.example.welan.data.Unidad
-import com.example.welan.data.User
-import com.example.welan.model.ChatViewModel
-import com.example.welan.model.ForoViewModel
-import com.example.welan.model.MessagesViewModel
+import com.example.welan.ui.screens.BusinessEdit
+import com.example.welan.ui.screens.Mensajes
+import com.example.welan.ui.screens.MenuPrincipal
+import com.example.welan.ui.screens.PerfilEmpresa
+import com.example.welan.ui.screens.PerfilUser
+import com.example.welan.R
+import com.example.welan.model.CommonUserWeLan
+import com.example.welan.ui.screens.SearchForum
+import com.example.welan.ui.screens.SevicioProducto
+import com.example.welan.ui.screens.UserEdit
+import com.example.welan.model.Envio
+import com.example.welan.model.ServOProd
+import com.example.welan.model.ServicioOProductos
+import com.example.welan.model.Unidad
+import com.example.welan.model.User
+import com.example.welan.model.UserWelan
+import com.example.welan.ui.componentes.UserType
+import com.example.welan.ui.screens.BuscarServicioProducto
+import com.example.welan.ui.screens.Chat
+import com.example.welan.ui.screens.CrearServicioProducto
+import com.example.welan.ui.screens.CreateForo
+import com.example.welan.ui.screens.ErrorScreen
+import com.example.welan.ui.screens.ForoChat
+import com.example.welan.ui.screens.LoadingScreen
+import com.example.welan.ui.viewmodels.ChatViewModel
+import com.example.welan.ui.viewmodels.ForoViewModel
+import com.example.welan.ui.viewmodels.MessagesViewModel
 import com.example.welan.ui.theme.appbootomBarGradient
 import com.example.welan.ui.theme.apptopBarGradient
 import com.example.welan.ui.theme.secondaryColor
+import com.example.welan.ui.viewmodels.BusinessUserUiState
+import com.example.welan.ui.viewmodels.CommonUserUiState
+import com.example.welan.ui.viewmodels.UserViewModel
+
 
 @Composable
-fun Contenedor_Principal(navControllerPrincipal: NavHostController, user: User) {
+fun Contenedor_Screen(
+    navControllerPrincipal: NavHostController,
+    UserViewModel: UserViewModel,
+    retryAction: () -> Unit,
+) {
+    val context = LocalContext.current
+    if (UserType(context) == "User") {
+        when (UserViewModel.commonUserUiState) {
+            is CommonUserUiState.Success -> Contenedor_Principal(
+                navControllerPrincipal,
+                UserViewModel,
+                datos = (UserViewModel.commonUserUiState as CommonUserUiState.Success).data,
+            )
+            is CommonUserUiState.Error -> ErrorScreen(retryAction)
+            is CommonUserUiState.Loading -> LoadingScreen()
+        }
+    } else {
+        when (UserViewModel.businessUserUiState) {
+            is BusinessUserUiState.Success -> Contenedor_Principal(
+                navControllerPrincipal,
+                UserViewModel,
+                datos = (UserViewModel.businessUserUiState as BusinessUserUiState.Success).data,
+            )
+            is BusinessUserUiState.Error -> ErrorScreen(retryAction)
+            is BusinessUserUiState.Loading -> LoadingScreen()
+        }
+    }
+}
+
+@Composable
+fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewModel: UserViewModel, datos: UserWelan) {
 
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
@@ -94,7 +147,7 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, user: User) 
         modifier = Modifier.fillMaxSize(),
         containerColor = Color.Transparent,
         topBar = { MyTopAppBar(currentRoute, navController, topBarImg, topBarTitle) },
-        bottomBar = { MyNaviagationBar(navController, currentRoute, user, chatVm, foroChatVm) }
+        bottomBar = { MyNaviagationBar(navController, currentRoute, userViewModel, chatVm, foroChatVm) }
     ) { innerPadding ->
         var showDialogChanges by remember { mutableStateOf(false) }
 
@@ -103,37 +156,39 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, user: User) 
                 MenuPrincipal(Modifier.padding(innerPadding))
             }
             composable("Perfil") {
-                if (user.type == "User") {
+                if (datos is CommonUserWeLan) {
                     PerfilUser(
-                        user,
+                        userViewModel,
                         navController,
                         Modifier.padding(innerPadding),
                         navControllerPrincipal
                     )
-                } else PerfilEmpresa(
-                    user,
-                    navController,
-                    Modifier.padding(innerPadding),
-                    navControllerPrincipal
-                )
+                } else {
+                    PerfilEmpresa(
+                        userViewModel,
+                        navController,
+                        Modifier.padding(innerPadding),
+                        navControllerPrincipal
+                    )
+                }
             }
             composable("UserEdit") {
                 BackHandler {
                     showDialogChanges = true
                 }
-                UserEdit(user, navController, Modifier.padding(innerPadding))
+                UserEdit(userViewModel, navController, Modifier.padding(innerPadding))
             }
             composable("BusinessEdit") {
                 BackHandler {
                     showDialogChanges = true
                 }
-                BusinessEdit(user, navController, Modifier.padding(innerPadding))
+                BusinessEdit(userViewModel, navController, Modifier.padding(innerPadding))
             }
             composable("BuscarServicioProducto") {
                 BuscarServicioProducto(
                     Modifier.padding(
                         innerPadding
-                    ), navController, user
+                    ), navController, userViewModel
                 )
             }
             composable("CrearForo") {
@@ -160,7 +215,7 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, user: User) 
                 topBarTitle = title ?: ""
 
                 ForoChat(
-                    user, Modifier.padding(innerPadding),
+                    userViewModel, Modifier.padding(innerPadding),
                     foroChatVm
                 )
             }
@@ -176,7 +231,7 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, user: User) 
                 topBarImg = img!!
 
                 Chat(
-                    user,
+                    userViewModel,
                     img,
                     nameDestination ?: "",
                     Modifier.padding(innerPadding),

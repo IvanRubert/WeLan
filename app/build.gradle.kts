@@ -50,10 +50,13 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+
     // navController
     implementation(libs.androidx.navigation.compose)
+
     // Fuentes de google
     implementation(libs.androidx.compose.ui.text.google.fonts)
+
     // Iconos extendidos
     implementation("androidx.compose.material:material-icons-extended")
     testImplementation(libs.junit)
@@ -64,4 +67,13 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    implementation("org.passay:passay:1.6.3")
+
+    // Retrofit
+    implementation(libs.retrofit2.kotlinx.serialization.converter)
+    implementation(libs.retrofit)
+    implementation(libs.kotlinx.serialization.json)
+
+    // Coil
+    implementation(libs.coil.kt.coil.compose)
 }

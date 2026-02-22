@@ -1,7 +1,6 @@
-package com.example.welan
+package com.example.welan.ui.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,7 +20,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.MultiChoiceSegmentedButtonRow
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -47,8 +45,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.welan.data.ServOProd
-import com.example.welan.data.ServicioOProductos
+import com.example.welan.R
 import com.example.welan.ui.theme.primaryColor
 
 @Composable
@@ -86,17 +83,17 @@ fun CrearServicioProducto(modifier: Modifier, navController: NavHostController) 
                     colors = SegmentedButtonColors(
                         activeBorderColor = Color.Black,
                         activeContainerColor = Color(0xABFC5656),
-                        activeContentColor = Color.White,
+                        activeContentColor = White,
 
                         inactiveContainerColor = Color.Transparent,
-                        inactiveContentColor = Color.White,
+                        inactiveContentColor = White,
                         inactiveBorderColor = Color.Black,
 
                         disabledActiveContainerColor = Color.Transparent,
-                        disabledActiveContentColor = Color.White,
+                        disabledActiveContentColor = White,
                         disabledActiveBorderColor = Color.Black,
                         disabledInactiveContainerColor = Color.Transparent,
-                        disabledInactiveContentColor = Color.White,
+                        disabledInactiveContentColor = White,
                         disabledInactiveBorderColor = Color.Black
                     ),
                     modifier = Modifier.height(50.dp),
@@ -112,17 +109,17 @@ fun CrearServicioProducto(modifier: Modifier, navController: NavHostController) 
                     colors = SegmentedButtonColors(
                         activeBorderColor = Color.Black,
                         activeContainerColor = Color(0xABFC5656),
-                        activeContentColor = Color.White,
+                        activeContentColor = White,
 
                         inactiveContainerColor = Color.Transparent,
-                        inactiveContentColor = Color.White,
+                        inactiveContentColor = White,
                         inactiveBorderColor = Color.Black,
 
                         disabledActiveContainerColor = Color.Transparent,
-                        disabledActiveContentColor = Color.White,
+                        disabledActiveContentColor = White,
                         disabledActiveBorderColor = Color.Black,
                         disabledInactiveContainerColor = Color.Transparent,
-                        disabledInactiveContentColor = Color.White,
+                        disabledInactiveContentColor = White,
                         disabledInactiveBorderColor = Color.Black
                     ),
                     modifier = Modifier.height(50.dp),

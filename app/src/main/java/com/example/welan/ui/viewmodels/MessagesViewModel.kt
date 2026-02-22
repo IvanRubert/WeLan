@@ -1,9 +1,9 @@
-package com.example.welan.model
+package com.example.welan.ui.viewmodels
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
-import com.example.welan.data.MensajesData
-import com.example.welan.data.getMessages
+import com.example.welan.model.MensajesData
+import com.example.welan.model.getMessages
 
 class MessagesViewModel : ViewModel() {
     private val _messages = mutableStateListOf<MensajesData>()

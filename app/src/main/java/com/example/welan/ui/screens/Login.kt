@@ -1,6 +1,5 @@
-package com.example.welan
+package com.example.welan.ui.screens
 
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -51,18 +50,19 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.welan.data.User
+import com.example.welan.R
+import com.example.welan.ui.componentes.compPassword
+import com.example.welan.ui.componentes.esCorreoValido
+import com.example.welan.ui.viewmodels.UserViewModel
 
 @Composable
-fun Login(navController: NavController,modifier: Modifier) {
+fun Login(navController: NavController,modifier: Modifier, userViewModel: UserViewModel) {
     var choose by remember { mutableStateOf(false) }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var visible by remember { mutableStateOf(false) }
     var option by remember { mutableStateOf(true) }
     var emailEmpresa by remember { mutableStateOf("") }
-
-
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -241,49 +241,16 @@ fun Login(navController: NavController,modifier: Modifier) {
         Spacer(modifier = Modifier.weight(0.5f))
         Button(
             onClick = {
-                if (email == "") {
-                    email = "emaildefault@default.def"
-                }
-                val usuario: User
                 if (!choose) {
-                    usuario = User(
-                        imageRes = R.drawable.welan_logo,
-                        type = "User",
-                        name = "NameDefault",
-                        email = email,
-                        descripcion = null,
-                        intereses = emptyList()
-                    )
-                } else {
-                    usuario = User(
-                        imageRes = R.drawable.welan_logo,
-                        type = "Business",
-                        name = "NameDefault",
-                        email = emailEmpresa,
-                        descripcion = "",
-                        intereses = emptyList()
-                    )
-                }
-                val nameEncoded = Uri.encode(usuario.name)
-                val emailEncoded = Uri.encode(usuario.email)
-                val typeEncoded = Uri.encode(usuario.type)
-                val descripcionForNav = when (usuario.type) {
-                    "User" -> "_NULL_"
-                    else -> {
-                        if (usuario.descripcion.isNullOrEmpty()) "_EMPTY_"
-                        else usuario.descripcion
+                    if (esCorreoValido(email)) {
+                        if (compPassword(password)) {
+                            userViewModel.getCommonUserValidate(email, password)
+                        }
                     }
+                } else {
+
                 }
-                val descripcionEncoded = Uri.encode(descripcionForNav)
-                val interesesString = usuario.intereses.joinToString("→←")
-                val interesesEncoded = Uri.encode(interesesString)
-                navController.navigate("Contenedor_Principal" +
-                        "/${usuario.imageRes}" +
-                        "/$typeEncoded" +
-                        "/$nameEncoded" +
-                        "/$emailEncoded" +
-                        "/$descripcionEncoded" +
-                        "/$interesesEncoded"
+                navController.navigate("Contenedor_Principal"
                 ) {
                     popUpTo(0) {
                         inclusive = true
