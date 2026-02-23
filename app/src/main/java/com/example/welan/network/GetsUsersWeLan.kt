@@ -6,7 +6,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-interface WeLanGetApiService {
+interface UserWeLanGetApiService {
     @GET("commonUser/{email}/{password}")
     suspend fun getCommonUserValidate(
         @Path("email") email: String,

@@ -1,6 +1,7 @@
 package com.example.welan.data
 
-import com.example.welan.network.WeLanGetApiService
+import com.example.welan.network.SerOProdWeLanGetApiService
+import com.example.welan.network.UserWeLanGetApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import retrofit2.Retrofit
@@ -18,11 +19,15 @@ class DefaultAppContainer: AppContainer{
         .baseUrl(baseUrl)
         .build()
 
-    private val retrofitService: WeLanGetApiService by lazy {
-        retrofit.create(WeLanGetApiService::class.java)
+    private val retrofitUserService: UserWeLanGetApiService by lazy {
+        retrofit.create(UserWeLanGetApiService::class.java)
+    }
+
+    private val retrofitSerOProdService: SerOProdWeLanGetApiService by lazy {
+        retrofit.create(SerOProdWeLanGetApiService::class.java)
     }
 
     override val weLanRepository by lazy {
-        NetworkWeLanRepository(retrofitService)
+        NetworkWeLanRepository(retrofitUserService, retrofitSerOProdService)
     }
 }

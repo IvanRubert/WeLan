@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -22,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
@@ -31,28 +34,65 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.welan.R
 import com.example.welan.model.Envio
-import com.example.welan.model.ServOProd
-import com.example.welan.model.ServicioOProductos
+import com.example.welan.model.SerOProd
+import com.example.welan.ui.componentes.base64ToImageBitmap
 import com.example.welan.ui.theme.primaryColor
 import com.example.welan.ui.theme.secondaryColor
+import com.example.welan.ui.viewmodels.SerOProdUiState
+import com.example.welan.ui.viewmodels.SerOProdViewModel
 
 @Composable
-fun SevicioProducto(servoprod: ServicioOProductos, modifier: Modifier, navController: NavHostController) {
+fun SevicioProducto_Screen(
+    navControllerPrincipal: NavHostController,
+    serOProdViewModel: SerOProdViewModel,
+    retryAction: () -> Unit,
+    modifier: Modifier
+) {
+    when (serOProdViewModel.serOProdUiState) {
+        is SerOProdUiState.Success -> SevicioProducto(
+            (serOProdViewModel.serOProdUiState as SerOProdUiState.Success).data,
+            serOProdViewModel,
+            modifier,
+            navControllerPrincipal,
+        )
+        is SerOProdUiState.Error -> ErrorScreen(retryAction)
+        is SerOProdUiState.Loading -> LoadingScreen()
+    }
+}
+
+@Composable
+fun SevicioProducto(servoprod: SerOProd, serOProdViewModel: SerOProdViewModel, modifier: Modifier, navController: NavHostController) {
     var direccion by remember { mutableStateOf("") }
     var envio by remember { mutableStateOf(false) }
     var errorDireccion by remember { mutableStateOf(false) }
 
     Box(modifier = modifier.fillMaxWidth().fillMaxSize()) {
         Column {
-            Image(
-                painter = painterResource(id = servoprod.Photo),
-                contentDescription = "Contactos",
-                contentScale = ContentScale.Fit,
-                modifier = Modifier.fillMaxWidth().height(200.dp)
-            )
+            if (base64ToImageBitmap(servoprod.pathImage) != null) {
+                Image(
+                    bitmap = base64ToImageBitmap(servoprod.pathImage)!!,
+                    contentDescription = servoprod.nombre,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .size(100.dp)
+                        .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
+                )
+            } else {
+                Image(
+                    painter = painterResource(R.drawable.imaguserdef),
+                    contentDescription = servoprod.nombre,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .size(100.dp)
+                        .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
+                )
+            }
             Text(
-                text = stringResource(servoprod.Titulo),
+                text = servoprod.nombre,
                 fontSize = 24.sp,
                 maxLines = 2,
                 lineHeight = 26.sp,
@@ -61,7 +101,7 @@ fun SevicioProducto(servoprod: ServicioOProductos, modifier: Modifier, navContro
                 textAlign = TextAlign.Center
             )
             Text(
-                text = stringResource(servoprod.Descripcion),
+                text = servoprod.descripcion,
                 fontSize = 12.sp,
                 maxLines = 5,
                 lineHeight = 32.sp,

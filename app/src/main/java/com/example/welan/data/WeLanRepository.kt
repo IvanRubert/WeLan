@@ -4,7 +4,13 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.welan.model.BusinessUserWeLan
 import com.example.welan.model.CommonUserWeLan
-import com.example.welan.network.WeLanGetApiService
+import com.example.welan.model.Envio
+import com.example.welan.model.Producto
+import com.example.welan.model.SerOProd
+import com.example.welan.model.Servicio
+import com.example.welan.model.Unidad
+import com.example.welan.network.SerOProdWeLanGetApiService
+import com.example.welan.network.UserWeLanGetApiService
 import com.example.welan.ui.componentes.Encriptador
 import com.example.welan.ui.componentes.reemplazararroba
 
@@ -14,10 +20,12 @@ interface WeLanRepository {
     suspend fun getCommonUser(email: String): Result<CommonUserWeLan>
     suspend fun getBusinessUserValidate(email: String, password: String): Result<BusinessUserWeLan>
     suspend fun getBusinessUser(email: String): Result<BusinessUserWeLan>
+    suspend fun getSerOProd(): Result<List<SerOProd>>
 }
 
 class NetworkWeLanRepository(
-    private val weLanGetApiService: WeLanGetApiService
+    private val userWeLanGetApiService: UserWeLanGetApiService,
+    private val serOProdWeLanGetApiService: SerOProdWeLanGetApiService
 ): WeLanRepository {
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -25,7 +33,7 @@ class NetworkWeLanRepository(
         return try {
             var correo = reemplazararroba(email)
             var passwordEnc = Encriptador.cifrar(password)
-            val respuesta = weLanGetApiService.getCommonUserValidate(correo, passwordEnc)
+            val respuesta = userWeLanGetApiService.getCommonUserValidate(correo, passwordEnc)
             if (respuesta.isSuccessful) {
                 respuesta.body()?.let { user ->
                     Result.success(user.copy(passHash = Encriptador.descifrar(user.passHash)))
@@ -41,7 +49,7 @@ class NetworkWeLanRepository(
     override suspend fun getCommonUser(email: String): Result<CommonUserWeLan> {
         return try {
             var correo = reemplazararroba(email)
-            val respuesta = weLanGetApiService.getCommonUser(correo)
+            val respuesta = userWeLanGetApiService.getCommonUser(correo)
             if (respuesta.isSuccessful) {
                 respuesta.body()?.let { user ->
                     Result.success(user)
@@ -57,7 +65,7 @@ class NetworkWeLanRepository(
     override suspend fun getBusinessUserValidate(email: String, organizacion: String): Result<BusinessUserWeLan> {
         return try {
             var correo = reemplazararroba(email)
-            val respuesta = weLanGetApiService.getBusinessUserValidate(correo, organizacion)
+            val respuesta = userWeLanGetApiService.getBusinessUserValidate(correo, organizacion)
             if (respuesta.isSuccessful) {
                 respuesta.body()?.let { user ->
                     Result.success(user)
@@ -73,7 +81,7 @@ class NetworkWeLanRepository(
     override suspend fun getBusinessUser(email: String): Result<BusinessUserWeLan> {
         return try {
             var correo = reemplazararroba(email)
-            val respuesta = weLanGetApiService.getBusinessUser(correo)
+            val respuesta = userWeLanGetApiService.getBusinessUser(correo)
             if (respuesta.isSuccessful) {
                 respuesta.body()?.let { user ->
                     Result.success(user)
@@ -81,6 +89,66 @@ class NetworkWeLanRepository(
             } else {
                 Result.failure(Exception("Error: ${respuesta.code()}"))
             }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getSerOProd(): Result<List<SerOProd>> {
+        return try {
+            val respuesta = serOProdWeLanGetApiService.getSerOProd()
+
+            if (!respuesta.isSuccessful) {
+                return Result.failure(Exception("Error: ${respuesta.code()}"))
+            }
+            val body = respuesta.body() ?: return Result.failure(Exception("Respuesta vacía"))
+            val lista = mutableListOf<SerOProd>()
+
+            body.forEach { seroprod ->
+
+                val tipoPrecio = when (seroprod.tipo_precio) {
+                    "UNIDAD" -> Unidad.UNIDADES
+                    "HORAS" -> Unidad.HORAS
+                    "KILOGRAMOS" -> Unidad.KILOGRAMOS
+                    else -> Unidad.UNIDADES
+                }
+
+                val envio = when (seroprod.envio) {
+                    "NOENVIO" -> Envio.NOENVIO
+                    "POSSIBILIDADENVIO" -> Envio.POSSIBILIDADENVIO
+                    "OBLIGACIONENVIO" -> Envio.OBLIGACIONENVIO
+                    else -> Envio.NOENVIO
+                }
+
+                if (seroprod.tipo == "Producto") {
+                    lista.add(
+                        Producto(
+                            correo = seroprod.correo,
+                            pathImage = seroprod.pathImage,
+                            nombre = seroprod.nombre,
+                            descripcion = seroprod.descripcion,
+                            precio = seroprod.precio,
+                            tipo_precio = tipoPrecio,
+                            envio = envio
+                        )
+                    )
+                } else {
+                    lista.add(
+                        Servicio(
+                            seroprod.pathImage,
+                            seroprod.nombre,
+                            seroprod.correo,
+                            seroprod.descripcion,
+                            seroprod.precio,
+                            tipo_precio = tipoPrecio,
+                            envio = envio
+                        )
+                    )
+                }
+            }
+
+            Result.success(lista)
+
         } catch (e: Exception) {
             Result.failure(e)
         }

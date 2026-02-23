@@ -74,14 +74,10 @@ import com.example.welan.ui.screens.PerfilUser
 import com.example.welan.R
 import com.example.welan.model.BusinessUserWeLan
 import com.example.welan.model.CommonUserWeLan
+import com.example.welan.model.SerOProd
 import com.example.welan.ui.screens.SearchForum
 import com.example.welan.ui.screens.SevicioProducto
 import com.example.welan.ui.screens.UserEdit
-import com.example.welan.model.Envio
-import com.example.welan.model.ServOProd
-import com.example.welan.model.ServicioOProductos
-import com.example.welan.model.Unidad
-import com.example.welan.model.User
 import com.example.welan.model.UserWelan
 import com.example.welan.ui.screens.BuscarServicioProducto
 import com.example.welan.ui.screens.Chat
@@ -90,6 +86,7 @@ import com.example.welan.ui.screens.CreateForo
 import com.example.welan.ui.screens.ErrorScreen
 import com.example.welan.ui.screens.ForoChat
 import com.example.welan.ui.screens.LoadingScreen
+import com.example.welan.ui.screens.SevicioProducto_Screen
 import com.example.welan.ui.viewmodels.ChatViewModel
 import com.example.welan.ui.viewmodels.ForoViewModel
 import com.example.welan.ui.viewmodels.MessagesViewModel
@@ -98,6 +95,7 @@ import com.example.welan.ui.theme.apptopBarGradient
 import com.example.welan.ui.theme.secondaryColor
 import com.example.welan.ui.viewmodels.BusinessUserUiState
 import com.example.welan.ui.viewmodels.CommonUserUiState
+import com.example.welan.ui.viewmodels.SerOProdViewModel
 import com.example.welan.ui.viewmodels.UserViewModel
 
 
@@ -246,51 +244,15 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
                 )
             }
             composable(
-                route = "ServicioProducto/{ServoProdut}/{Titulo}/{Photo}/{Descripcion}/{Envio}/{Precio}/{Unidad}",
-                arguments = listOf(
-                    navArgument("ServoProdut") { type = NavType.StringType },
-                    navArgument("Titulo") { type = NavType.IntType },
-                    navArgument("Photo") { type = NavType.IntType },
-                    navArgument("Descripcion") { type = NavType.IntType },
-                    navArgument("Envio") { type = NavType.StringType },
-                    navArgument("Precio") { type = NavType.FloatType },
-                    navArgument("Unidad") { type = NavType.StringType },
+                route = "ServicioProducto"
+            ) {
+                val serOProdViewModel: SerOProdViewModel = viewModel(factory = SerOProdViewModel.Factory)
+                SevicioProducto_Screen(
+                    navController,
+                    serOProdViewModel,
+                    retryAction = { serOProdViewModel.getSerOProd() },
+                    Modifier.padding(innerPadding)
                 )
-            ) { backStackEntry ->
-                val servoProdut =
-                    if (backStackEntry.arguments?.getString("ServoProdut")!! == "SERVICIO") {
-                        ServOProd.SERVICIO
-                    } else {
-                        ServOProd.PRODUCTO
-                    }
-                val titulo = backStackEntry.arguments?.getInt("Titulo")!!
-                val photo = backStackEntry.arguments?.getInt("Photo")!!
-                val descripcion = backStackEntry.arguments?.getInt("Descripcion")!!
-                val envio: Envio = if (backStackEntry.arguments?.getString("Envio") == "NOENVIO") {
-                    Envio.NOENVIO
-                } else if (backStackEntry.arguments?.getString("Envio") == "POSSIBILIDADENVIO") {
-                    Envio.POSSIBILIDADENVIO
-                } else {
-                    Envio.OBLIGACIONENVIO
-                }
-                val precio = (backStackEntry.arguments?.getFloat("Precio")!!)
-                val unidad = if (backStackEntry.arguments?.getString("Unidad")!! == "H") {
-                    Unidad.HORAS
-                } else if (backStackEntry.arguments?.getString("Unidad")!! == "Kg") {
-                    Unidad.KILOGRAMOS
-                } else {
-                    Unidad.UNIDADES
-                }
-                val servoprod = ServicioOProductos(
-                    Servoprod = servoProdut,
-                    Titulo = titulo,
-                    Photo = photo,
-                    Descripcion = descripcion,
-                    Envio = envio,
-                    Precio = precio.toDouble(),
-                    Unidad = unidad
-                )
-                SevicioProducto(servoprod, Modifier.padding(innerPadding), navController)
             }
             composable("CrearServicioProducto") {
                 CrearServicioProducto(
