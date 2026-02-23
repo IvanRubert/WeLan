@@ -60,10 +60,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.example.welan.R
 import com.example.welan.model.BusinessUserWeLan
 import com.example.welan.model.CommonUserWeLan
 import com.example.welan.model.Interes
-import com.example.welan.model.User
+import com.example.welan.ui.componentes.base64ToImageBitmap
+import com.example.welan.ui.theme.primaryColor
 import com.example.welan.ui.viewmodels.UserViewModel
 
 @Composable
@@ -85,15 +87,27 @@ fun PerfilUser(user: CommonUserWeLan, navController: NavController, modifier: Mo
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Image(
-                        painter = user.pathImage,
-                        contentDescription = user.nombre,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .size(100.dp)
-                            .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
-                    )
+                    if (base64ToImageBitmap(user.pathImage) != null) {
+                        Image(
+                            bitmap = base64ToImageBitmap(user.pathImage)!!,
+                            contentDescription = user.nombre,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .size(100.dp)
+                                .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(R.drawable.imaguserdef),
+                            contentDescription = user.nombre,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .size(100.dp)
+                                .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
+                        )
+                    }
                     Button(
                         onClick = { navController.navigate("UserWeLanEdit") },
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
@@ -182,15 +196,27 @@ fun PerfilEmpresa(user: BusinessUserWeLan, navController: NavController, modifie
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Image(
-                        painter = user.pathImage,
-                        contentDescription = user.nombre,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .size(100.dp)
-                            .padding(top = 16.dp, end = 16.dp)
-                    )
+                    if (base64ToImageBitmap(user.pathImage) != null) {
+                        Image(
+                            bitmap = base64ToImageBitmap(user.pathImage)!!,
+                            contentDescription = user.nombre,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .size(100.dp)
+                                .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(R.drawable.ic_connection_error),
+                            contentDescription = user.nombre,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .size(100.dp)
+                                .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
+                        )
+                    }
                     Button(
                         onClick = { navController.navigate("UserWeLanEdit") },
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
@@ -305,15 +331,27 @@ fun UserEdit( userViewModel: UserViewModel, user: CommonUserWeLan, navController
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Image(
-                        painter = user.pathImage,
-                        contentDescription = user.nombre,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .size(100.dp)
-                            .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
-                    )
+                    if (base64ToImageBitmap(user.pathImage) != null) {
+                        Image(
+                            bitmap = base64ToImageBitmap(user.pathImage)!!,
+                            contentDescription = user.nombre,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .size(100.dp)
+                                .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(R.drawable.ic_connection_error),
+                            contentDescription = user.nombre,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .size(100.dp)
+                                .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
+                        )
+                    }
                     Button(
                         onClick = { },
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
@@ -390,7 +428,7 @@ fun UserEdit( userViewModel: UserViewModel, user: CommonUserWeLan, navController
                     items(interests) { interes ->
                         Card(
                             colors = CardDefaults.cardColors(
-                                containerColor = Color(interes.color)
+                                containerColor = MaterialTheme.colorScheme.primary
                             ),
                             modifier = Modifier.padding(8.dp)
                         ) {
@@ -471,15 +509,27 @@ fun BusinessEdit(userViewModel: UserViewModel, user: BusinessUserWeLan, navContr
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Image(
-                        painter = user.pathImage,
-                        contentDescription = user.nombre,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .size(100.dp)
-                            .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
-                    )
+                    if (base64ToImageBitmap(user.pathImage) != null) {
+                        Image(
+                            bitmap = base64ToImageBitmap(user.pathImage)!!,
+                            contentDescription = user.nombre,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .size(100.dp)
+                                .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(R.drawable.ic_connection_error),
+                            contentDescription = user.nombre,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .size(100.dp)
+                                .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
+                        )
+                    }
                     Button(
                         onClick = { },
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
@@ -605,7 +655,7 @@ fun BusinessEdit(userViewModel: UserViewModel, user: BusinessUserWeLan, navContr
 
 @Composable
 fun AddInterestDialogInteres(type: String, list: SnapshotStateList<Interes>, onDismiss: () -> Unit){
-    var interestTF by remember { mutableStateOf(Interes("", 0xFFFFFFFF)) }
+    var interestTF by remember { mutableStateOf(Interes("", primaryColor.value.toLong())) }
     var isError by remember { mutableStateOf(false) }
     var eMessage = ""
     AlertDialog(

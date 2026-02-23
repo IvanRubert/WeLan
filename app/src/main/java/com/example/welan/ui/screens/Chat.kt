@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -27,11 +28,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.example.welan.R
 import com.example.welan.model.User
+import com.example.welan.model.UserWelan
+import com.example.welan.ui.componentes.base64ToImageBitmap
 import com.example.welan.ui.viewmodels.ChatViewModel
 
 @Composable
-fun Chat(originUser: User, destinationImgRef: Int, destinationName: String, modifier: Modifier = Modifier,
+fun Chat(originUser: UserWelan, destinationImgRef: Int, destinationName: String, modifier: Modifier = Modifier,
          viewModel: ChatViewModel){
     val listState = rememberLazyListState()
 
@@ -51,7 +55,7 @@ fun Chat(originUser: User, destinationImgRef: Int, destinationName: String, modi
     LazyColumn(state = listState,
         horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.fillMaxSize()) {
         items(viewModel.chat){ message ->
-            if (message.origin == originUser.name){
+            if (message.origin == originUser.nombre){
                 Row(horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth(0.8f).padding(vertical = 8.dp)) {
                     Surface(color = Color.Transparent,
                         shape = RoundedCornerShape(topStart = 24.dp,
@@ -62,14 +66,27 @@ fun Chat(originUser: User, destinationImgRef: Int, destinationName: String, modi
                         Text(text = message.message, modifier = Modifier.padding(8.dp).widthIn(max = 200.dp))
                     }
                     Spacer(Modifier.padding(horizontal = 8.dp))
-                    Image(
-                        painter = painterResource(originUser.imageRes),
-                        contentDescription = originUser.name,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .requiredSize(40.dp)
-                    )
+                    if (base64ToImageBitmap(originUser.pathImage) != null) {
+                        Image(
+                            bitmap = base64ToImageBitmap(originUser.pathImage)!!,
+                            contentDescription = originUser.nombre,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .size(100.dp)
+                                .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(R.drawable.imaguserdef),
+                            contentDescription = originUser.nombre,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .size(100.dp)
+                                .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
+                        )
+                    }
                 }
             } else{
                 Row(horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth(0.8f).padding(vertical = 8.dp)) {

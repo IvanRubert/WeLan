@@ -193,7 +193,9 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
                 BuscarServicioProducto(
                     Modifier.padding(
                         innerPadding
-                    ), navController, userViewModel
+                    ),
+                    navController,
+                    datos
                 )
             }
             composable("CrearForo") {
@@ -220,7 +222,7 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
                 topBarTitle = title ?: ""
 
                 ForoChat(
-                    userViewModel, Modifier.padding(innerPadding),
+                    datos, Modifier.padding(innerPadding),
                     foroChatVm
                 )
             }
@@ -236,7 +238,7 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
                 topBarImg = img!!
 
                 Chat(
-                    userViewModel,
+                    datos,
                     img,
                     nameDestination ?: "",
                     Modifier.padding(innerPadding),

@@ -44,12 +44,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.welan.model.BusinessUserWeLan
 import com.example.welan.model.Envio
 import com.example.welan.model.ServOProd
 import com.example.welan.model.ServicioOProductos
 import com.example.welan.model.Unidad
 import com.example.welan.model.User
+import com.example.welan.model.UserWelan
 import com.example.welan.model.getServicioProductos
+import com.example.welan.ui.viewmodels.UserViewModel
 
 
 @Composable
@@ -150,7 +153,7 @@ fun ItemServicioProducto(servicioproducto: ServicioOProductos, navController: Na
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BuscarServicioProducto(modifier: Modifier, navController: NavHostController, user: User) {
+fun BuscarServicioProducto(modifier: Modifier, navController: NavHostController, user: UserWelan) {
     val textFieldState = remember { TextFieldState() }
     var searchResults by remember { mutableStateOf(emptyList<ServicioOProductos>()) }
 
@@ -197,7 +200,7 @@ fun BuscarServicioProducto(modifier: Modifier, navController: NavHostController,
                 }
             }
         }
-        if (user.type != "User") {
+        if (user is BusinessUserWeLan) {
             FABS(modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp), navController)
         }
     }

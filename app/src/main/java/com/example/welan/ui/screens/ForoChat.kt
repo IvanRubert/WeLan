@@ -24,10 +24,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.welan.model.User
+import com.example.welan.model.UserWelan
 import com.example.welan.ui.viewmodels.ForoViewModel
 
 @Composable
-fun ForoChat(originUser: User, modifier: Modifier = Modifier,
+fun ForoChat(originUser: UserWelan, modifier: Modifier = Modifier,
          viewModel: ForoViewModel
 ){
     val listState = rememberLazyListState()
@@ -49,7 +50,7 @@ fun ForoChat(originUser: User, modifier: Modifier = Modifier,
     LazyColumn(state = listState,
         horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.fillMaxSize()) {
         items(viewModel.chat){ message ->
-            if (message.origin == originUser.name){
+            if (message.origin == originUser.nombre){
                 Row(horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth(0.8f).padding(vertical = 8.dp)) {
                     Column(horizontalAlignment = Alignment.End) {
                         Text(message.origin, textAlign = TextAlign.End, modifier = Modifier
