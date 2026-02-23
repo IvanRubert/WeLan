@@ -69,6 +69,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     implementation("org.passay:passay:1.6.3")
 
+    //DataStore
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+
     // Retrofit
     implementation(libs.retrofit2.kotlinx.serialization.converter)
     implementation(libs.retrofit)

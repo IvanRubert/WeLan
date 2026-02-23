@@ -1,7 +1,6 @@
 package com.example.welan
 
 import android.content.pm.ActivityInfo
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,25 +8,25 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.welan.ui.Contenedor_Principal
+import com.example.welan.data.UserExist
+import com.example.welan.data.UserType
+import com.example.welan.data.UsuarioJson
 import com.example.welan.ui.Contenedor_Screen
-import com.example.welan.ui.componentes.UserExist
-import com.example.welan.ui.componentes.UserType
-import com.example.welan.ui.componentes.UsuarioJson
 import com.example.welan.ui.screens.CrearCuentaScreen
 import com.example.welan.ui.screens.Login
 import com.example.welan.ui.screens.MySplashScreen
 import com.example.welan.ui.theme.WeLanTheme
-import com.example.welan.ui.viewmodels.BusinessUserUiState
-import com.example.welan.ui.viewmodels.CommonUserUiState
 import com.example.welan.ui.viewmodels.UserViewModel
 
 
@@ -41,6 +40,18 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val navController = rememberNavController()
                     val userViewModel: UserViewModel = viewModel(factory = UserViewModel.Factory)
+                    val context = LocalContext.current
+                    var existuser by remember { mutableStateOf(false) }
+                    var email by remember { mutableStateOf("") }
+                    var type by remember { mutableStateOf("") }
+
+                    LaunchedEffect(Unit) {
+                        existuser = UserExist(context)
+                        if (existuser) {
+                            email = UsuarioJson(context)
+                            type = UserType(context)
+                        }
+                    }
 
                     NavHost(navController = navController, startDestination = "SplashScreen") {
                         composable("SplashScreen") {
@@ -55,16 +66,14 @@ class MainActivity : ComponentActivity() {
                         composable(
                             route = "Contenedor_Principal",
                         ) {
-                            val context = LocalContext.current
-                            if (UserExist(context)) {
-                                val email = UsuarioJson(context)
-
-                                if (UserType(context) == "User") {
+                            if (existuser) {
+                                if (type == "User") {
                                     userViewModel.getCommonUser(email)
                                     Contenedor_Screen(
                                         navController,
                                         userViewModel,
                                         retryAction = { userViewModel.getCommonUser(email) },
+                                        type
                                     )
                                 } else {
                                     userViewModel.getBusinessUser(email)
@@ -72,10 +81,11 @@ class MainActivity : ComponentActivity() {
                                         navController,
                                         userViewModel,
                                         retryAction = { userViewModel.getBusinessUser(email) },
+                                        type
                                     )
                                 }
                             } else {
-                                Login(navController, Modifier.padding(innerPadding))
+                                Login(navController, Modifier.padding(innerPadding), userViewModel)
                             }
                         }
                     }

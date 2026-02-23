@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -32,6 +33,8 @@ import androidx.compose.material3.SegmentedButtonColors
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,7 +56,12 @@ import androidx.navigation.NavController
 import com.example.welan.R
 import com.example.welan.ui.componentes.compPassword
 import com.example.welan.ui.componentes.esCorreoValido
+import com.example.welan.ui.theme.primaryColor
 import com.example.welan.ui.viewmodels.UserViewModel
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
+import kotlinx.coroutines.launch
 
 @Composable
 fun Login(navController: NavController,modifier: Modifier, userViewModel: UserViewModel) {
@@ -63,6 +71,24 @@ fun Login(navController: NavController,modifier: Modifier, userViewModel: UserVi
     var visible by remember { mutableStateOf(false) }
     var option by remember { mutableStateOf(true) }
     var emailEmpresa by remember { mutableStateOf("") }
+    var errorEmail by remember { mutableStateOf(false) }
+    var errorPassword by remember { mutableStateOf(false) }
+    var errorEmailEmpresa by remember { mutableStateOf(false) }
+    var errorCertificado by remember { mutableStateOf(false) }
+    var showError by remember { mutableStateOf(false) }
+    var currentMessage by remember { mutableStateOf<String?>(null) }
+    val errorMessage by userViewModel.errorMessage.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    LaunchedEffect(errorMessage) {
+        errorMessage?.let { message ->
+            coroutineScope.launch {
+                currentMessage = message
+                showError = true
+            }
+        }
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -74,6 +100,7 @@ fun Login(navController: NavController,modifier: Modifier, userViewModel: UserVi
             modifier = Modifier.size(150.dp),
             contentScale = ContentScale.Crop
         )
+
         Spacer(modifier = Modifier.height(30.dp))
         MultiChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth(0.7f)) {
 
@@ -152,6 +179,24 @@ fun Login(navController: NavController,modifier: Modifier, userViewModel: UserVi
                     text = stringResource(R.string.IniciarSesión),
                     fontSize = 20.sp
                 )
+
+                if (showError) {
+                    Card(
+                        colors = CardDefaults.cardColors(
+                            containerColor = primaryColor
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                    ) {
+                        Text(
+                            text = currentMessage ?: "Error",
+                            color = Color.White,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
+                }
+
                 Column {
                     if (option) {
                         OutlinedTextField(
@@ -165,6 +210,13 @@ fun Login(navController: NavController,modifier: Modifier, userViewModel: UserVi
                             colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimary, unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary),
 
                             )
+                        Text(
+                            text = if (errorEmail) "Error: El correo no es correcto" else "",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.Red,
+                            modifier = Modifier.fillMaxWidth(0.65f),
+                            textAlign = TextAlign.Start
+                        )
                         Spacer(Modifier.height(30.dp))
                         OutlinedTextField(
                             value = password,
@@ -185,7 +237,14 @@ fun Login(navController: NavController,modifier: Modifier, userViewModel: UserVi
                             colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimary, unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary),
 
 
-                            )
+                        )
+                        Text(
+                            text = if (errorPassword) "Error: La contraseña no cumple los parametros necesarios" else "",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.Red,
+                            modifier = Modifier.fillMaxWidth(0.65f),
+                            textAlign = TextAlign.Start
+                        )
                     }else{
                         OutlinedTextField(
                             colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimary, unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary),
@@ -196,7 +255,14 @@ fun Login(navController: NavController,modifier: Modifier, userViewModel: UserVi
                             },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                             singleLine = true
-                            )
+                        )
+                        Text(
+                            text = if (errorEmailEmpresa) "Error: No es un correo electronico" else "",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.Red,
+                            modifier = Modifier.fillMaxWidth(0.65f),
+                            textAlign = TextAlign.Start
+                        )
                         Spacer(Modifier.height(16.dp))
                         Text(
                             "Subir certificado",
@@ -205,7 +271,13 @@ fun Login(navController: NavController,modifier: Modifier, userViewModel: UserVi
                                 color = Color.White
                             )
                         )
-
+                        Text(
+                            text = if (errorCertificado) "Error: No es un certificado valido" else "",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.Red,
+                            modifier = Modifier.fillMaxWidth(0.65f),
+                            textAlign = TextAlign.Start
+                        )
                         Spacer(Modifier.height(16.dp))
 
                         Button(onClick = {  },
@@ -244,11 +316,25 @@ fun Login(navController: NavController,modifier: Modifier, userViewModel: UserVi
                 if (!choose) {
                     if (esCorreoValido(email)) {
                         if (compPassword(password)) {
-                            userViewModel.getCommonUserValidate(email, password)
+                            userViewModel.getCommonUserValidate(email, password, context)
+                        } else {
+                            errorPassword = true
                         }
+                    } else {
+                        errorEmail = true
                     }
                 } else {
+                    if (esCorreoValido(emailEmpresa)) {
+                        //val organizacion: String = ""
 
+                        // Loguica para sacar el nombre de la organización
+
+                        //if (organizacion != "") {
+                        //    userViewModel.getBusinessUserValidate(email, organizacion, context)
+                        //}
+                    } else {
+                        errorEmailEmpresa = true
+                    }
                 }
                 navController.navigate("Contenedor_Principal"
                 ) {

@@ -7,7 +7,6 @@ import com.example.welan.model.CommonUserWeLan
 import com.example.welan.network.WeLanGetApiService
 import com.example.welan.ui.componentes.Encriptador
 import com.example.welan.ui.componentes.reemplazararroba
-import retrofit2.Response
 
 
 interface WeLanRepository {

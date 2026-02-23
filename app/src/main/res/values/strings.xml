@@ -21,4 +21,7 @@
     <string name="servicioproducto3_descripcion">Brindamos servicio de limpieza a domicilio con atención detallada y productos de calidad para dejar cada espacio impecable. Garantizamos puntualidad, confianza y resultados profesionales.</string>
     <string name="servicioproducto4_titulo">Bolsas de hielo frio</string>
     <string name="servicioproducto4_descripcion">Ofrecemos bolsas de hielo frío ideales para conservar alimentos, bebidas o aliviar molestias corporales. Son prácticas, duraderas y perfectas para uso doméstico o actividades al aire libre.</string>
+    <string name="error_connection">Error de conexión</string>
+    <string name="loading_failed">Error al cargar</string>
+    <string name="retry">Reintentar</string>
 </resources>

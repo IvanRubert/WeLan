@@ -50,6 +50,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -59,15 +60,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.example.welan.model.BusinessUserWeLan
+import com.example.welan.model.CommonUserWeLan
+import com.example.welan.model.Interes
 import com.example.welan.model.User
+import com.example.welan.ui.viewmodels.UserViewModel
 
-var interestList: List<String> = emptyList()
-var name: String = ""
-var descripcion: String = ""
 @Composable
-fun PerfilUser(user: User, navController: NavController, modifier: Modifier, navControllerPrincipal: NavHostController) {
-    if (interestList.isEmpty()) interestList = getInterests(user)
-    if (name.isBlank()) name = getName(user)
+fun PerfilUser(user: CommonUserWeLan, navController: NavController, modifier: Modifier, navControllerPrincipal: NavHostController) {
+    var intereses: List<Interes> = emptyList()
     Box {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -85,8 +86,8 @@ fun PerfilUser(user: User, navController: NavController, modifier: Modifier, nav
                     modifier = Modifier.weight(1f)
                 ) {
                     Image(
-                        painter = painterResource(user.imageRes),
-                        contentDescription = user.name,
+                        painter = user.pathImage,
+                        contentDescription = user.nombre,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .clip(CircleShape)
@@ -94,7 +95,7 @@ fun PerfilUser(user: User, navController: NavController, modifier: Modifier, nav
                             .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
                     )
                     Button(
-                        onClick = { navController.navigate("UserEdit") },
+                        onClick = { navController.navigate("UserWeLanEdit") },
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
                     ) { Text("Modificar perfil") }
                 }
@@ -103,13 +104,13 @@ fun PerfilUser(user: User, navController: NavController, modifier: Modifier, nav
                         text = "Nombre completo",
                         style = MaterialTheme.typography.titleLarge
                     )
-                    Text(text = name, modifier = Modifier.padding(bottom = 16.dp))
+                    Text(text = user.nombre, modifier = Modifier.padding(bottom = 16.dp))
 
                     Text(
                         text = "Email",
                         style = MaterialTheme.typography.titleLarge
                     )
-                    Text(text = user.email, modifier = Modifier.padding(bottom = 16.dp))
+                    Text(text = user.correo, modifier = Modifier.padding(bottom = 16.dp))
                 }
             }
             Text(
@@ -123,15 +124,18 @@ fun PerfilUser(user: User, navController: NavController, modifier: Modifier, nav
                     .height(8.dp)
                     .fillMaxWidth())
                 LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Fixed(2)) {
-                    items(interestList) { interes ->
+                    if (!user.intereses.isNullOrEmpty()) {
+                        intereses = user.intereses
+                    }
+                    items(intereses) { interes ->
                         Card(
                             colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.primary
+                                containerColor = Color(interes.color)
                             ),
                             modifier = Modifier.padding(8.dp)
                         ) {
                             Text(
-                                text = interes, textAlign = TextAlign.Center,
+                                text = interes.nombre, textAlign = TextAlign.Center,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(8.dp)
@@ -160,12 +164,8 @@ fun PerfilUser(user: User, navController: NavController, modifier: Modifier, nav
 }
 
 @Composable
-fun PerfilEmpresa(user: User, navController: NavController, modifier: Modifier, navControllerPrincipal: NavHostController) {
-    if (name.isBlank()) name = getName(user)
-    if (descripcion.isBlank()) descripcion = user.descripcion ?: ""
-    if (interestList.isEmpty()) {
-        interestList = getInterests(user)
-    }
+fun PerfilEmpresa(user: BusinessUserWeLan, navController: NavController, modifier: Modifier, navControllerPrincipal: NavHostController) {
+    var servicios: List<String> = emptyList()
     Box {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -183,8 +183,8 @@ fun PerfilEmpresa(user: User, navController: NavController, modifier: Modifier, 
                     modifier = Modifier.weight(1f)
                 ) {
                     Image(
-                        painter = painterResource(user.imageRes),
-                        contentDescription = user.name,
+                        painter = user.pathImage,
+                        contentDescription = user.nombre,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .clip(CircleShape)
@@ -192,7 +192,7 @@ fun PerfilEmpresa(user: User, navController: NavController, modifier: Modifier, 
                             .padding(top = 16.dp, end = 16.dp)
                     )
                     Button(
-                        onClick = { navController.navigate("BusinessEdit") },
+                        onClick = { navController.navigate("UserWeLanEdit") },
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
                     ) { Text("Modificar perfil") }
                 }
@@ -201,13 +201,13 @@ fun PerfilEmpresa(user: User, navController: NavController, modifier: Modifier, 
                         text = "Nombre completo",
                         style = MaterialTheme.typography.titleLarge
                     )
-                    Text(text = name, modifier = Modifier.padding(bottom = 16.dp))
+                    Text(text = user.nombre, modifier = Modifier.padding(bottom = 16.dp))
 
                     Text(
                         text = "Email",
                         style = MaterialTheme.typography.titleLarge
                     )
-                    Text(text = user.email, modifier = Modifier.padding(bottom = 16.dp))
+                    Text(text = user.correo, modifier = Modifier.padding(bottom = 16.dp))
 
                     Text(
                         text = "Descripción",
@@ -222,7 +222,8 @@ fun PerfilEmpresa(user: User, navController: NavController, modifier: Modifier, 
                             .padding(top = 8.dp)
                     ) {
                         Text(
-                            text = descripcion, modifier = Modifier
+                            text = user.descripcion ?: "",
+                            modifier = Modifier
                                 .padding(horizontal = 16.dp, vertical = 8.dp)
                                 .verticalScroll(rememberScrollState())
                         )
@@ -240,7 +241,10 @@ fun PerfilEmpresa(user: User, navController: NavController, modifier: Modifier, 
                     .height(8.dp)
                     .fillMaxWidth())
                 LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Fixed(2)) {
-                    items(interestList) { interes ->
+                    if (!user.servicios.isNullOrEmpty()) {
+                        servicios = user.servicios
+                    }
+                    items(servicios) { servicio ->
                         Card(
                             colors = CardDefaults.cardColors(
                                 containerColor = MaterialTheme.colorScheme.primary
@@ -248,7 +252,7 @@ fun PerfilEmpresa(user: User, navController: NavController, modifier: Modifier, 
                             modifier = Modifier.padding(8.dp)
                         ) {
                             Text(
-                                text = interes, textAlign = TextAlign.Center,
+                                text = servicio, textAlign = TextAlign.Center,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(8.dp)
@@ -277,11 +281,13 @@ fun PerfilEmpresa(user: User, navController: NavController, modifier: Modifier, 
 }
 
 @Composable
-fun UserEdit(user: User, navController: NavController, modifier: Modifier = Modifier) {
+fun UserEdit( userViewModel: UserViewModel, user: CommonUserWeLan, navController: NavController, modifier: Modifier = Modifier) {
     var passTF by rememberSaveable { mutableStateOf("") }
     var showPass by rememberSaveable { mutableStateOf(false) }
-    var nameTF by rememberSaveable { mutableStateOf(name) }
-    val interests = rememberSaveable { mutableStateListOf<String>().apply{addAll(interestList)} }
+    var nameTF by rememberSaveable { mutableStateOf(user.nombre) }
+    val interests = rememberSaveable { mutableStateListOf<Interes>().apply{addAll(
+        if (!user.intereses.isNullOrEmpty()) user.intereses else emptyList()
+    )} }
     var showDialogAdd by remember { mutableStateOf(false) }
     Box {
         Column(
@@ -300,8 +306,8 @@ fun UserEdit(user: User, navController: NavController, modifier: Modifier = Modi
                     modifier = Modifier.weight(1f)
                 ) {
                     Image(
-                        painter = painterResource(user.imageRes),
-                        contentDescription = user.name,
+                        painter = user.pathImage,
+                        contentDescription = user.nombre,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .clip(CircleShape)
@@ -332,7 +338,7 @@ fun UserEdit(user: User, navController: NavController, modifier: Modifier = Modi
                         text = "Email",
                         style = MaterialTheme.typography.titleLarge
                     )
-                    Text(text = user.email, modifier = Modifier.padding(bottom = 16.dp))
+                    Text(text = user.correo, modifier = Modifier.padding(bottom = 16.dp))
 
                     Text(
                         text = "Contraseña",
@@ -384,13 +390,13 @@ fun UserEdit(user: User, navController: NavController, modifier: Modifier = Modi
                     items(interests) { interes ->
                         Card(
                             colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.primary
+                                containerColor = Color(interes.color)
                             ),
                             modifier = Modifier.padding(8.dp)
                         ) {
                             Box(Modifier.fillMaxWidth()) {
                                 Text(
-                                    text = interes, textAlign = TextAlign.Center,
+                                    text = interes.nombre, textAlign = TextAlign.Center,
                                     modifier = Modifier
                                         .fillMaxSize()
                                         .padding(
@@ -415,8 +421,8 @@ fun UserEdit(user: User, navController: NavController, modifier: Modifier = Modi
         }
         Button(
             onClick = {
-                interestList = interests
-                name = nameTF
+
+                //Logica de cambiar datos
                 navController.navigate("Perfil") {
                     popUpTo("Perfil"){
                         inclusive = true
@@ -432,7 +438,7 @@ fun UserEdit(user: User, navController: NavController, modifier: Modifier = Modi
         }
 
         if (showDialogAdd){
-            AddInterestDialog(
+            AddInterestDialogInteres(
                 type = "interés",
                 list = interests,
                 onDismiss = { showDialogAdd = false }
@@ -442,10 +448,12 @@ fun UserEdit(user: User, navController: NavController, modifier: Modifier = Modi
 }
 
 @Composable
-fun BusinessEdit(user: User, navController: NavController, modifier: Modifier = Modifier) {
-    var nameTF by rememberSaveable { mutableStateOf(name) }
-    var descripcionTF by rememberSaveable { mutableStateOf(descripcion) }
-    val interests = rememberSaveable { mutableStateListOf<String>().apply{addAll(interestList)} }
+fun BusinessEdit(userViewModel: UserViewModel, user: BusinessUserWeLan, navController: NavController, modifier: Modifier = Modifier) {
+    var nameTF by rememberSaveable { mutableStateOf(user.nombre) }
+    var descripcionTF by rememberSaveable { mutableStateOf(if (!user.descripcion.isNullOrEmpty()) user.descripcion else "") }
+    val services = rememberSaveable { mutableStateListOf<String>().apply{addAll(
+        if (!user.servicios.isNullOrEmpty()) user.servicios else emptyList()
+    )} }
     var showDialogAdd by remember { mutableStateOf(false) }
     Box() {
         Column(
@@ -464,8 +472,8 @@ fun BusinessEdit(user: User, navController: NavController, modifier: Modifier = 
                     modifier = Modifier.weight(1f)
                 ) {
                     Image(
-                        painter = painterResource(user.imageRes),
-                        contentDescription = user.name,
+                        painter = user.pathImage,
+                        contentDescription = user.nombre,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .clip(CircleShape)
@@ -496,7 +504,7 @@ fun BusinessEdit(user: User, navController: NavController, modifier: Modifier = 
                         text = "Email",
                         style = MaterialTheme.typography.titleLarge
                     )
-                    Text(text = user.email, modifier = Modifier.padding(bottom = 16.dp))
+                    Text(text = user.correo, modifier = Modifier.padding(bottom = 16.dp))
 
                     Text(
                         text = "Descripción",
@@ -535,7 +543,7 @@ fun BusinessEdit(user: User, navController: NavController, modifier: Modifier = 
                     .height(8.dp)
                     .fillMaxWidth())
                 LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Fixed(2)) {
-                    items(interests) { interes ->
+                    items(services) { servicio ->
                         Card(
                             colors = CardDefaults.cardColors(
                                 containerColor = MaterialTheme.colorScheme.primary
@@ -544,7 +552,7 @@ fun BusinessEdit(user: User, navController: NavController, modifier: Modifier = 
                         ) {
                             Box(Modifier.fillMaxWidth()) {
                                 Text(
-                                    text = interes, textAlign = TextAlign.Center,
+                                    text = servicio, textAlign = TextAlign.Center,
                                     modifier = Modifier
                                         .fillMaxSize()
                                         .padding(
@@ -554,7 +562,7 @@ fun BusinessEdit(user: User, navController: NavController, modifier: Modifier = 
                                             end = 40.dp
                                         )
                                 )
-                                IconButton(onClick = { interests.remove(interes) },
+                                IconButton(onClick = { services.remove(servicio) },
                                     modifier = Modifier.align(Alignment.TopEnd)) {
                                     Icon(
                                         imageVector = Icons.Filled.Close,
@@ -569,9 +577,8 @@ fun BusinessEdit(user: User, navController: NavController, modifier: Modifier = 
         }
         Button(
             onClick = {
-                interestList = interests
-                name = nameTF
-                descripcion = descripcionTF
+
+                //Loguica de actualizar bussiness
                 navController.navigate("Perfil") {
                     popUpTo("Perfil"){
                         inclusive = true
@@ -586,17 +593,83 @@ fun BusinessEdit(user: User, navController: NavController, modifier: Modifier = 
             Text("Guardar cambios")
         }
         if (showDialogAdd){
-            AddInterestDialog(
+            AddInterestDialogString(
                 type = "servicio",
-                list = interests,
+                list = services,
                 onDismiss = { showDialogAdd = false }
             )
         }
     }
 }
 
+
 @Composable
-fun AddInterestDialog(type: String, list: SnapshotStateList<String>, onDismiss: () -> Unit){
+fun AddInterestDialogInteres(type: String, list: SnapshotStateList<Interes>, onDismiss: () -> Unit){
+    var interestTF by remember { mutableStateOf(Interes("", 0xFFFFFFFF)) }
+    var isError by remember { mutableStateOf(false) }
+    var eMessage = ""
+    AlertDialog(
+        title = {
+            Text(text = "Añadir $type")
+        },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = interestTF.nombre,
+                    onValueChange = { interestTF.nombre = it },
+                    isError = isError,
+                    singleLine = true,
+                    label = {Text(text = type)},
+                    colors = OutlinedTextFieldDefaults.colors(
+                        errorBorderColor = Color.Red,
+                        focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary
+                    )
+                )
+                if (isError){
+                    Text(text = "Error: No se puede añadir un $type $eMessage",
+                        color = Color.Red)
+                }
+            }
+        },
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    if (interestTF.nombre.isNotBlank()){
+                        val temp = interestTF.nombre.trim().lowercase().toCharArray()
+                        temp[0] = temp[0].uppercaseChar()
+                        interestTF.nombre = String(temp)
+                        if (!list.contains(interestTF)){
+                            isError = false
+                            list.add(interestTF)
+                            onDismiss.invoke()
+                        }else {
+                            isError = true
+                            eMessage = "repetido"
+                        }
+                    } else {
+                        isError = true
+                        eMessage = "vacio"
+                    }
+
+                }
+            ) {
+                Text("Añadir")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss
+            ) {
+                Text("Cancelar")
+            }
+        }
+    )
+}
+
+@Composable
+fun AddInterestDialogString(type: String, list: SnapshotStateList<String>, onDismiss: () -> Unit){
     var interestTF by remember { mutableStateOf("") }
     var isError by remember { mutableStateOf(false) }
     var eMessage = ""
@@ -658,12 +731,4 @@ fun AddInterestDialog(type: String, list: SnapshotStateList<String>, onDismiss: 
             }
         }
     )
-}
-
-
-fun getName(user: User): String{
-    return user.name
-}
-fun getInterests(user: User): List<String>{
-    return user.intereses
 }

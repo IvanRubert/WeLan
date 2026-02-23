@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Interes(
-    val nombre: String,
+    var nombre: String,
     val color: Long
 )

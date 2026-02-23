@@ -72,6 +72,7 @@ import com.example.welan.ui.screens.MenuPrincipal
 import com.example.welan.ui.screens.PerfilEmpresa
 import com.example.welan.ui.screens.PerfilUser
 import com.example.welan.R
+import com.example.welan.model.BusinessUserWeLan
 import com.example.welan.model.CommonUserWeLan
 import com.example.welan.ui.screens.SearchForum
 import com.example.welan.ui.screens.SevicioProducto
@@ -82,7 +83,6 @@ import com.example.welan.model.ServicioOProductos
 import com.example.welan.model.Unidad
 import com.example.welan.model.User
 import com.example.welan.model.UserWelan
-import com.example.welan.ui.componentes.UserType
 import com.example.welan.ui.screens.BuscarServicioProducto
 import com.example.welan.ui.screens.Chat
 import com.example.welan.ui.screens.CrearServicioProducto
@@ -106,9 +106,9 @@ fun Contenedor_Screen(
     navControllerPrincipal: NavHostController,
     UserViewModel: UserViewModel,
     retryAction: () -> Unit,
+    type: String
 ) {
-    val context = LocalContext.current
-    if (UserType(context) == "User") {
+    if (type == "User") {
         when (UserViewModel.commonUserUiState) {
             is CommonUserUiState.Success -> Contenedor_Principal(
                 navControllerPrincipal,
@@ -147,7 +147,7 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
         modifier = Modifier.fillMaxSize(),
         containerColor = Color.Transparent,
         topBar = { MyTopAppBar(currentRoute, navController, topBarImg, topBarTitle) },
-        bottomBar = { MyNaviagationBar(navController, currentRoute, userViewModel, chatVm, foroChatVm) }
+        bottomBar = { MyNaviagationBar(navController, currentRoute, datos.nombre, chatVm, foroChatVm) }
     ) { innerPadding ->
         var showDialogChanges by remember { mutableStateOf(false) }
 
@@ -156,33 +156,38 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
                 MenuPrincipal(Modifier.padding(innerPadding))
             }
             composable("Perfil") {
-                if (datos is CommonUserWeLan) {
-                    PerfilUser(
-                        userViewModel,
-                        navController,
-                        Modifier.padding(innerPadding),
-                        navControllerPrincipal
-                    )
-                } else {
-                    PerfilEmpresa(
-                        userViewModel,
-                        navController,
-                        Modifier.padding(innerPadding),
-                        navControllerPrincipal
-                    )
+                when (datos) {
+                    is CommonUserWeLan -> {
+                        PerfilUser(
+                            datos,
+                            navController,
+                            Modifier.padding(innerPadding),
+                            navControllerPrincipal
+                        )
+                    }
+                    is BusinessUserWeLan -> {
+                        PerfilEmpresa(
+                            datos,
+                            navController,
+                            Modifier.padding(innerPadding),
+                            navControllerPrincipal
+                        )
+
+                    }
                 }
             }
-            composable("UserEdit") {
+            composable("UserWeLanEdit") {
                 BackHandler {
                     showDialogChanges = true
                 }
-                UserEdit(userViewModel, navController, Modifier.padding(innerPadding))
-            }
-            composable("BusinessEdit") {
-                BackHandler {
-                    showDialogChanges = true
+                when (datos) {
+                    is CommonUserWeLan -> {
+                        UserEdit(userViewModel, datos, navController, Modifier.padding(innerPadding))
+                    }
+                    is BusinessUserWeLan -> {
+                        BusinessEdit(userViewModel, datos, navController, Modifier.padding(innerPadding))
+                    }
                 }
-                BusinessEdit(userViewModel, navController, Modifier.padding(innerPadding))
             }
             composable("BuscarServicioProducto") {
                 BuscarServicioProducto(
@@ -524,7 +529,7 @@ fun MyTopAppBar(
 fun MyNaviagationBar(
     navController: NavHostController,
     currentRoute: String?,
-    user: User,
+    usuarionombre: String,
     chatVm: ChatViewModel,
     foroChatVm: ForoViewModel
 
@@ -552,7 +557,7 @@ fun MyNaviagationBar(
                         keyboardActions = KeyboardActions(
                             onSend = {
                                 if (textField.isNotBlank()) {
-                                    foroChatVm.addMessage(textField, user.name)
+                                    foroChatVm.addMessage(textField, usuarionombre)
                                 }
                                 textField = ""
                             }
@@ -562,7 +567,7 @@ fun MyNaviagationBar(
                     IconButton(
                         onClick = {
                             if (textField.isNotBlank()) {
-                                foroChatVm.addMessage(textField, user.name)
+                                foroChatVm.addMessage(textField, usuarionombre)
                             }
                             textField = ""
                         },
@@ -598,7 +603,7 @@ fun MyNaviagationBar(
                         keyboardActions = KeyboardActions(
                             onSend = {
                                 if (textField.isNotBlank()) {
-                                    chatVm.addMessage(textField, user.name)
+                                    chatVm.addMessage(textField, usuarionombre)
                                 }
                                 textField = ""
                             }
@@ -608,7 +613,7 @@ fun MyNaviagationBar(
                     IconButton(
                         onClick = {
                             if (textField.isNotBlank()) {
-                                chatVm.addMessage(textField, user.name)
+                                chatVm.addMessage(textField, usuarionombre)
                             }
                             textField = ""
                         },

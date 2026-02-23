@@ -1,5 +1,6 @@
 package com.example.welan.ui.viewmodels
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,9 +10,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.welan.WeLanApplication
+import com.example.welan.data.GaurdarUsuario
 import com.example.welan.data.WeLanRepository
 import com.example.welan.model.BusinessUserWeLan
 import com.example.welan.model.CommonUserWeLan
+import com.example.welan.ui.screens.UserEdit
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 
@@ -28,6 +33,10 @@ sealed interface BusinessUserUiState {
 }
 
 open class UserViewModel(open val weLanRepository: WeLanRepository): ViewModel() {
+
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage
+
 
     var commonUserUiState: CommonUserUiState by mutableStateOf(CommonUserUiState.Loading)
         private set
@@ -54,7 +63,8 @@ open class UserViewModel(open val weLanRepository: WeLanRepository): ViewModel()
 
     fun getCommonUserValidate(
         email: String,
-        password: String
+        password: String,
+        context: Context
     ){
         viewModelScope.launch {
             commonUserUiState = CommonUserUiState.Loading
@@ -62,9 +72,11 @@ open class UserViewModel(open val weLanRepository: WeLanRepository): ViewModel()
             repuesta.fold(
                 onSuccess = { user ->
                     commonUserUiState = CommonUserUiState.Success(user)
+                    GaurdarUsuario(context, email, "User")
                 },
                 onFailure = { error ->
                     commonUserUiState = CommonUserUiState.Error(error)
+                    _errorMessage.value = "El usuario y la contraseña no conincide"
                 }
             )
         }
@@ -90,7 +102,8 @@ open class UserViewModel(open val weLanRepository: WeLanRepository): ViewModel()
     fun getBusinessUserValidate(
         email: String,
         // Esta variable es del certificado
-        organizacion: String
+        organizacion: String,
+        context: Context
     ){
         viewModelScope.launch {
             businessUserUiState = BusinessUserUiState.Loading
@@ -98,9 +111,11 @@ open class UserViewModel(open val weLanRepository: WeLanRepository): ViewModel()
             repuesta.fold(
                 onSuccess = { user ->
                     businessUserUiState = BusinessUserUiState.Success(user)
+                    GaurdarUsuario(context, email, "Business")
                 },
                 onFailure = { error ->
                     businessUserUiState = BusinessUserUiState.Error(error)
+                    _errorMessage.value = "El usuario no coincide con el certificado"
                 }
             )
         }

@@ -29,7 +29,9 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.example.welan.R
+import com.example.welan.ui.theme.primaryColor
 
 @Composable
 fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier) {
@@ -44,7 +46,7 @@ fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier) {
         )
         Text(
             text = stringResource(R.string.loading_failed),
-            modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
+            modifier = Modifier.padding(16.dp)
         )
         Button(onClick = retryAction) {
             Text(stringResource(R.string.retry))
@@ -76,7 +78,7 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
     Box(Modifier.fillMaxSize()) {
         Canvas(
             modifier
-                .size(dimensionResource(R.dimen.max_image) / 2)
+                .size(100.dp)
                 .padding(strokeWidth / 2)
                 .align(Alignment.Center)
         ) {
@@ -90,7 +92,7 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
             )
 
             drawArc(
-                Primary,
+                primaryColor,
                 startAngle = currentArcStartAngle - 90,
                 sweepAngle = 90f,
                 useCenter = false,

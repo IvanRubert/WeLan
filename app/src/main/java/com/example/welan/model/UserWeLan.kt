@@ -24,6 +24,7 @@ data class BusinessUserWeLan(
     override val pathImage: String,
     override val nombre: String,
     override val correo: String,
+    val certificado: String,
     val descripcion: String? = null,
     val servicios: List<String>?
 ) : UserWelan()
