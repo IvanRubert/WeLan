@@ -1,8 +1,5 @@
 package com.example.welan.ui.screens
 
-
-
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,21 +15,28 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.welan.R
+import com.example.welan.model.CreateBusinessUserDTO
+import com.example.welan.model.CreateCommonUserDTO
+import com.example.welan.ui.componentes.compPassword
+import com.example.welan.ui.componentes.esCorreoValido
 import com.example.welan.ui.theme.WeLanTheme
+import com.example.welan.ui.theme.primaryColor
+import com.example.welan.ui.viewmodels.UserViewModel
+import kotlinx.coroutines.launch
 
 @Composable
-fun CrearCuentaScreen(navController: NavController) {
+fun CrearCuentaScreen(navController: NavController, userViewModal: UserViewModel) {
 
     var choose by remember { mutableStateOf(false) }
     var nameEmpresa by remember {mutableStateOf("")}
@@ -41,9 +45,29 @@ fun CrearCuentaScreen(navController: NavController) {
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var emailEmpresa by remember { mutableStateOf("") }
+    var certificado by remember { mutableStateOf("") }
+    var errorEmail by remember { mutableStateOf(false) }
+    var errorPassword by remember { mutableStateOf(false) }
+    var errorNombre by remember { mutableStateOf(false) }
+    var errorNameEmpresa by remember { mutableStateOf(false) }
+    var errorEmailEmpresa by remember { mutableStateOf(false) }
+    var errorCertificado by remember { mutableStateOf(false) }
+    var showError by remember { mutableStateOf(false) }
+    var currentMessage by remember { mutableStateOf<String?>(null) }
+    val errorMessage by userViewModal.errorMessage.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    LaunchedEffect(errorMessage) {
+        errorMessage?.let { message ->
+            coroutineScope.launch {
+                currentMessage = message
+                showError = true
+            }
+        }
+    }
 
     WeLanTheme {
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -136,6 +160,23 @@ fun CrearCuentaScreen(navController: NavController) {
                     )
                     Spacer(Modifier.height(16.dp))
 
+                    if (showError) {
+                        Card(
+                            colors = CardDefaults.cardColors(
+                                containerColor = primaryColor
+                            ),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp)
+                        ) {
+                            Text(
+                                text = currentMessage ?: "Error",
+                                color = Color.White,
+                                modifier = Modifier.padding(16.dp)
+                            )
+                        }
+                    }
+
                     if (!choose) {
 
                         OutlinedTextField(
@@ -150,6 +191,14 @@ fun CrearCuentaScreen(navController: NavController) {
                             singleLine = true,
                         )
 
+                        Text(
+                            text = if (errorNombre) "Error: El nombre no debe de estar vacio" else "",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.Red,
+                            modifier = Modifier.fillMaxWidth(0.65f),
+                            textAlign = TextAlign.Start
+                        )
+
                         Spacer(Modifier.height(16.dp))
 
                         OutlinedTextField(
@@ -162,6 +211,13 @@ fun CrearCuentaScreen(navController: NavController) {
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                        )
+                        Text(
+                            text = if (errorEmail) "Error: No es un correo" else "",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.Red,
+                            modifier = Modifier.fillMaxWidth(0.65f),
+                            textAlign = TextAlign.Start
                         )
 
                         Spacer(Modifier.height(16.dp))
@@ -190,6 +246,14 @@ fun CrearCuentaScreen(navController: NavController) {
                             },
                             singleLine = true,
                         )
+
+                        Text(
+                            text = if (errorPassword) "Error: La contraseña no cumple los parametros necesarios" else "",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.Red,
+                            modifier = Modifier.fillMaxWidth(0.65f),
+                            textAlign = TextAlign.Start
+                        )
                     }
 
                     if (choose) {
@@ -204,6 +268,13 @@ fun CrearCuentaScreen(navController: NavController) {
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                             singleLine = true
                         )
+                        Text(
+                            text = if (errorNameEmpresa) "Error: El nombre no debe de estar vacio" else "",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.Red,
+                            modifier = Modifier.fillMaxWidth(0.65f),
+                            textAlign = TextAlign.Start
+                        )
                         Spacer(Modifier.height(16.dp))
                         OutlinedTextField(
                             colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimary, unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary),
@@ -215,6 +286,13 @@ fun CrearCuentaScreen(navController: NavController) {
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                        )
+                        Text(
+                            text = if (errorEmailEmpresa) "Error: No es un correo" else "",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.Red,
+                            modifier = Modifier.fillMaxWidth(0.65f),
+                            textAlign = TextAlign.Start
                         )
                         Spacer(Modifier.height(16.dp))
                         Text(
@@ -232,6 +310,13 @@ fun CrearCuentaScreen(navController: NavController) {
                             Spacer(Modifier.width(8.dp))
                             Text("Subir certificado")
                         }
+                        Text(
+                            text = if (errorCertificado) "Error: El certificado no es valido" else "",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.Red,
+                            modifier = Modifier.fillMaxWidth(0.65f),
+                            textAlign = TextAlign.Start
+                        )
                     }
 
                     Spacer(Modifier.height(20.dp))
@@ -265,7 +350,41 @@ fun CrearCuentaScreen(navController: NavController) {
             Button(
                 onClick = {
                     if (!choose) {
+                        if (nombre == "") {
+                            errorNombre = true
+                        }
+                        if (!esCorreoValido(emailUsuario)) {
+                            errorEmail = true
+                        }
+                        if (!compPassword(password)) {
+                            errorPassword = true
+                        }
+                        if (!errorNombre && !errorEmail && !errorPassword) {
+                            val usercommon = CreateCommonUserDTO(
+                                nombre = nombre,
+                                correo = emailUsuario,
+                                passHash = password
+                            )
+                            userViewModal.postCommonUser(usercommon)
+                        }
                     } else {
+                        if (nameEmpresa == "") {
+                            errorNameEmpresa = true
+                        }
+                        if (!esCorreoValido(emailEmpresa)) {
+                            errorEmailEmpresa = true
+                        }
+//                        if (certificado == "") {
+//                            errorCertificado = true
+//                        }
+                        if (!errorNameEmpresa && !errorEmailEmpresa && !errorCertificado) {
+                            val userbusiness = CreateBusinessUserDTO(
+                                nombre = nombre,
+                                correo = emailUsuario,
+                                certificado = "certificado def"
+                            )
+                            userViewModal.postBusinessUser(userbusiness)
+                        }
                     }
                     navController.navigate("Contenedor_Principal") {
                         popUpTo(0) { inclusive = true }
@@ -280,10 +399,4 @@ fun CrearCuentaScreen(navController: NavController) {
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewCrearCuenta() {
-    CrearCuentaScreen(rememberNavController())
 }

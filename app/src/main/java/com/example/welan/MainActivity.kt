@@ -62,7 +62,7 @@ class MainActivity : ComponentActivity() {
                             Login(navController, Modifier.padding(innerPadding), userViewModel)
                         }
                         composable("Register") {
-                            CrearCuentaScreen(navController)
+                            CrearCuentaScreen(navController, userViewModel)
                         }
                         composable(
                             route = "Contenedor_Principal",

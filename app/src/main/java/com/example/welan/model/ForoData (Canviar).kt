@@ -16,7 +16,7 @@ data class Categori(val content: String, val color: Color)
 fun getListProvisianlList(): List<Foro> {
     return listOf<Foro>(
         Foro(
-            R.drawable.foroayuntamientocastellon,
+            R.drawable.welan_logo,
             3,
             "Recomendación de Restaurantes",
             listOf(
@@ -26,7 +26,7 @@ fun getListProvisianlList(): List<Foro> {
             50
         ),
         Foro(
-            R.drawable.forotortillapatata,
+            R.drawable.welan_logo,
             4,
             "Sítios para tomar el Bermu",
             listOf(
@@ -36,7 +36,7 @@ fun getListProvisianlList(): List<Foro> {
             150
         ),
         Foro(
-            R.drawable.forologocastellon,
+            R.drawable.welan_logo,
             5,
             "Que debría hacer el FC Castellón",
             listOf(
@@ -46,7 +46,7 @@ fun getListProvisianlList(): List<Foro> {
             400
         ),
         Foro(
-            R.drawable.fororafalafena,
+            R.drawable.welan_logo,
             5,
             "Reformas en el Rafalafena",
             listOf(
