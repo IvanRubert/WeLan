@@ -1,5 +1,7 @@
 package com.example.welan.ui.screens
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -36,9 +39,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -46,6 +51,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.welan.R
+import com.example.welan.ui.componentes.base64ToImageBitmap
+import com.example.welan.ui.componentes.imageUriToBase64
 import com.example.welan.ui.theme.primaryColor
 
 @Composable
@@ -63,6 +70,17 @@ fun CrearServicioProducto(modifier: Modifier, navController: NavHostController) 
     var errorprecio by remember { mutableStateOf(false) }
     var errorunidadmedida by remember { mutableStateOf(false) }
     var errorenvio by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    var image by remember { mutableStateOf(String()) }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        if (uri != null) {
+            val base64 = imageUriToBase64(context, uri)
+            image = base64
+        }
+    }
 
     Box(modifier = modifier.fillMaxSize()) {
         Column (modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
@@ -152,6 +170,7 @@ fun CrearServicioProducto(modifier: Modifier, navController: NavHostController) 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Button(
                     onClick = {
+                        launcher.launch("image/*")
                     },
                     modifier = Modifier.weight(0.4f)
                         .height(40.dp)
@@ -160,12 +179,27 @@ fun CrearServicioProducto(modifier: Modifier, navController: NavHostController) 
                 ) {
                     Text("Subir Imagen")
                 }
-                Image(
-                    painter = painterResource(id = R.drawable.welan_logo),
-                    contentDescription = "imagen Servicio o Productos",
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier.height(100.dp).weight(0.2f).padding(end = 20.dp)
-                )
+                if (base64ToImageBitmap(image) != null) {
+                    Image(
+                        bitmap = base64ToImageBitmap(image)!!,
+                        contentDescription = "Imagen SerOProd",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(100.dp)
+                            .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
+                    )
+                } else {
+                    Image(
+                        painter = painterResource(R.drawable.ic_servicios),
+                        contentDescription = "Imagen SerOProd",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(100.dp)
+                            .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
+                    )
+                }
             }
             Text(
                 text = "Descripcíon:",
