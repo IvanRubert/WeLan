@@ -74,18 +74,16 @@ import com.example.welan.ui.screens.PerfilUser
 import com.example.welan.R
 import com.example.welan.model.BusinessUserWeLan
 import com.example.welan.model.CommonUserWeLan
-import com.example.welan.model.SerOProd
 import com.example.welan.ui.screens.SearchForum
-import com.example.welan.ui.screens.SevicioProducto
 import com.example.welan.ui.screens.UserEdit
 import com.example.welan.model.UserWelan
-import com.example.welan.ui.screens.BuscarServicioProducto
 import com.example.welan.ui.screens.Chat
 import com.example.welan.ui.screens.CrearServicioProducto
 import com.example.welan.ui.screens.CreateForo
 import com.example.welan.ui.screens.ErrorScreen
 import com.example.welan.ui.screens.ForoChat
 import com.example.welan.ui.screens.LoadingScreen
+import com.example.welan.ui.screens.SevicioProducto
 import com.example.welan.ui.screens.SevicioProducto_Screen
 import com.example.welan.ui.viewmodels.ChatViewModel
 import com.example.welan.ui.viewmodels.ForoViewModel
@@ -136,7 +134,7 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
     var topBarTitle by remember { mutableStateOf("") }
     var topBarImg by remember { mutableIntStateOf(R.drawable.welan_logo) }
-
+    val serOProdViewModel: SerOProdViewModel = viewModel(factory = SerOProdViewModel.Factory)
     val messagesVm: MessagesViewModel = viewModel()
     val chatVm: ChatViewModel = viewModel()
     val foroChatVm: ForoViewModel = viewModel()
@@ -188,11 +186,11 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
                 }
             }
             composable("BuscarServicioProducto") {
-                BuscarServicioProducto(
-                    Modifier.padding(
-                        innerPadding
-                    ),
+                SevicioProducto_Screen(
                     navController,
+                    serOProdViewModel,
+                    retryAction = { serOProdViewModel.getSerOProd() },
+                    Modifier.padding(innerPadding),
                     datos
                 )
             }
@@ -247,11 +245,10 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
                 route = "ServicioProducto"
             ) {
                 val serOProdViewModel: SerOProdViewModel = viewModel(factory = SerOProdViewModel.Factory)
-                SevicioProducto_Screen(
-                    navController,
+                SevicioProducto(
                     serOProdViewModel,
-                    retryAction = { serOProdViewModel.getSerOProd() },
-                    Modifier.padding(innerPadding)
+                    Modifier.padding(innerPadding),
+                    navController,
                 )
             }
             composable("CrearServicioProducto") {

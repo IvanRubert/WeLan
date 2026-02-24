@@ -10,9 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -26,63 +28,91 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.preferences.protobuf.LazyStringArrayList.emptyList
 import androidx.navigation.NavHostController
+import com.example.welan.R
 import com.example.welan.model.BusinessUserWeLan
 import com.example.welan.model.Envio
-import com.example.welan.model.ServOProd
-import com.example.welan.model.ServicioOProductos
+import com.example.welan.model.Producto
+import com.example.welan.model.SerOProd
+import com.example.welan.model.Servicio
 import com.example.welan.model.Unidad
-import com.example.welan.model.User
 import com.example.welan.model.UserWelan
-import com.example.welan.model.getServicioProductos
-import com.example.welan.ui.viewmodels.UserViewModel
+import com.example.welan.ui.componentes.base64ToImageBitmap
+import com.example.welan.ui.viewmodels.SerOProdUiState
+import com.example.welan.ui.viewmodels.SerOProdViewModel
 
 
 @Composable
-fun ItemServicioProducto(servicioproducto: ServicioOProductos, navController: NavHostController) {
+fun SevicioProducto_Screen(
+    navControllerPrincipal: NavHostController,
+    serOProdViewModel: SerOProdViewModel,
+    retryAction: () -> Unit,
+    modifier: Modifier,
+    user: UserWelan
+) {
+    when (serOProdViewModel.serOProdUiState) {
+        is SerOProdUiState.Success -> BuscarServicioProducto(
+            (serOProdViewModel.serOProdUiState as SerOProdUiState.Success).data,
+            serOProdViewModel,
+            modifier,
+            navControllerPrincipal,
+            user
+        )
+        is SerOProdUiState.Error -> ErrorScreen(retryAction)
+        is SerOProdUiState.Loading -> LoadingScreen()
+    }
+}
+
+@Composable
+fun ItemServicioProducto(servicioproducto: SerOProd, servoprodViewModal: SerOProdViewModel, navController: NavHostController) {
 
     Card ( modifier = Modifier.padding(5.dp)
         .height(210.dp)
         .clickable {
-            navController.navigate("ServicioProducto" +
-                    "/${servicioproducto.Servoprod}" +
-                    "/${servicioproducto.Titulo}" +
-                    "/${servicioproducto.Photo}" +
-                    "/${servicioproducto.Descripcion}" +
-                    "/${servicioproducto.Envio}" +
-                    "/${servicioproducto.Precio.toFloat()}" +
-                    "/${servicioproducto.Unidad.unidad}"
-            )
+            servoprodViewModal.setSerOProdSelected(servicioproducto)
+            navController.navigate("ServicioProducto")
         }
     ) {
         Box (modifier = Modifier.fillMaxWidth().fillMaxSize()) {
             Column {
-                Image(
-                    painter = painterResource(id = servicioproducto.Photo),
-                    contentDescription = "Contactos",
-                    contentScale = ContentScale.FillWidth,
-                    modifier = Modifier
-                        .fillMaxWidth().height(110.dp)
-                )
+                if (base64ToImageBitmap(servicioproducto.pathImage) != null) {
+                    Image(
+                        bitmap = base64ToImageBitmap(servicioproducto.pathImage)!!,
+                        contentDescription = servicioproducto.nombre,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(100.dp)
+                            .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
+                    )
+                } else {
+                    Image(
+                        painter = painterResource(R.drawable.imaguserdef),
+                        contentDescription = servicioproducto.nombre,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(100.dp)
+                            .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
+                    )
+                }
                 Text(
-                    text = stringResource(id = servicioproducto.Titulo),
+                    text = servicioproducto.nombre,
                     fontSize = 13.sp,
                     maxLines = 2,
                     lineHeight = 15.sp,
@@ -96,8 +126,8 @@ fun ItemServicioProducto(servicioproducto: ServicioOProductos, navController: Na
                 modifier = Modifier.align(Alignment.BottomEnd)
                     .padding(bottom = 20.dp)
             ) {
-                if (servicioproducto.Servoprod == ServOProd.PRODUCTO) {
-                    if (servicioproducto.Envio == Envio.POSSIBILIDADENVIO) {
+                if (servicioproducto is Producto) {
+                    if (servicioproducto.envio == Envio.POSSIBILIDADENVIO) {
                         Text(
                             text = "Posibilidad de envio",
                             fontSize = 10.sp,
@@ -109,7 +139,7 @@ fun ItemServicioProducto(servicioproducto: ServicioOProductos, navController: Na
                             color = White,
                             textAlign = TextAlign.Center
                         )
-                    } else if (servicioproducto.Envio == Envio.OBLIGACIONENVIO) {
+                    } else if (servicioproducto.envio == Envio.OBLIGACIONENVIO) {
                         Text(
                             text = "Envio obligatorio",
                             fontSize = 10.sp,
@@ -128,14 +158,14 @@ fun ItemServicioProducto(servicioproducto: ServicioOProductos, navController: Na
                     Spacer(modifier = Modifier.weight(0.5f))
                 }
                 Text(
-                    text = if (servicioproducto.Servoprod == ServOProd.SERVICIO) {
-                        if (servicioproducto.Unidad == Unidad.UNIDADES) {
-                            "${servicioproducto.Precio}€/Ser"
+                    text = if (servicioproducto is Servicio) {
+                        if (servicioproducto.tipo_precio == Unidad.UNIDADES) {
+                            "${servicioproducto.precio}€/Ser"
                         } else {
-                            "${servicioproducto.Precio}€/${servicioproducto.Unidad.unidad}"
+                            "${servicioproducto.precio}€/${servicioproducto.tipo_precio.unidad}"
                         }
                     } else {
-                        "${servicioproducto.Precio}€/${servicioproducto.Unidad.unidad}"
+                        "${servicioproducto.precio}€/${servicioproducto.tipo_precio.unidad}"
                     },
                     fontSize = 16.sp,
                     maxLines = 1,
@@ -153,17 +183,8 @@ fun ItemServicioProducto(servicioproducto: ServicioOProductos, navController: Na
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BuscarServicioProducto(modifier: Modifier, navController: NavHostController, user: UserWelan) {
+fun BuscarServicioProducto(servoprod: List<SerOProd>, servoprodViewModal: SerOProdViewModel, modifier: Modifier, navController: NavHostController, user: UserWelan) {
     val textFieldState = remember { TextFieldState() }
-    var searchResults by remember { mutableStateOf(emptyList<ServicioOProductos>()) }
-
-    var filtroComentarios: List<ServicioOProductos> = if (searchResults.isEmpty() && textFieldState.text.isEmpty()) {
-        getServicioProductos()
-    } else {
-       filtro(textFieldState)
-    }
-
-
 
     Box (modifier = modifier.fillMaxWidth().fillMaxSize()) {
         Column {
@@ -173,13 +194,12 @@ fun BuscarServicioProducto(modifier: Modifier, navController: NavHostController,
                 SimpleSearchBar(
                     textFieldState = textFieldState,
                     onSearch = { query ->
-                        searchResults = if (query.isNotBlank()) {
-                            filtroComentarios
-                        } else emptyList()
+                        if (!query.isNullOrEmpty()) query else emptyList()
                     },
                     modifier = Modifier
                         .padding(start = 10.dp, bottom = 10.dp)
-                        .weight(0.85f)
+                        .weight(0.85f),
+                    servoprodViewModal
                 )
                 Icon(
                     imageVector = Icons.Outlined.FilterAlt,
@@ -195,8 +215,8 @@ fun BuscarServicioProducto(modifier: Modifier, navController: NavHostController,
                 columns = GridCells.Fixed(2),
                 modifier = Modifier.padding(5.dp)
             ) {
-                items(filtroComentarios) { elemento ->
-                    ItemServicioProducto(elemento, navController)
+                items(servoprod) { elemento ->
+                    ItemServicioProducto(elemento, servoprodViewModal, navController)
                 }
             }
         }
@@ -226,7 +246,8 @@ fun FABS(modifier: Modifier, navController: NavHostController) {
 fun SimpleSearchBar(
     textFieldState: TextFieldState,
     onSearch: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    seroprodViewModel: SerOProdViewModel
 ) {
     Box(
         modifier.semantics { isTraversalGroup = true }
@@ -240,21 +261,15 @@ fun SimpleSearchBar(
                     query = textFieldState.text.toString(),
                     onQueryChange = { textFieldState.edit { replace(0, length, it) } },
                     onSearch = {
-                        onSearch(textFieldState.text.toString())
+                        seroprodViewModel.getSerOProdFiltro(textFieldState.text.toString())
                     },
                     expanded = false,
                     onExpandedChange = { false },
-                    placeholder = { Text("Search") }
+                    placeholder = { Text("Buscar por Nombre") }
                 )
             },
             expanded = false,
             onExpandedChange = { },
-        ) {
-        }
+        ) {}
     }
-}
-
-@Composable
-fun filtro(textFieldState: TextFieldState): List<ServicioOProductos>{
-    return getServicioProductos().filter { stringResource(it.Titulo).contains(textFieldState.text.toString(), ignoreCase = true) }
 }

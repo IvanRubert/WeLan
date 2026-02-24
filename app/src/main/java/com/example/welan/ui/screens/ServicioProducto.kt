@@ -42,38 +42,23 @@ import com.example.welan.ui.theme.primaryColor
 import com.example.welan.ui.theme.secondaryColor
 import com.example.welan.ui.viewmodels.SerOProdUiState
 import com.example.welan.ui.viewmodels.SerOProdViewModel
+import androidx.compose.runtime.collectAsState
+import com.example.welan.model.Producto
+
 
 @Composable
-fun SevicioProducto_Screen(
-    navControllerPrincipal: NavHostController,
-    serOProdViewModel: SerOProdViewModel,
-    retryAction: () -> Unit,
-    modifier: Modifier
-) {
-    when (serOProdViewModel.serOProdUiState) {
-        is SerOProdUiState.Success -> SevicioProducto(
-            (serOProdViewModel.serOProdUiState as SerOProdUiState.Success).data,
-            serOProdViewModel,
-            modifier,
-            navControllerPrincipal,
-        )
-        is SerOProdUiState.Error -> ErrorScreen(retryAction)
-        is SerOProdUiState.Loading -> LoadingScreen()
-    }
-}
-
-@Composable
-fun SevicioProducto(servoprod: SerOProd, serOProdViewModel: SerOProdViewModel, modifier: Modifier, navController: NavHostController) {
+fun SevicioProducto(serOProdViewModel: SerOProdViewModel, modifier: Modifier, navController: NavHostController) {
     var direccion by remember { mutableStateOf("") }
     var envio by remember { mutableStateOf(false) }
     var errorDireccion by remember { mutableStateOf(false) }
+    val selectedFserOProd by serOProdViewModel.serOProdSelected.collectAsState()
 
     Box(modifier = modifier.fillMaxWidth().fillMaxSize()) {
         Column {
-            if (base64ToImageBitmap(servoprod.pathImage) != null) {
+            if (base64ToImageBitmap(selectedFserOProd.pathImage) != null) {
                 Image(
-                    bitmap = base64ToImageBitmap(servoprod.pathImage)!!,
-                    contentDescription = servoprod.nombre,
+                    bitmap = base64ToImageBitmap(selectedFserOProd.pathImage)!!,
+                    contentDescription = selectedFserOProd.nombre,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .clip(CircleShape)
@@ -83,7 +68,7 @@ fun SevicioProducto(servoprod: SerOProd, serOProdViewModel: SerOProdViewModel, m
             } else {
                 Image(
                     painter = painterResource(R.drawable.imaguserdef),
-                    contentDescription = servoprod.nombre,
+                    contentDescription = selectedFserOProd.nombre,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .clip(CircleShape)
@@ -92,7 +77,7 @@ fun SevicioProducto(servoprod: SerOProd, serOProdViewModel: SerOProdViewModel, m
                 )
             }
             Text(
-                text = servoprod.nombre,
+                text = selectedFserOProd.nombre,
                 fontSize = 24.sp,
                 maxLines = 2,
                 lineHeight = 26.sp,
@@ -101,7 +86,7 @@ fun SevicioProducto(servoprod: SerOProd, serOProdViewModel: SerOProdViewModel, m
                 textAlign = TextAlign.Center
             )
             Text(
-                text = servoprod.descripcion,
+                text = selectedFserOProd.descripcion,
                 fontSize = 12.sp,
                 maxLines = 5,
                 lineHeight = 32.sp,
@@ -112,9 +97,9 @@ fun SevicioProducto(servoprod: SerOProd, serOProdViewModel: SerOProdViewModel, m
         }
         Column (modifier = Modifier.align(Alignment.BottomEnd)){
             Row (modifier = Modifier.fillMaxWidth()) {
-                if (servoprod.Servoprod == ServOProd.PRODUCTO && servoprod.Envio != Envio.NOENVIO) {
+                if (selectedFserOProd is Producto && selectedFserOProd.envio != Envio.NOENVIO) {
                     Column (modifier = Modifier.padding(start = 20.dp).weight(0.55f)) {
-                        if (servoprod.Envio == Envio.POSSIBILIDADENVIO) {
+                        if (selectedFserOProd.envio == Envio.POSSIBILIDADENVIO) {
                             Row ( verticalAlignment = Alignment.CenterVertically){
                                 Text(text = "¿Enviar a casa?")
                                 Switch(
@@ -160,7 +145,7 @@ fun SevicioProducto(servoprod: SerOProd, serOProdViewModel: SerOProdViewModel, m
                 }
                 Box(modifier = Modifier.padding(5.dp).weight(0.25f)) {
                     Text(
-                        text = "${servoprod.Precio.toFloat()}€/${servoprod.Unidad.unidad}",
+                        text = "${selectedFserOProd.precio.toFloat()}€/${selectedFserOProd.tipo_precio.unidad}",
                         fontSize = 18.sp,
                         maxLines = 3,
                         lineHeight = 32.sp,
@@ -172,7 +157,7 @@ fun SevicioProducto(servoprod: SerOProd, serOProdViewModel: SerOProdViewModel, m
 
             Button(
                 onClick = {
-                    if ((direccion == "" && envio) || (direccion == "" && servoprod.Envio == Envio.OBLIGACIONENVIO)) {
+                    if ((direccion == "" && envio) || (direccion == "" && selectedFserOProd.envio == Envio.OBLIGACIONENVIO)) {
                         errorDireccion = true
                     } else {
                         navController.popBackStack()

@@ -13,6 +13,7 @@ import com.example.welan.network.SerOProdWeLanGetApiService
 import com.example.welan.network.UserWeLanGetApiService
 import com.example.welan.ui.componentes.Encriptador
 import com.example.welan.ui.componentes.reemplazararroba
+import org.w3c.dom.Text
 
 
 interface WeLanRepository {
@@ -21,6 +22,8 @@ interface WeLanRepository {
     suspend fun getBusinessUserValidate(email: String, password: String): Result<BusinessUserWeLan>
     suspend fun getBusinessUser(email: String): Result<BusinessUserWeLan>
     suspend fun getSerOProd(): Result<List<SerOProd>>
+    suspend fun getSerOProdFiltro(nombre: String): Result<List<SerOProd>>
+
 }
 
 class NetworkWeLanRepository(
@@ -97,29 +100,24 @@ class NetworkWeLanRepository(
     override suspend fun getSerOProd(): Result<List<SerOProd>> {
         return try {
             val respuesta = serOProdWeLanGetApiService.getSerOProd()
-
             if (!respuesta.isSuccessful) {
                 return Result.failure(Exception("Error: ${respuesta.code()}"))
             }
             val body = respuesta.body() ?: return Result.failure(Exception("Respuesta vacía"))
             val lista = mutableListOf<SerOProd>()
-
             body.forEach { seroprod ->
-
                 val tipoPrecio = when (seroprod.tipo_precio) {
                     "UNIDAD" -> Unidad.UNIDADES
                     "HORAS" -> Unidad.HORAS
                     "KILOGRAMOS" -> Unidad.KILOGRAMOS
                     else -> Unidad.UNIDADES
                 }
-
                 val envio = when (seroprod.envio) {
                     "NOENVIO" -> Envio.NOENVIO
                     "POSSIBILIDADENVIO" -> Envio.POSSIBILIDADENVIO
                     "OBLIGACIONENVIO" -> Envio.OBLIGACIONENVIO
                     else -> Envio.NOENVIO
                 }
-
                 if (seroprod.tipo == "Producto") {
                     lista.add(
                         Producto(
@@ -146,9 +144,60 @@ class NetworkWeLanRepository(
                     )
                 }
             }
-
             Result.success(lista)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 
+    override suspend fun getSerOProdFiltro(nombre: String): Result<List<SerOProd>> {
+        return try {
+            val respuesta = serOProdWeLanGetApiService.getSerOProdFiltro(nombre)
+            if (!respuesta.isSuccessful) {
+                return Result.failure(Exception("Error: ${respuesta.code()}"))
+            }
+            val body = respuesta.body() ?: return Result.failure(Exception("Respuesta vacía"))
+            val lista = mutableListOf<SerOProd>()
+            body.forEach { seroprod ->
+                val tipoPrecio = when (seroprod.tipo_precio) {
+                    "UNIDAD" -> Unidad.UNIDADES
+                    "HORAS" -> Unidad.HORAS
+                    "KILOGRAMOS" -> Unidad.KILOGRAMOS
+                    else -> Unidad.UNIDADES
+                }
+                val envio = when (seroprod.envio) {
+                    "NOENVIO" -> Envio.NOENVIO
+                    "POSSIBILIDADENVIO" -> Envio.POSSIBILIDADENVIO
+                    "OBLIGACIONENVIO" -> Envio.OBLIGACIONENVIO
+                    else -> Envio.NOENVIO
+                }
+                if (seroprod.tipo == "Producto") {
+                    lista.add(
+                        Producto(
+                            correo = seroprod.correo,
+                            pathImage = seroprod.pathImage,
+                            nombre = seroprod.nombre,
+                            descripcion = seroprod.descripcion,
+                            precio = seroprod.precio,
+                            tipo_precio = tipoPrecio,
+                            envio = envio
+                        )
+                    )
+                } else {
+                    lista.add(
+                        Servicio(
+                            seroprod.pathImage,
+                            seroprod.nombre,
+                            seroprod.correo,
+                            seroprod.descripcion,
+                            seroprod.precio,
+                            tipo_precio = tipoPrecio,
+                            envio = envio
+                        )
+                    )
+                }
+            }
+            Result.success(lista)
         } catch (e: Exception) {
             Result.failure(e)
         }
