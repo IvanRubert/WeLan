@@ -83,6 +83,7 @@ import com.example.welan.ui.screens.CreateForo
 import com.example.welan.ui.screens.ErrorScreen
 import com.example.welan.ui.screens.ForoChat
 import com.example.welan.ui.screens.LoadingScreen
+import com.example.welan.ui.screens.MenuPrincipalScreen
 import com.example.welan.ui.screens.SevicioProducto
 import com.example.welan.ui.screens.SevicioProducto_Screen
 import com.example.welan.ui.viewmodels.ChatViewModel
@@ -93,6 +94,7 @@ import com.example.welan.ui.theme.apptopBarGradient
 import com.example.welan.ui.theme.secondaryColor
 import com.example.welan.ui.viewmodels.BusinessUserUiState
 import com.example.welan.ui.viewmodels.CommonUserUiState
+import com.example.welan.ui.viewmodels.NoticiasUiState
 import com.example.welan.ui.viewmodels.NoticiasViewModel
 import com.example.welan.ui.viewmodels.SerOProdViewModel
 import com.example.welan.ui.viewmodels.UserViewModel
@@ -151,7 +153,7 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
 
         NavHost(navController = navController, startDestination = "MenuPrincipal") {
             composable("MenuPrincipal") {
-                MenuPrincipal(Modifier.padding(innerPadding),noticiaViewModel)
+                MenuPrincipalScreen(noticiaViewModel,retryAction = { serOProdViewModel.getSerOProd() },Modifier.padding(innerPadding))
             }
             composable("Perfil") {
                 when (datos) {

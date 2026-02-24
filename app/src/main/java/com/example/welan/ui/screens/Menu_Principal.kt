@@ -6,8 +6,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -19,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
@@ -27,10 +30,24 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.welan.model.NoticiDTO
-import com.example.welan.model.Noticia
-import com.example.welan.model.getNoticias
+import com.example.welan.ui.componentes.base64ToImageBitmap
+import com.example.welan.ui.viewmodels.NoticiasUiState
 import com.example.welan.ui.viewmodels.NoticiasViewModel
 
+@Composable
+fun MenuPrincipalScreen(
+    noticiasViewModel: NoticiasViewModel,
+    retryAction: () -> Unit,
+    modifier: Modifier
+){
+    when(noticiasViewModel.noticiaUiState){
+        is NoticiasUiState.Success -> {MenuPrincipal(modifier, (noticiasViewModel.noticiaUiState as NoticiasUiState.Success).data) }
+        is NoticiasUiState.Error -> {
+            ErrorScreen(retryAction)
+        }
+        is NoticiasUiState.Loading -> {LoadingScreen()}
+    }
+}
 @Composable
 fun ItemNoticia(noticia: NoticiDTO) {
     var visibility by remember { mutableStateOf(true) }
@@ -43,7 +60,7 @@ fun ItemNoticia(noticia: NoticiDTO) {
             modifier = Modifier.fillMaxWidth()
         ){
             Image(
-                painter = painterResource(id = noticia.Photo),
+                bitmap = base64ToImageBitmap(noticia.photo)!!,
                 contentDescription = "Contactos",
                 contentScale = ContentScale.FillWidth,
                 modifier = Modifier
@@ -54,7 +71,7 @@ fun ItemNoticia(noticia: NoticiDTO) {
                     Modifier.fillMaxWidth().align(Alignment.TopEnd).background(Color(0x55000000))
                 ) {
                     Text(
-                        text = stringResource(id = noticia.Titulo),
+                        text = noticia.titulo,
                         fontSize = 25.sp,
                         maxLines = 3,
                         lineHeight = 32.sp,
@@ -66,7 +83,7 @@ fun ItemNoticia(noticia: NoticiDTO) {
         }
         if (!visibility) {
             Text(
-                text = stringResource(id = noticia.Titulo),
+                text = noticia.titulo,
                 fontSize = 25.sp,
                 modifier = Modifier.padding(15.dp),
                 maxLines = 3,
@@ -74,7 +91,7 @@ fun ItemNoticia(noticia: NoticiDTO) {
                 )
 
             Text(
-                text = stringResource(id = noticia.Descripción),
+                text = noticia.descripcion,
                 fontSize = 15.sp,
                 modifier = Modifier.padding(15.dp),
             )
@@ -83,11 +100,11 @@ fun ItemNoticia(noticia: NoticiDTO) {
 }
 
 @Composable
-fun MenuPrincipal(modifier: Modifier, noticiasViewModel: NoticiasViewModel) {
+fun MenuPrincipal(modifier: Modifier, noticias :  List<NoticiDTO>) {
     LazyColumn (
         modifier = modifier.fillMaxWidth()
     ) {
-        items(items = noticiasViewModel.getNoticias()) { noticia ->
+        items(items = noticias) { noticia ->
             ItemNoticia(noticia)
         }
     }

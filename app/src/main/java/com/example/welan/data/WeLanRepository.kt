@@ -9,10 +9,12 @@ import com.example.welan.model.CommonUserWeLan
 import com.example.welan.model.CreateBusinessUserDTO
 import com.example.welan.model.CreateCommonUserDTO
 import com.example.welan.model.Envio
+import com.example.welan.model.NoticiDTO
 import com.example.welan.model.Producto
 import com.example.welan.model.SerOProd
 import com.example.welan.model.Servicio
 import com.example.welan.model.Unidad
+import com.example.welan.network.NoticiasGetApiService
 import com.example.welan.network.SerOProdWeLanGetApiService
 import com.example.welan.network.UserWeLanGetApiService
 import com.example.welan.network.UserWeLanPostApiService
@@ -22,6 +24,8 @@ import com.example.welan.ui.componentes.reemplazararroba
 
 
 interface WeLanRepository {
+
+    suspend fun getNoticias() : Result<List<NoticiDTO>>
     suspend fun getCommonUserValidate(email: String, password: String): Result<CommonUserWeLan>
     suspend fun getCommonUser(email: String): Result<CommonUserWeLan>
     suspend fun postCommonUser(user: CreateCommonUserDTO): Boolean
@@ -42,7 +46,8 @@ class NetworkWeLanRepository(
     private val userWeLanGetApiService: UserWeLanGetApiService,
     private val userWeLanPostApiService: UserWeLanPostApiService,
     private val userWeLanPutApiService: UserWeLanPutApiService,
-    private val serOProdWeLanGetApiService: SerOProdWeLanGetApiService
+    private val serOProdWeLanGetApiService: SerOProdWeLanGetApiService,
+    private val noticiasGetApiService: NoticiasGetApiService
 ): WeLanRepository {
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -70,6 +75,22 @@ class NetworkWeLanRepository(
             if (respuesta.isSuccessful) {
                 respuesta.body()?.let { user ->
                     Result.success(user)
+                } ?: Result.failure(Exception("Respuesta vacia"))
+            } else {
+                Result.failure(Exception("Error: ${respuesta.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override suspend fun getNoticias(): Result<List<NoticiDTO>> {
+        return try {
+            val respuesta = noticiasGetApiService.getNoticias()
+            if (respuesta.isSuccessful) {
+                respuesta.body()?.let { noticia ->
+                    Result.success(noticia)
                 } ?: Result.failure(Exception("Respuesta vacia"))
             } else {
                 Result.failure(Exception("Error: ${respuesta.code()}"))
