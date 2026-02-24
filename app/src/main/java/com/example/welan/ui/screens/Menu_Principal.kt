@@ -26,11 +26,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.welan.model.NoticiDTO
 import com.example.welan.model.Noticia
 import com.example.welan.model.getNoticias
+import com.example.welan.ui.viewmodels.NoticiasViewModel
 
 @Composable
-fun ItemNoticia(noticia: Noticia) {
+fun ItemNoticia(noticia: NoticiDTO) {
     var visibility by remember { mutableStateOf(true) }
 
     Card (colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
@@ -81,11 +83,11 @@ fun ItemNoticia(noticia: Noticia) {
 }
 
 @Composable
-fun MenuPrincipal(modifier: Modifier) {
+fun MenuPrincipal(modifier: Modifier, noticiasViewModel: NoticiasViewModel) {
     LazyColumn (
         modifier = modifier.fillMaxWidth()
     ) {
-        items(items = getNoticias()) { noticia ->
+        items(items = noticiasViewModel.getNoticias()) { noticia ->
             ItemNoticia(noticia)
         }
     }

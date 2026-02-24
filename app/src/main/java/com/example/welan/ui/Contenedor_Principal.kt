@@ -93,6 +93,7 @@ import com.example.welan.ui.theme.apptopBarGradient
 import com.example.welan.ui.theme.secondaryColor
 import com.example.welan.ui.viewmodels.BusinessUserUiState
 import com.example.welan.ui.viewmodels.CommonUserUiState
+import com.example.welan.ui.viewmodels.NoticiasViewModel
 import com.example.welan.ui.viewmodels.SerOProdViewModel
 import com.example.welan.ui.viewmodels.UserViewModel
 
@@ -132,6 +133,7 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
 
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+    val noticiaViewModel : NoticiasViewModel = viewModel(factory = NoticiasViewModel.Factory)
     var topBarTitle by remember { mutableStateOf("") }
     var topBarImg by remember { mutableIntStateOf(R.drawable.welan_logo) }
     val serOProdViewModel: SerOProdViewModel = viewModel(factory = SerOProdViewModel.Factory)
@@ -149,7 +151,7 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
 
         NavHost(navController = navController, startDestination = "MenuPrincipal") {
             composable("MenuPrincipal") {
-                MenuPrincipal(Modifier.padding(innerPadding))
+                MenuPrincipal(Modifier.padding(innerPadding),noticiaViewModel)
             }
             composable("Perfil") {
                 when (datos) {

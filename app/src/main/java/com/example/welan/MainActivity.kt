@@ -27,6 +27,7 @@ import com.example.welan.ui.screens.CrearCuentaScreen
 import com.example.welan.ui.screens.Login
 import com.example.welan.ui.screens.MySplashScreen
 import com.example.welan.ui.theme.WeLanTheme
+import com.example.welan.ui.viewmodels.NoticiasViewModel
 import com.example.welan.ui.viewmodels.UserViewModel
 
 

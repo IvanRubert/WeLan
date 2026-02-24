@@ -246,6 +246,8 @@ fun Login(navController: NavController,modifier: Modifier, userViewModel: UserVi
                             textAlign = TextAlign.Start
                         )
                     }else{
+
+
                         OutlinedTextField(
                             colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimary, unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary),
                             value = emailEmpresa,
