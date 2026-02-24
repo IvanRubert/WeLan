@@ -29,7 +29,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.welan.R
-import com.example.welan.model.User
 import com.example.welan.model.UserWelan
 import com.example.welan.ui.componentes.base64ToImageBitmap
 import com.example.welan.ui.viewmodels.ChatViewModel

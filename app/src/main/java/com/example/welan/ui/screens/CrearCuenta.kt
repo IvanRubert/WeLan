@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.welan.R
-import com.example.welan.model.User
 import com.example.welan.ui.theme.WeLanTheme
 
 @Composable
@@ -135,9 +134,7 @@ fun CrearCuentaScreen(navController: NavController) {
                             color = Color.White
                         )
                     )
-
                     Spacer(Modifier.height(16.dp))
-
 
                     if (!choose) {
 
@@ -194,7 +191,6 @@ fun CrearCuentaScreen(navController: NavController) {
                             singleLine = true,
                         )
                     }
-
 
                     if (choose) {
 
@@ -257,54 +253,10 @@ fun CrearCuentaScreen(navController: NavController) {
 
             Button(
                 onClick = {
-                    if (nombre.isEmpty()) {
-                        nombre = "NameDefault"
-                    }
-                    val email: String
-                    val usuario: User
-
                     if (!choose) {
-                        email = emailUsuario.ifEmpty { "emaildefault@default.def2" }
-                        usuario = User(
-                            imageRes = R.drawable.welan_logo,
-                            type = "User",
-                            name = nombre,
-                            email = email,
-                            descripcion = null,
-                            intereses = emptyList()
-                        )
                     } else {
-                        email = emailEmpresa.ifEmpty { "emaildefault@default.def2" }
-                        usuario = User(
-                            imageRes = R.drawable.welan_logo,
-                            type = "Business",
-                            name = nombre,
-                            email = email,
-                            descripcion = null,
-                            intereses = emptyList()
-                        )
                     }
-                    val nameEncoded = Uri.encode(usuario.name)
-                    val emailEncoded = Uri.encode(usuario.email)
-                    val typeEncoded = Uri.encode(usuario.type)
-
-                    val descripcionForNav = when (usuario.type) {
-                        "User" -> "_NULL_"
-                        else -> "_EMPTY_"
-                    }
-                    val descripcionEncoded = Uri.encode(descripcionForNav)
-                    val interesesString = usuario.intereses.joinToString("→←")
-                    val interesesEncoded = Uri.encode(interesesString)
-
-                    navController.navigate(
-                        "Contenedor_Principal" +
-                                "/${usuario.imageRes}" +
-                                "/$typeEncoded" +
-                                "/$nameEncoded" +
-                                "/$emailEncoded" +
-                                "/$descripcionEncoded" +
-                                "/$interesesEncoded"
-                    ) {
+                    navController.navigate("Contenedor_Principal") {
                         popUpTo(0) { inclusive = true }
                     }
                 },

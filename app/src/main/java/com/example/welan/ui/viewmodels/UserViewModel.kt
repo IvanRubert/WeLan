@@ -82,6 +82,41 @@ open class UserViewModel(open val weLanRepository: WeLanRepository): ViewModel()
         }
     }
 
+    fun putCommonUser(
+        user: CommonUserWeLan
+    ){
+        viewModelScope.launch {
+            commonUserUiState = CommonUserUiState.Loading
+            val repuesta = weLanRepository.putCommonUser(user)
+            repuesta.fold(
+                onSuccess = { user ->
+                    commonUserUiState = CommonUserUiState.Success(user)
+                },
+                onFailure = { error ->
+                    commonUserUiState = CommonUserUiState.Error(error)
+                }
+            )
+        }
+    }
+
+    fun putCommonUserPassword(
+        email: String,
+        password: String
+    ){
+        viewModelScope.launch {
+            commonUserUiState = CommonUserUiState.Loading
+            val repuesta = weLanRepository.putCommonUserPassword(email, password)
+            repuesta.fold(
+                onSuccess = { user ->
+                    commonUserUiState = CommonUserUiState.Success(user)
+                },
+                onFailure = { error ->
+                    commonUserUiState = CommonUserUiState.Error(error)
+                }
+            )
+        }
+    }
+
     fun getBusinessUser(
         email: String,
     ){
@@ -116,6 +151,23 @@ open class UserViewModel(open val weLanRepository: WeLanRepository): ViewModel()
                 onFailure = { error ->
                     businessUserUiState = BusinessUserUiState.Error(error)
                     _errorMessage.value = "El usuario no coincide con el certificado"
+                }
+            )
+        }
+    }
+
+    fun putBusinessUser(
+        user: BusinessUserWeLan
+    ){
+        viewModelScope.launch {
+            businessUserUiState = BusinessUserUiState.Loading
+            val repuesta = weLanRepository.putBusinessUser(user)
+            repuesta.fold(
+                onSuccess = { user ->
+                    businessUserUiState = BusinessUserUiState.Success(user)
+                },
+                onFailure = { error ->
+                    businessUserUiState = BusinessUserUiState.Error(error)
                 }
             )
         }

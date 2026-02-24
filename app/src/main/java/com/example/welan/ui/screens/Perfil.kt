@@ -39,6 +39,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -61,10 +62,15 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.welan.R
+import com.example.welan.data.UserExist
+import com.example.welan.data.UserType
+import com.example.welan.data.UsuarioJson
 import com.example.welan.model.BusinessUserWeLan
 import com.example.welan.model.CommonUserWeLan
 import com.example.welan.model.Interes
+import com.example.welan.model.UserWelan
 import com.example.welan.ui.componentes.base64ToImageBitmap
+import com.example.welan.ui.componentes.compPassword
 import com.example.welan.ui.theme.primaryColor
 import com.example.welan.ui.viewmodels.UserViewModel
 
@@ -308,13 +314,14 @@ fun PerfilEmpresa(user: BusinessUserWeLan, navController: NavController, modifie
 
 @Composable
 fun UserEdit( userViewModel: UserViewModel, user: CommonUserWeLan, navController: NavController, modifier: Modifier = Modifier) {
-    var passTF by rememberSaveable { mutableStateOf("") }
-    var showPass by rememberSaveable { mutableStateOf(false) }
     var nameTF by rememberSaveable { mutableStateOf(user.nombre) }
     val interests = rememberSaveable { mutableStateListOf<Interes>().apply{addAll(
         if (!user.intereses.isNullOrEmpty()) user.intereses else emptyList()
     )} }
+    var image by rememberSaveable { mutableStateOf(user.pathImage) }
     var showDialogAdd by remember { mutableStateOf(false) }
+    var showDialogPut by remember { mutableStateOf(false) }
+
     Box {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -331,9 +338,9 @@ fun UserEdit( userViewModel: UserViewModel, user: CommonUserWeLan, navController
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.weight(1f)
                 ) {
-                    if (base64ToImageBitmap(user.pathImage) != null) {
+                    if (base64ToImageBitmap(image) != null) {
                         Image(
-                            bitmap = base64ToImageBitmap(user.pathImage)!!,
+                            bitmap = base64ToImageBitmap(image)!!,
                             contentDescription = user.nombre,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
@@ -382,25 +389,19 @@ fun UserEdit( userViewModel: UserViewModel, user: CommonUserWeLan, navController
                         text = "Contraseña",
                         style = MaterialTheme.typography.titleLarge
                     )
-                    OutlinedTextField(
-                        value = passTF,
-                        onValueChange = { passTF = it },
-                        singleLine = true,
-                        trailingIcon = {
-                            IconButton(onClick = { showPass = !showPass }) {
-                                Icon(
-                                    imageVector = if (showPass) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                                    contentDescription = "Show or occult password"
-                                )
-                            }
-                        },
-                        visualTransformation = if (showPass) VisualTransformation.None else PasswordVisualTransformation(),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                        modifier = Modifier
-                            .padding(bottom = 16.dp)
-                            .width(200.dp),
-                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimary)
-                    )
+                    Button(
+                        onClick = { showDialogPut = true },
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
+                        shape = RoundedCornerShape(8.dp)
+                    ) { Text("Canviar Contraseña") }
+
+                    if (showDialogPut){
+                        AddPasswordDialog(
+                            user,
+                            userViewModel,
+                            onDismiss = { showDialogPut = false }
+                        )
+                    }
                 }
             }
             Row(
@@ -459,8 +460,14 @@ fun UserEdit( userViewModel: UserViewModel, user: CommonUserWeLan, navController
         }
         Button(
             onClick = {
-
-                //Logica de cambiar datos
+                val useredit = CommonUserWeLan(
+                    pathImage = image,
+                    nombre = nameTF,
+                    correo = user.correo,
+                    intereses = interests,
+                    passHash = user.passHash,
+                )
+                userViewModel.putCommonUser(useredit)
                 navController.navigate("Perfil") {
                     popUpTo("Perfil"){
                         inclusive = true
@@ -489,6 +496,7 @@ fun UserEdit( userViewModel: UserViewModel, user: CommonUserWeLan, navController
 fun BusinessEdit(userViewModel: UserViewModel, user: BusinessUserWeLan, navController: NavController, modifier: Modifier = Modifier) {
     var nameTF by rememberSaveable { mutableStateOf(user.nombre) }
     var descripcionTF by rememberSaveable { mutableStateOf(if (!user.descripcion.isNullOrEmpty()) user.descripcion else "") }
+    var image by rememberSaveable { mutableStateOf(user.pathImage) }
     val services = rememberSaveable { mutableStateListOf<String>().apply{addAll(
         if (!user.servicios.isNullOrEmpty()) user.servicios else emptyList()
     )} }
@@ -627,8 +635,15 @@ fun BusinessEdit(userViewModel: UserViewModel, user: BusinessUserWeLan, navContr
         }
         Button(
             onClick = {
-
-                //Loguica de actualizar bussiness
+                val useredit = BusinessUserWeLan(
+                    pathImage = image,
+                    nombre = nameTF,
+                    correo = user.correo,
+                    certificado = user.certificado,
+                    descripcion = descripcionTF,
+                    servicios = services
+                )
+                userViewModel.putBusinessUser(useredit)
                 navController.navigate("Perfil") {
                     popUpTo("Perfil"){
                         inclusive = true
@@ -652,6 +667,71 @@ fun BusinessEdit(userViewModel: UserViewModel, user: BusinessUserWeLan, navContr
     }
 }
 
+@Composable
+fun AddPasswordDialog(user: CommonUserWeLan, userViewModel: UserViewModel, onDismiss: () -> Unit){
+    var passTF by rememberSaveable { mutableStateOf(user.passHash) }
+    var showPass by rememberSaveable { mutableStateOf(false) }
+    var isError by remember { mutableStateOf(false) }
+    AlertDialog(
+        title = {
+            Text(text = "Añadir Contraseña")
+        },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = passTF,
+                    onValueChange = { passTF = it },
+                    isError = isError,
+                    singleLine = true,
+                    trailingIcon = {
+                        IconButton(onClick = { showPass = !showPass }) {
+                            Icon(
+                                imageVector = if (showPass) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                                contentDescription = "Show or occult password"
+                            )
+                        }
+                    },
+                    visualTransformation = if (showPass) VisualTransformation.None else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    modifier = Modifier
+                        .padding(bottom = 16.dp)
+                        .width(200.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        errorBorderColor = Color.Red,
+                        focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary
+                    )
+                )
+                if (isError){
+                    Text(text = "Error: La contraseña no tiene el formato correcto:\nUna letra Majuscula\nUna letra minuscula\nUn Numero\nUn caracter Especial",
+                        color = Color.Red)
+                }
+            }
+        },
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    if (compPassword(passTF)){
+                        userViewModel.putCommonUserPassword(user.correo, passTF)
+                    } else {
+                        isError = true
+                    }
+
+                }
+            ) {
+                Text("Añadir")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss
+            ) {
+                Text("Cancelar")
+            }
+        }
+    )
+}
 
 @Composable
 fun AddInterestDialogInteres(type: String, list: SnapshotStateList<Interes>, onDismiss: () -> Unit){
