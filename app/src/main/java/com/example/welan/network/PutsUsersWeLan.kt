@@ -1,29 +1,31 @@
 package com.example.welan.network
 
+import com.example.welan.model.BusinessUserEdit
 import com.example.welan.model.BusinessUserWeLan
+import com.example.welan.model.CommonUserEdit
 import com.example.welan.model.CommonUserWeLan
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.Headers
 import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface UserWeLanPutApiService {
 
-    @PUT("commonUser/actualizar/{email}/{password}")
+    @Headers("Content-Type:text/plain")
+    @PUT("editUser/password/{email}")
     suspend fun putCommonUserpassword(
         @Path("email") email: String,
-        @Path("password") password: String
+        @Body password: String
     ): Response<CommonUserWeLan>
 
-    @PUT("commonUser/actualizar/{email}")
+    @PUT("editCommonUse")
     suspend fun putCommonUser(
-        @Path("email") email: String,
-        @Body user: CommonUserWeLan
+        @Body user: CommonUserEdit
     ): Response<CommonUserWeLan>
 
-    @PUT("businessUser/actualizar/{email}")
+    @PUT("editBusinessUser")
     suspend fun putBusinessUser(
-        @Path("email") email: String,
-        @Body user: BusinessUserWeLan
+        @Body user: BusinessUserEdit
     ): Response<BusinessUserWeLan>
 }

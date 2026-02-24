@@ -35,7 +35,6 @@ import com.example.welan.ui.theme.WeLanTheme
 fun CrearCuentaScreen(navController: NavController) {
 
     var choose by remember { mutableStateOf(false) }
-
     var nombre by remember { mutableStateOf("") }
     var emailUsuario by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }

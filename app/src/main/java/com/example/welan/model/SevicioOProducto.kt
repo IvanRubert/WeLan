@@ -10,10 +10,9 @@ enum class Unidad (val unidad: String) {
 
 enum class Envio {NOENVIO, POSSIBILIDADENVIO, OBLIGACIONENVIO}
 
-
 @Serializable
 sealed class SerOProd {
-    abstract val pathImage: String
+    abstract var pathImage: String
     abstract val nombre: String
     abstract val correo: String
     abstract val descripcion: String
@@ -24,7 +23,7 @@ sealed class SerOProd {
 
 @Serializable
 data class Servicio(
-    override val pathImage: String,
+    override var pathImage: String,
     override val nombre: String,
     override val correo: String,
     override val descripcion: String,
@@ -35,7 +34,7 @@ data class Servicio(
 
 @Serializable
 data class Producto(
-    override val pathImage: String,
+    override var pathImage: String,
     override val nombre: String,
     override val correo: String,
     override val descripcion: String,

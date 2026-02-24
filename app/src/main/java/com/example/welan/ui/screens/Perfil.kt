@@ -1,5 +1,7 @@
 package com.example.welan.ui.screens
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,7 +41,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -51,8 +52,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -62,15 +63,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.welan.R
-import com.example.welan.data.UserExist
-import com.example.welan.data.UserType
-import com.example.welan.data.UsuarioJson
+import com.example.welan.model.BusinessUserEdit
 import com.example.welan.model.BusinessUserWeLan
+import com.example.welan.model.CommonUserEdit
 import com.example.welan.model.CommonUserWeLan
 import com.example.welan.model.Interes
-import com.example.welan.model.UserWelan
 import com.example.welan.ui.componentes.base64ToImageBitmap
 import com.example.welan.ui.componentes.compPassword
+import com.example.welan.ui.componentes.imageUriToBase64
 import com.example.welan.ui.theme.primaryColor
 import com.example.welan.ui.viewmodels.UserViewModel
 
@@ -321,6 +321,17 @@ fun UserEdit( userViewModel: UserViewModel, user: CommonUserWeLan, navController
     var image by rememberSaveable { mutableStateOf(user.pathImage) }
     var showDialogAdd by remember { mutableStateOf(false) }
     var showDialogPut by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        if (uri != null) {
+            val base64 = imageUriToBase64(context, uri)
+            user.pathImage = base64
+            image = base64
+        }
+    }
 
     Box {
         Column(
@@ -360,7 +371,9 @@ fun UserEdit( userViewModel: UserViewModel, user: CommonUserWeLan, navController
                         )
                     }
                     Button(
-                        onClick = { },
+                        onClick = {
+                            launcher.launch("image/*")
+                        },
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
                     ) { Text("Cambiar imagen") }
                 }
@@ -460,12 +473,11 @@ fun UserEdit( userViewModel: UserViewModel, user: CommonUserWeLan, navController
         }
         Button(
             onClick = {
-                val useredit = CommonUserWeLan(
+                val useredit = CommonUserEdit(
                     pathImage = image,
                     nombre = nameTF,
                     correo = user.correo,
-                    intereses = interests,
-                    passHash = user.passHash,
+                    interesList = interests,
                 )
                 userViewModel.putCommonUser(useredit)
                 navController.navigate("Perfil") {
@@ -501,6 +513,17 @@ fun BusinessEdit(userViewModel: UserViewModel, user: BusinessUserWeLan, navContr
         if (!user.servicios.isNullOrEmpty()) user.servicios else emptyList()
     )} }
     var showDialogAdd by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        if (uri != null) {
+            val base64 = imageUriToBase64(context, uri)
+            user.pathImage = base64
+            image = base64
+        }
+    }
     Box() {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -539,7 +562,9 @@ fun BusinessEdit(userViewModel: UserViewModel, user: BusinessUserWeLan, navContr
                         )
                     }
                     Button(
-                        onClick = { },
+                        onClick = {
+                            launcher.launch("image/*")
+                        },
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
                     ) { Text("Cambiar imagen") }
                 }
@@ -635,13 +660,12 @@ fun BusinessEdit(userViewModel: UserViewModel, user: BusinessUserWeLan, navContr
         }
         Button(
             onClick = {
-                val useredit = BusinessUserWeLan(
+                val useredit = BusinessUserEdit(
                     pathImage = image,
                     nombre = nameTF,
                     correo = user.correo,
-                    certificado = user.certificado,
                     descripcion = descripcionTF,
-                    servicios = services
+                    serviciosList = services
                 )
                 userViewModel.putBusinessUser(useredit)
                 navController.navigate("Perfil") {

@@ -2,8 +2,12 @@ package com.example.welan.data
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.example.welan.model.BusinessUserEdit
 import com.example.welan.model.BusinessUserWeLan
+import com.example.welan.model.CommonUserEdit
 import com.example.welan.model.CommonUserWeLan
+import com.example.welan.model.CreateBusinessUserDTO
+import com.example.welan.model.CreateCommonUserDTO
 import com.example.welan.model.Envio
 import com.example.welan.model.Producto
 import com.example.welan.model.SerOProd
@@ -11,21 +15,24 @@ import com.example.welan.model.Servicio
 import com.example.welan.model.Unidad
 import com.example.welan.network.SerOProdWeLanGetApiService
 import com.example.welan.network.UserWeLanGetApiService
+import com.example.welan.network.UserWeLanPostApiService
 import com.example.welan.network.UserWeLanPutApiService
 import com.example.welan.ui.componentes.Encriptador
 import com.example.welan.ui.componentes.reemplazararroba
-import org.w3c.dom.Text
 
 
 interface WeLanRepository {
     suspend fun getCommonUserValidate(email: String, password: String): Result<CommonUserWeLan>
     suspend fun getCommonUser(email: String): Result<CommonUserWeLan>
+    suspend fun postCommonUser(user: CreateCommonUserDTO): Boolean
+
     suspend fun putCommonUserPassword(email: String, password: String): Result<CommonUserWeLan>
-    suspend fun putCommonUser(user: CommonUserWeLan): Result<CommonUserWeLan>
+    suspend fun putCommonUser(user: CommonUserEdit): Result<CommonUserWeLan>
     suspend fun getBusinessUserValidate(email: String, password: String): Result<BusinessUserWeLan>
     suspend fun getBusinessUser(email: String): Result<BusinessUserWeLan>
+    suspend fun postBusinessUser(user: CreateBusinessUserDTO): Boolean
 
-    suspend fun putBusinessUser(user: BusinessUserWeLan): Result<BusinessUserWeLan>
+    suspend fun putBusinessUser(user: BusinessUserEdit): Result<BusinessUserWeLan>
 
     suspend fun getSerOProd(): Result<List<SerOProd>>
     suspend fun getSerOProdFiltro(nombre: String): Result<List<SerOProd>>
@@ -33,6 +40,7 @@ interface WeLanRepository {
 
 class NetworkWeLanRepository(
     private val userWeLanGetApiService: UserWeLanGetApiService,
+    private val userWeLanPostApiService: UserWeLanPostApiService,
     private val userWeLanPutApiService: UserWeLanPutApiService,
     private val serOProdWeLanGetApiService: SerOProdWeLanGetApiService
 ): WeLanRepository {
@@ -72,6 +80,22 @@ class NetworkWeLanRepository(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    override suspend fun postCommonUser(user: CreateCommonUserDTO): Boolean {
+        try {
+            var passwordEnc = Encriptador.cifrar(user.passHash)
+            user.passHash = passwordEnc
+            val respuesta = userWeLanPostApiService.postCommonUser(user)
+            if (respuesta.isSuccessful) {
+               return true
+            } else {
+               return false
+            }
+        } catch (e: Exception) {
+            return false
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun putCommonUserPassword(email: String, password: String): Result<CommonUserWeLan> {
         return try {
             var correo = reemplazararroba(email)
@@ -90,17 +114,9 @@ class NetworkWeLanRepository(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override suspend fun putCommonUser(user: CommonUserWeLan): Result<CommonUserWeLan> {
+    override suspend fun putCommonUser(user: CommonUserEdit): Result<CommonUserWeLan> {
         return try {
-            var passwordEnc = Encriptador.cifrar(user.passHash)
-            val commonUser = CommonUserWeLan(
-                user.pathImage,
-                user.nombre,
-                user.correo,
-                user.intereses,
-                passwordEnc,
-            )
-            val respuesta = userWeLanPutApiService.putCommonUser(commonUser.correo, commonUser)
+            val respuesta = userWeLanPutApiService.putCommonUser(user)
             if (respuesta.isSuccessful) {
                 respuesta.body()?.let { user ->
                     Result.success(user.copy(passHash = Encriptador.descifrar(user.passHash)))
@@ -146,9 +162,23 @@ class NetworkWeLanRepository(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override suspend fun putBusinessUser(user: BusinessUserWeLan): Result<BusinessUserWeLan> {
+    override suspend fun postBusinessUser(user: CreateBusinessUserDTO): Boolean {
+        try {
+            val respuesta = userWeLanPostApiService.postBusinessUser(user)
+            if (respuesta.isSuccessful) {
+                return true
+            } else {
+                return false
+            }
+        } catch (e: Exception) {
+            return false
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override suspend fun putBusinessUser(user: BusinessUserEdit): Result<BusinessUserWeLan> {
         return try {
-            val respuesta = userWeLanPutApiService.putBusinessUser(user.correo, user)
+            val respuesta = userWeLanPutApiService.putBusinessUser(user)
             if (respuesta.isSuccessful) {
                 respuesta.body()?.let { user ->
                     Result.success(user)

@@ -12,9 +12,12 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.welan.WeLanApplication
 import com.example.welan.data.GaurdarUsuario
 import com.example.welan.data.WeLanRepository
+import com.example.welan.model.BusinessUserEdit
 import com.example.welan.model.BusinessUserWeLan
+import com.example.welan.model.CommonUserEdit
 import com.example.welan.model.CommonUserWeLan
-import com.example.welan.ui.screens.UserEdit
+import com.example.welan.model.CreateCommonUserDTO
+import com.example.welan.model.CreateBusinessUserDTO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -36,7 +39,6 @@ open class UserViewModel(open val weLanRepository: WeLanRepository): ViewModel()
 
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
-
 
     var commonUserUiState: CommonUserUiState by mutableStateOf(CommonUserUiState.Loading)
         private set
@@ -82,8 +84,21 @@ open class UserViewModel(open val weLanRepository: WeLanRepository): ViewModel()
         }
     }
 
+    fun postCommonUser(
+        user: CreateCommonUserDTO
+    ){
+        viewModelScope.launch {
+            val repuesta = weLanRepository.postCommonUser(user)
+            if (!repuesta) {
+                _errorMessage.value = "Error al registrarse"
+            } else {
+
+            }
+        }
+    }
+
     fun putCommonUser(
-        user: CommonUserWeLan
+        user: CommonUserEdit
     ){
         viewModelScope.launch {
             commonUserUiState = CommonUserUiState.Loading
@@ -156,8 +171,19 @@ open class UserViewModel(open val weLanRepository: WeLanRepository): ViewModel()
         }
     }
 
+    fun postBusinessUser(
+        user: CreateBusinessUserDTO
+    ){
+        viewModelScope.launch {
+            val repuesta = weLanRepository.postBusinessUser(user)
+            if (!repuesta) {
+                _errorMessage.value = "Error al registrarse"
+            }
+        }
+    }
+
     fun putBusinessUser(
-        user: BusinessUserWeLan
+        user: BusinessUserEdit
     ){
         viewModelScope.launch {
             businessUserUiState = BusinessUserUiState.Loading

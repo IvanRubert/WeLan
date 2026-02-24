@@ -23,7 +23,7 @@ fun base64ToImageBitmap(base64String: String): ImageBitmap? {
 }
 
 
-private fun imageUriToBase64(context: Context, uri: android.net.Uri): String {
+fun imageUriToBase64(context: Context, uri: android.net.Uri): String {
     val inputStream = context.contentResolver.openInputStream(uri)
     val byteArrayOutputStream = ByteArrayOutputStream()
 
