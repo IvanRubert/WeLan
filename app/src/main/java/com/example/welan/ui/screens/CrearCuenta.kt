@@ -35,7 +35,7 @@ import com.example.welan.ui.theme.WeLanTheme
 fun CrearCuentaScreen(navController: NavController) {
 
     var choose by remember { mutableStateOf(false) }
-
+    var nameEmpresa by remember {mutableStateOf("")}
     var nombre by remember { mutableStateOf("") }
     var emailUsuario by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -193,7 +193,18 @@ fun CrearCuentaScreen(navController: NavController) {
                     }
 
                     if (choose) {
-
+                        OutlinedTextField(
+                            colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimary, unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary),
+                            value = nameEmpresa,
+                            onValueChange = { nameEmpresa = it },
+                            label = { Text("Nombre",
+                                color = Color.White)
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                            singleLine = true
+                        )
+                        Spacer(Modifier.height(16.dp))
                         OutlinedTextField(
                             colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimary, unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary),
                             value = emailEmpresa,
