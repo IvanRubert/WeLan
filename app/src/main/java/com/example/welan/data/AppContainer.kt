@@ -1,5 +1,6 @@
 package com.example.welan.data
 
+import com.example.welan.network.NoticiasGetApiService
 import com.example.welan.network.SerOProdWeLanGetApiService
 import com.example.welan.network.UserWeLanGetApiService
 import com.example.welan.network.UserWeLanPostApiService
@@ -14,7 +15,7 @@ interface AppContainer {
 }
 
 class DefaultAppContainer: AppContainer{
-    private val baseUrl = "http://odinmigordin.hopto.org:8081/"
+    private val baseUrl = "http://wikifilmapi.duckdns.org/"
 
     private val retrofit = Retrofit.Builder()
         .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
@@ -28,6 +29,9 @@ class DefaultAppContainer: AppContainer{
     private val retrofitpostUserService: UserWeLanPostApiService by lazy {
         retrofit.create(UserWeLanPostApiService::class.java)
     }
+    private val retrofitNoticia: NoticiasGetApiService by lazy {
+        retrofit.create(NoticiasGetApiService::class.java)
+    }
     private val retrofitputUserService: UserWeLanPutApiService by lazy {
         retrofit.create(UserWeLanPutApiService::class.java)
     }
@@ -37,6 +41,12 @@ class DefaultAppContainer: AppContainer{
     }
 
     override val weLanRepository by lazy {
-        NetworkWeLanRepository(retrofitgetUserService, retrofitpostUserService,  retrofitputUserService, retrofitgetSerOProdService)
+        NetworkWeLanRepository(
+            retrofitgetUserService,
+            retrofitpostUserService,
+            retrofitputUserService,
+            retrofitgetSerOProdService,
+            retrofitNoticia
+        )
     }
 }
