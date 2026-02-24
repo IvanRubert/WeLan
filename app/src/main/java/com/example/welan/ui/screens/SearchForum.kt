@@ -71,7 +71,8 @@ fun SearchForum(navController: NavHostController, modifier: Modifier){
                     },
                     modifier = Modifier
                         .padding(start = 10.dp, bottom = 10.dp)
-                        .weight(0.85f)
+                        .weight(0.85f),
+
                 )
                 Icon(
                     imageVector = Icons.Outlined.FilterAlt,

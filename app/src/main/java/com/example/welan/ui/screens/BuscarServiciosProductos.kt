@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -28,7 +29,10 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -184,23 +188,33 @@ fun ItemServicioProducto(servicioproducto: SerOProd, servoprodViewModal: SerOPro
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BuscarServicioProducto(servoprod: List<SerOProd>, servoprodViewModal: SerOProdViewModel, modifier: Modifier, navController: NavHostController, user: UserWelan) {
-    val textFieldState = remember { TextFieldState() }
+    val query by rememberSaveable { mutableStateOf("") }
 
     Box (modifier = modifier.fillMaxWidth().fillMaxSize()) {
         Column {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                SimpleSearchBar(
-                    textFieldState = textFieldState,
-                    onSearch = { query ->
-                        if (!query.isNullOrEmpty()) query else emptyList()
-                    },
+                SearchBar(
                     modifier = Modifier
-                        .padding(start = 10.dp, bottom = 10.dp)
-                        .weight(0.85f),
-                    servoprodViewModal
-                )
+                        .weight(8f)
+                        .padding(start = 10.dp)
+                        .offset(y = (-15).dp),
+                    inputField = {
+                        SearchBarDefaults.InputField(
+                            query = query,
+                            onQueryChange = { query },
+                            onSearch = {
+                                servoprodViewModal.getSerOProdFiltro(query)
+                            },
+                            expanded = false,
+                            onExpandedChange = { false },
+                            placeholder = { Text("Buscar por Nombre") }
+                        )
+                    },
+                    expanded = false,
+                    onExpandedChange = {}
+                ) {}
                 Icon(
                     imageVector = Icons.Outlined.FilterAlt,
                     contentDescription = "Filtrado",
@@ -246,8 +260,7 @@ fun FABS(modifier: Modifier, navController: NavHostController) {
 fun SimpleSearchBar(
     textFieldState: TextFieldState,
     onSearch: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    seroprodViewModel: SerOProdViewModel
+    modifier: Modifier = Modifier
 ) {
     Box(
         modifier.semantics { isTraversalGroup = true }
@@ -261,15 +274,16 @@ fun SimpleSearchBar(
                     query = textFieldState.text.toString(),
                     onQueryChange = { textFieldState.edit { replace(0, length, it) } },
                     onSearch = {
-                        seroprodViewModel.getSerOProdFiltro(textFieldState.text.toString())
+                        onSearch(textFieldState.text.toString())
                     },
                     expanded = false,
                     onExpandedChange = { false },
-                    placeholder = { Text("Buscar por Nombre") }
+                    placeholder = { Text("Search") }
                 )
             },
             expanded = false,
             onExpandedChange = { },
-        ) {}
+        ) {
+        }
     }
 }
