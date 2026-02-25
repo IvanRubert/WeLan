@@ -66,35 +66,33 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.welan.ui.screens.BusinessEdit
-import com.example.welan.ui.screens.Mensajes
-import com.example.welan.ui.screens.MenuPrincipal
-import com.example.welan.ui.screens.PerfilEmpresa
-import com.example.welan.ui.screens.PerfilUser
 import com.example.welan.R
 import com.example.welan.model.BusinessUserWeLan
 import com.example.welan.model.CommonUserWeLan
-import com.example.welan.ui.screens.SearchForum
-import com.example.welan.ui.screens.UserEdit
 import com.example.welan.model.UserWelan
+import com.example.welan.ui.screens.BusinessEdit
 import com.example.welan.ui.screens.Chat
 import com.example.welan.ui.screens.CrearServicioProducto
 import com.example.welan.ui.screens.CreateForo
 import com.example.welan.ui.screens.ErrorScreen
 import com.example.welan.ui.screens.ForoChat
 import com.example.welan.ui.screens.LoadingScreen
+import com.example.welan.ui.screens.Mensajes
 import com.example.welan.ui.screens.MenuPrincipalScreen
+import com.example.welan.ui.screens.PerfilEmpresa
+import com.example.welan.ui.screens.PerfilUser
+import com.example.welan.ui.screens.SearchForum
 import com.example.welan.ui.screens.SevicioProducto
 import com.example.welan.ui.screens.SevicioProducto_Screen
-import com.example.welan.ui.viewmodels.ChatViewModel
-import com.example.welan.ui.viewmodels.ForoViewModel
-import com.example.welan.ui.viewmodels.MessagesViewModel
+import com.example.welan.ui.screens.UserEdit
 import com.example.welan.ui.theme.appbootomBarGradient
 import com.example.welan.ui.theme.apptopBarGradient
 import com.example.welan.ui.theme.secondaryColor
 import com.example.welan.ui.viewmodels.BusinessUserUiState
+import com.example.welan.ui.viewmodels.ChatViewModel
 import com.example.welan.ui.viewmodels.CommonUserUiState
-import com.example.welan.ui.viewmodels.NoticiasUiState
+import com.example.welan.ui.viewmodels.ForoViewModel
+import com.example.welan.ui.viewmodels.MessagesViewModel
 import com.example.welan.ui.viewmodels.NoticiasViewModel
 import com.example.welan.ui.viewmodels.SerOProdViewModel
 import com.example.welan.ui.viewmodels.UserViewModel
@@ -103,26 +101,26 @@ import com.example.welan.ui.viewmodels.UserViewModel
 @Composable
 fun Contenedor_Screen(
     navControllerPrincipal: NavHostController,
-    UserViewModel: UserViewModel,
+    userViewModel: UserViewModel,
     retryAction: () -> Unit,
     type: String
 ) {
     if (type == "User") {
-        when (UserViewModel.commonUserUiState) {
+        when (userViewModel.commonUserUiState) {
             is CommonUserUiState.Success -> Contenedor_Principal(
                 navControllerPrincipal,
-                UserViewModel,
-                datos = (UserViewModel.commonUserUiState as CommonUserUiState.Success).data,
+                userViewModel,
+                datos = (userViewModel.commonUserUiState as CommonUserUiState.Success).data,
             )
             is CommonUserUiState.Error -> ErrorScreen(retryAction)
             is CommonUserUiState.Loading -> LoadingScreen()
         }
     } else {
-        when (UserViewModel.businessUserUiState) {
+        when (userViewModel.businessUserUiState) {
             is BusinessUserUiState.Success -> Contenedor_Principal(
                 navControllerPrincipal,
-                UserViewModel,
-                datos = (UserViewModel.businessUserUiState as BusinessUserUiState.Success).data,
+                userViewModel,
+                datos = (userViewModel.businessUserUiState as BusinessUserUiState.Success).data,
             )
             is BusinessUserUiState.Error -> ErrorScreen(retryAction)
             is BusinessUserUiState.Loading -> LoadingScreen()
@@ -151,7 +149,7 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
     ) { innerPadding ->
         var showDialogChanges by remember { mutableStateOf(false) }
 
-        NavHost(navController = navController, startDestination = "MenuPrincipal") {
+        NavHost(navController = navController, startDestination = "Perfil") {
             composable("MenuPrincipal") {
                 MenuPrincipalScreen(noticiaViewModel,retryAction = { serOProdViewModel.getSerOProd() },Modifier.padding(innerPadding))
             }

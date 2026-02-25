@@ -16,8 +16,8 @@ import com.example.welan.model.BusinessUserEdit
 import com.example.welan.model.BusinessUserWeLan
 import com.example.welan.model.CommonUserEdit
 import com.example.welan.model.CommonUserWeLan
-import com.example.welan.model.CreateCommonUserDTO
 import com.example.welan.model.CreateBusinessUserDTO
+import com.example.welan.model.CreateCommonUserDTO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -73,8 +73,8 @@ open class UserViewModel(open val weLanRepository: WeLanRepository): ViewModel()
             val repuesta = weLanRepository.getCommonUserValidate(email, password)
             repuesta.fold(
                 onSuccess = { user ->
-                    commonUserUiState = CommonUserUiState.Success(user)
                     GaurdarUsuario(context, email, "User")
+                    commonUserUiState = CommonUserUiState.Success(user)
                 },
                 onFailure = { error ->
                     commonUserUiState = CommonUserUiState.Error(error)
@@ -91,8 +91,6 @@ open class UserViewModel(open val weLanRepository: WeLanRepository): ViewModel()
             val repuesta = weLanRepository.postCommonUser(user)
             if (!repuesta) {
                 _errorMessage.value = "Error al registrarse"
-            } else {
-
             }
         }
     }

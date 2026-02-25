@@ -5,12 +5,13 @@ import com.example.welan.model.CommonUserWeLan
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface UserWeLanGetApiService {
-    @GET("commonUser/{email}/{password}")
+    @GET("/commonUser")
     suspend fun getCommonUserValidate(
-        @Path("email") email: String,
-        @Path("password") password: String
+        @Query("email") email: String,
+        @Query("password") password: String
     ): Response<CommonUserWeLan>
 
     @GET("commonUser/validated/{email}")

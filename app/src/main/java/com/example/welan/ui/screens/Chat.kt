@@ -65,9 +65,9 @@ fun Chat(originUser: UserWelan, destinationImgRef: Int, destinationName: String,
                         Text(text = message.message, modifier = Modifier.padding(8.dp).widthIn(max = 200.dp))
                     }
                     Spacer(Modifier.padding(horizontal = 8.dp))
-                    if (base64ToImageBitmap(originUser.pathImage) != null) {
+                    if (originUser.pathImage != null) {
                         Image(
-                            bitmap = base64ToImageBitmap(originUser.pathImage)!!,
+                            bitmap = base64ToImageBitmap(originUser.pathImage!!)!!,
                             contentDescription = originUser.nombre,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier

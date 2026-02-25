@@ -5,14 +5,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed class UserWelan {
-    abstract var pathImage: String
+    abstract var pathImage: String?
     abstract val nombre: String
     abstract val correo: String
 }
 
 @Serializable
 data class CommonUserWeLan(
-    override var pathImage: String,
+    override var pathImage: String?,
     override val nombre: String,
     override val correo: String,
     val intereses: List<Interes>?,
@@ -21,7 +21,7 @@ data class CommonUserWeLan(
 
 @Serializable
 data class BusinessUserWeLan(
-    override var pathImage: String,
+    override var pathImage: String?,
     override val nombre: String,
     override val correo: String,
     val certificado: String,

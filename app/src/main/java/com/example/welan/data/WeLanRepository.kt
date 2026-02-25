@@ -53,9 +53,9 @@ class NetworkWeLanRepository(
     @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun getCommonUserValidate(email: String, password: String): Result<CommonUserWeLan> {
         return try {
-            var correo = reemplazararroba(email)
+            //var correo = reemplazararroba(email)
             var passwordEnc = Encriptador.cifrar(password)
-            val respuesta = userWeLanGetApiService.getCommonUserValidate(correo, passwordEnc)
+            val respuesta = userWeLanGetApiService.getCommonUserValidate(email, passwordEnc)
             if (respuesta.isSuccessful) {
                 respuesta.body()?.let { user ->
                     Result.success(user.copy(passHash = Encriptador.descifrar(user.passHash)))

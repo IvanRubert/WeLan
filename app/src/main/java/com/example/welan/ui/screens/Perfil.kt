@@ -93,9 +93,9 @@ fun PerfilUser(user: CommonUserWeLan, navController: NavController, modifier: Mo
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.weight(1f)
                 ) {
-                    if (base64ToImageBitmap(user.pathImage) != null) {
+                    if (user.pathImage != null) {
                         Image(
-                            bitmap = base64ToImageBitmap(user.pathImage)!!,
+                            bitmap = base64ToImageBitmap(user.pathImage!!)!!,
                             contentDescription = user.nombre,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
@@ -202,9 +202,9 @@ fun PerfilEmpresa(user: BusinessUserWeLan, navController: NavController, modifie
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.weight(1f)
                 ) {
-                    if (base64ToImageBitmap(user.pathImage) != null) {
+                    if (user.pathImage != null) {
                         Image(
-                            bitmap = base64ToImageBitmap(user.pathImage)!!,
+                            bitmap = base64ToImageBitmap(user.pathImage!!)!!,
                             contentDescription = user.nombre,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
@@ -349,9 +349,9 @@ fun UserEdit( userViewModel: UserViewModel, user: CommonUserWeLan, navController
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.weight(1f)
                 ) {
-                    if (base64ToImageBitmap(image) != null) {
+                    if (image != null) {
                         Image(
-                            bitmap = base64ToImageBitmap(image)!!,
+                            bitmap = base64ToImageBitmap(image!!)!!,
                             contentDescription = user.nombre,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
@@ -540,9 +540,9 @@ fun BusinessEdit(userViewModel: UserViewModel, user: BusinessUserWeLan, navContr
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.weight(1f)
                 ) {
-                    if (base64ToImageBitmap(user.pathImage) != null) {
+                    if (user.pathImage != null) {
                         Image(
-                            bitmap = base64ToImageBitmap(user.pathImage)!!,
+                            bitmap = base64ToImageBitmap(user.pathImage!!)!!,
                             contentDescription = user.nombre,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier

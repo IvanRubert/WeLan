@@ -61,6 +61,8 @@ import com.example.welan.ui.viewmodels.UserViewModel
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
+import com.example.welan.ui.viewmodels.BusinessUserUiState
+import com.example.welan.ui.viewmodels.CommonUserUiState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -80,6 +82,31 @@ fun Login(navController: NavController,modifier: Modifier, userViewModel: UserVi
     val errorMessage by userViewModel.errorMessage.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
+
+    // Navegar SOLO cuando el estado del VM llegue a Success (login correcto)
+    val commonState = userViewModel.commonUserUiState
+    val businessState = userViewModel.businessUserUiState
+    var hasNavigated by remember { mutableStateOf(false) }
+
+    LaunchedEffect(commonState, businessState) {
+        if (hasNavigated) return@LaunchedEffect
+        when {
+            commonState is CommonUserUiState.Success -> {
+                hasNavigated = true
+                navController.navigate("Contenedor_Principal") {
+                    popUpTo("Login") { inclusive = true }
+                    launchSingleTop = true
+                }
+            }
+            businessState is BusinessUserUiState.Success -> {
+                hasNavigated = true
+                navController.navigate("Contenedor_Principal") {
+                    popUpTo("Login") { inclusive = true }
+                    launchSingleTop = true
+                }
+            }
+        }
+    }
 
     LaunchedEffect(errorMessage) {
         errorMessage?.let { message ->
@@ -336,12 +363,6 @@ fun Login(navController: NavController,modifier: Modifier, userViewModel: UserVi
                         //}
                     } else {
                         errorEmailEmpresa = true
-                    }
-                }
-                navController.navigate("Contenedor_Principal"
-                ) {
-                    popUpTo(0) {
-                        inclusive = true
                     }
                 }
             },
