@@ -67,28 +67,13 @@ class NetworkWeLanRepository(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun getCommonUser(email: String): Result<CommonUserWeLan> {
         return try {
             val respuesta = userWeLanGetApiService.getCommonUser(email)
             if (respuesta.isSuccessful) {
                 respuesta.body()?.let { user ->
-                    Result.success(user)
-                } ?: Result.failure(Exception("Respuesta vacia"))
-            } else {
-                Result.failure(Exception("Error: ${respuesta.code()}"))
-            }
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    override suspend fun getNoticias(): Result<List<NoticiDTO>> {
-        return try {
-            val respuesta = noticiasGetApiService.getNoticias()
-            if (respuesta.isSuccessful) {
-                respuesta.body()?.let { noticia ->
-                    Result.success(noticia)
+                    Result.success(user.copy(passHash = Encriptador.descifrar(user.passHash)))
                 } ?: Result.failure(Exception("Respuesta vacia"))
             } else {
                 Result.failure(Exception("Error: ${respuesta.code()}"))
@@ -308,6 +293,22 @@ class NetworkWeLanRepository(
                 }
             }
             Result.success(lista)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override suspend fun getNoticias(): Result<List<NoticiDTO>> {
+        return try {
+            val respuesta = noticiasGetApiService.getNoticias()
+            if (respuesta.isSuccessful) {
+                respuesta.body()?.let { noticia ->
+                    Result.success(noticia)
+                } ?: Result.failure(Exception("Respuesta vacia"))
+            } else {
+                Result.failure(Exception("Error: ${respuesta.code()}"))
+            }
         } catch (e: Exception) {
             Result.failure(e)
         }
