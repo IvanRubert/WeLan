@@ -406,7 +406,7 @@ fun UserEdit( userViewModel: UserViewModel, user: CommonUserWeLan, navController
                         onClick = { showDialogPut = true },
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
                         shape = RoundedCornerShape(8.dp)
-                    ) { Text("Canviar Contraseña") }
+                    ) { Text("Cambiar Contraseña") }
 
                     if (showDialogPut){
                         AddPasswordDialog(

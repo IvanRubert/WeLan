@@ -13,13 +13,13 @@ import retrofit2.http.Path
 interface UserWeLanPutApiService {
 
     @Headers("Content-Type:text/plain")
-    @PUT("editUser/password/{email}")
+    @PUT("/editUser/password/{email}")
     suspend fun putCommonUserpassword(
         @Path("email") email: String,
         @Body password: String
     ): Response<CommonUserWeLan>
 
-    @PUT("editCommonUse")
+    @PUT("/editCommonUser")
     suspend fun putCommonUser(
         @Body user: CommonUserEdit
     ): Response<CommonUserWeLan>
