@@ -9,11 +9,13 @@ import com.example.welan.model.CommonUserWeLan
 import com.example.welan.model.CreateBusinessUserDTO
 import com.example.welan.model.CreateCommonUserDTO
 import com.example.welan.model.Envio
+import com.example.welan.model.MensajesData
 import com.example.welan.model.NoticiDTO
 import com.example.welan.model.Producto
 import com.example.welan.model.SerOProd
 import com.example.welan.model.Servicio
 import com.example.welan.model.Unidad
+import com.example.welan.network.MensajesWelanApiService
 import com.example.welan.network.NoticiasGetApiService
 import com.example.welan.network.SerOProdWeLanGetApiService
 import com.example.welan.network.UserWeLanGetApiService
@@ -25,6 +27,7 @@ import com.example.welan.ui.componentes.reemplazararroba
 
 interface WeLanRepository {
 
+    suspend fun getMensajes(email: String) : Result<List<MensajesData>>
     suspend fun getNoticias() : Result<List<NoticiDTO>>
     suspend fun getCommonUserValidate(email: String, password: String): Result<CommonUserWeLan>
     suspend fun getCommonUser(email: String): Result<CommonUserWeLan>
@@ -47,7 +50,8 @@ class NetworkWeLanRepository(
     private val userWeLanPostApiService: UserWeLanPostApiService,
     private val userWeLanPutApiService: UserWeLanPutApiService,
     private val serOProdWeLanGetApiService: SerOProdWeLanGetApiService,
-    private val noticiasGetApiService: NoticiasGetApiService
+    private val noticiasGetApiService: NoticiasGetApiService,
+    private val mensajesGetApiService : MensajesWelanApiService
 ): WeLanRepository {
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -58,6 +62,21 @@ class NetworkWeLanRepository(
             if (respuesta.isSuccessful) {
                 respuesta.body()?.let { user ->
                     Result.success(user.copy(passHash = Encriptador.descifrar(user.passHash)))
+                } ?: Result.failure(Exception("Respuesta vacia"))
+            } else {
+                Result.failure(Exception("Error: ${respuesta.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getMensajes(email: String): Result<List<MensajesData>> {
+        return try {
+            val respuesta = mensajesGetApiService.getMensajes(email)
+            if (respuesta.isSuccessful) {
+                respuesta.body()?.let { mensaje ->
+                    Result.success(mensaje)
                 } ?: Result.failure(Exception("Respuesta vacia"))
             } else {
                 Result.failure(Exception("Error: ${respuesta.code()}"))

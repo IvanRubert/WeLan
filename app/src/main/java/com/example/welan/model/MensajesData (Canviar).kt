@@ -1,23 +1,49 @@
 package com.example.welan.model
 
-import androidx.annotation.DrawableRes
-import com.example.welan.R
+import android.os.Build
+import androidx.annotation.RequiresApi
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
-data class MensajesData(
-    @DrawableRes val imageUserRef: Int,
-    val nameUser: String,
-    val msgNoRead: Boolean = false
+@Serializable
+data class MensajesData @RequiresApi(Build.VERSION_CODES.O) constructor(
+    val img_conversation: String,
+    val nombre: String,
+    val correo: String,
+
+    @SerialName("lastMessage") // <--- Forzamos que lea "lastMessage" del JSON
+    val lastMessage: String,
+
+    @SerialName("fecha")
+    @Serializable(with = LocalDateTimeSerializer::class)
+    val dateLastMessage: LocalDateTime // Esta será tu fecha real
 )
 
-fun getMessages(): List<MensajesData>{
-    return listOf(
-        MensajesData(R.drawable.welan_logo, "Ana Lisa Pérez"),
-        MensajesData(R.drawable.welan_logo, "Teresa Martínez", true),
-        MensajesData(R.drawable.welan_logo, "Alejandro Gil"),
-        MensajesData(R.drawable.welan_logo, "Manuel Sánchez", true),
-        MensajesData(R.drawable.usuarios_nuevos, "Carlos García", true),
-        MensajesData(R.drawable.usuarios_nuevos, "Carlos GarcíaGarcíaGarcíaGarcíaGarcíaGarcíaGarcía", true),
-    )
+object LocalDateTimeSerializer : KSerializer<LocalDateTime> {
+    // Usamos ISO_DATE_TIME para soportar el offset (+00:00)
+    @RequiresApi(Build.VERSION_CODES.O)
+    private val formatter = DateTimeFormatter.ISO_DATE_TIME
+
+    override val descriptor = PrimitiveSerialDescriptor("LocalDateTime", PrimitiveKind.STRING)
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun deserialize(decoder: Decoder): LocalDateTime {
+        val string = decoder.decodeString()
+        // Parseamos considerando el offset y convertimos a Local
+        return java.time.OffsetDateTime.parse(string, formatter).toLocalDateTime()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun serialize(encoder: Encoder, value: LocalDateTime) {
+        encoder.encodeString(value.atOffset(java.time.ZoneOffset.UTC).format(formatter))
+    }
 }
 
 data class ChatMessage(

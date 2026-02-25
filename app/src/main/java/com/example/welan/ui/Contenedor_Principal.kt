@@ -77,7 +77,7 @@ import com.example.welan.ui.screens.CreateForo
 import com.example.welan.ui.screens.ErrorScreen
 import com.example.welan.ui.screens.ForoChat
 import com.example.welan.ui.screens.LoadingScreen
-import com.example.welan.ui.screens.Mensajes
+import com.example.welan.ui.screens.MensajesScreen
 import com.example.welan.ui.screens.MenuPrincipalScreen
 import com.example.welan.ui.screens.PerfilEmpresa
 import com.example.welan.ui.screens.PerfilUser
@@ -134,10 +134,10 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
     val noticiaViewModel : NoticiasViewModel = viewModel(factory = NoticiasViewModel.Factory)
+    val mensajesViewModel : MessagesViewModel = viewModel(factory = MessagesViewModel.provideFactory(datos.correo))
     var topBarTitle by remember { mutableStateOf("") }
     var topBarImg by remember { mutableIntStateOf(R.drawable.welan_logo) }
     val serOProdViewModel: SerOProdViewModel = viewModel(factory = SerOProdViewModel.Factory)
-    val messagesVm: MessagesViewModel = viewModel()
     val chatVm: ChatViewModel = viewModel()
     val foroChatVm: ForoViewModel = viewModel()
 
@@ -151,7 +151,7 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
 
         NavHost(navController = navController, startDestination = "Perfil") {
             composable("MenuPrincipal") {
-                MenuPrincipalScreen(noticiaViewModel,retryAction = { serOProdViewModel.getSerOProd() },Modifier.padding(innerPadding))
+                MenuPrincipalScreen(noticiaViewModel,retryAction = { noticiaViewModel.getNoticias() },Modifier.padding(innerPadding))
             }
             composable("Perfil") {
                 when (datos) {
@@ -200,10 +200,11 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
                 CreateForo(Modifier.padding(innerPadding), navController)
             }
             composable("Mensajes") {
-                Mensajes(
-                    navController,
-                    Modifier.padding(innerPadding),
-                    messagesVm
+                MensajesScreen(
+                    mensajesViewModel,
+                    retryAction = { mensajesViewModel.getMensajes(datos.correo)},
+                    navController = navController,
+                    modifier =  Modifier . padding (innerPadding)
                 )
             }
             composable("Foros") {
