@@ -24,7 +24,7 @@ interface UserWeLanPutApiService {
         @Body user: CommonUserEdit
     ): Response<CommonUserWeLan>
 
-    @PUT("editBusinessUser")
+    @PUT("/editBusinessUser")
     suspend fun putBusinessUser(
         @Body user: BusinessUserEdit
     ): Response<BusinessUserWeLan>

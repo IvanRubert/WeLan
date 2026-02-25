@@ -14,18 +14,18 @@ interface UserWeLanGetApiService {
         @Query("password") password: String
     ): Response<CommonUserWeLan>
 
-    @GET("commonUser/validated/{email}")
+    @GET("/commonUser/validated/{email}")
     suspend fun getCommonUser(
         @Path("email") email: String,
     ): Response<CommonUserWeLan>
 
-    @GET("businessUser/{email}/{organizacion}")
+    @GET("/businessUser")
     suspend fun getBusinessUserValidate(
-        @Path("email") email: String,
-        @Path("organizacion") organizacion: String
+        @Query("email") email: String,
+        @Query("organizacion") organizacion: String
     ): Response<BusinessUserWeLan>
 
-    @GET("businessUser/validated/{email}")
+    @GET("/businessUser/validated/{email}")
     suspend fun getBusinessUser(
         @Path("email") email: String,
     ): Response<BusinessUserWeLan>

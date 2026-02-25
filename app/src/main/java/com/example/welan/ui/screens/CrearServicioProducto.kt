@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -39,7 +38,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
@@ -51,12 +49,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.welan.R
+import com.example.welan.model.ProductoOServicio
+import com.example.welan.model.UserWelan
 import com.example.welan.ui.componentes.base64ToImageBitmap
 import com.example.welan.ui.componentes.imageUriToBase64
 import com.example.welan.ui.theme.primaryColor
+import com.example.welan.ui.viewmodels.SerOProdViewModel
 
 @Composable
-fun CrearServicioProducto(modifier: Modifier, navController: NavHostController) {
+fun CrearServicioProducto(modifier: Modifier, navController: NavHostController, userWeLan: UserWelan, serOProdViuewModel: SerOProdViewModel) {
     var titulo by remember { mutableStateOf("") }
     var descripcion by remember { mutableStateOf("") }
     var precio by remember { mutableStateOf("") }
@@ -71,7 +72,7 @@ fun CrearServicioProducto(modifier: Modifier, navController: NavHostController) 
     var errorunidadmedida by remember { mutableStateOf(false) }
     var errorenvio by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    var image by remember { mutableStateOf(String()) }
+    var image :String? by remember { mutableStateOf("") }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -179,25 +180,20 @@ fun CrearServicioProducto(modifier: Modifier, navController: NavHostController) 
                 ) {
                     Text("Subir Imagen")
                 }
-                if (base64ToImageBitmap(image) != null) {
+                if (image != null) {
                     Image(
-                        bitmap = base64ToImageBitmap(image)!!,
-                        contentDescription = "Imagen SerOProd",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .size(100.dp)
-                            .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
+                        bitmap = base64ToImageBitmap(image!!)!!,
+                        contentDescription = "ServicioOProducto",
+                        contentScale = ContentScale.FillWidth,
+                        modifier = Modifier.height(50.dp)
                     )
                 } else {
+                    val imagendef = if (!choose) painterResource(R.drawable.ic_producto) else painterResource(R.drawable.ic_servicio)
                     Image(
-                        painter = painterResource(R.drawable.ic_servicios),
-                        contentDescription = "Imagen SerOProd",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .size(100.dp)
-                            .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
+                        painter = imagendef,
+                        contentDescription = "ServicioOProducto",
+                        contentScale = ContentScale.FillWidth,
+                        modifier = Modifier.height(50.dp)
                     )
                 }
             }
@@ -351,6 +347,28 @@ fun CrearServicioProducto(modifier: Modifier, navController: NavHostController) 
                 if (unidadmedida == "") errorunidadmedida = true else errorunidadmedida = false
                 if (choose && envio == "") errorenvio = true else errorenvio = false
                 if (!errortitulo && !errordescripcion && !errorprecio && !errorunidadmedida && ((choose && !errorenvio) || (!choose))) {
+                    val unidad = when(unidadmedida) {
+                        "Kilogramos " -> "KILOGRAMOS"
+                        "Horas" -> "HORAS"
+                        else -> "UNIDAD"
+                    }
+                    val enviar = when(unidadmedida) {
+                        "No enviar " -> "NOENVIO"
+                        "Posibilidad envio" -> "POSSIBILIDADENVIO"
+                        else -> "OBLIGACIONENVIO"
+                    }
+                    val serOProd = ProductoOServicio(
+                        precio = precio.toFloat(),
+                        tipo = if (choose) "Servicio" else "Producto",
+                        tipo_precio = unidad,
+                        img_path = image,
+                        descripcion = descripcion,
+                        envio = if (choose) enviar else "NOENVIO",
+                        correo = userWeLan.correo,
+                        nombre = titulo
+                    )
+                    serOProdViuewModel.postSerOProd(serOProd)
+                    serOProdViuewModel.getSerOProd()
                     navController.popBackStack()
                 }
             },

@@ -8,12 +8,12 @@ import retrofit2.http.POST
 
 interface UserWeLanPostApiService {
 
-    @POST("newCommonUser")
+    @POST("/newCommonUser")
     suspend fun postCommonUser(
         @Body user: CreateCommonUserDTO
     ): Response<Unit>
 
-    @POST("newBusinessUser")
+    @POST("/newBusinessUser")
     suspend fun postBusinessUser(
         @Body user: CreateBusinessUserDTO
     ): Response <Unit>

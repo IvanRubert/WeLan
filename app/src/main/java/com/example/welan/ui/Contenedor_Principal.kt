@@ -246,7 +246,6 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
             composable(
                 route = "ServicioProducto"
             ) {
-                val serOProdViewModel: SerOProdViewModel = viewModel(factory = SerOProdViewModel.Factory)
                 SevicioProducto(
                     serOProdViewModel,
                     Modifier.padding(innerPadding),
@@ -257,7 +256,10 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
                 CrearServicioProducto(
                     Modifier.padding(
                         innerPadding
-                    ), navController
+                    ),
+                    navController,
+                    datos,
+                    serOProdViewModel
                 )
             }
         }

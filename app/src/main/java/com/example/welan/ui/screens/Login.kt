@@ -354,13 +354,11 @@ fun Login(navController: NavController,modifier: Modifier, userViewModel: UserVi
                     }
                 } else {
                     if (esCorreoValido(emailEmpresa)) {
-                        //val organizacion: String = ""
+                        val organizacion: String = "certificado def"
 
-                        // Loguica para sacar el nombre de la organización
-
-                        //if (organizacion != "") {
-                        //    userViewModel.getBusinessUserValidate(email, organizacion, context)
-                        //}
+                        if (organizacion != "") {
+                            userViewModel.getBusinessUserValidate(emailEmpresa, organizacion, context)
+                        }
                     } else {
                         errorEmailEmpresa = true
                     }
