@@ -41,7 +41,10 @@ fun MensajesScreen(
     modifier: Modifier,
     ){
     when(mensajesViewModel.mensajesUiState){
-        is MensajesUiState.Success -> {Mensajes(navController,modifier, (mensajesViewModel.mensajesUiState as MensajesUiState.Success).data) }
+        is MensajesUiState.Success -> {Mensajes(
+            navController,
+            modifier,
+            (mensajesViewModel.mensajesUiState as MensajesUiState.Success).data,mensajesViewModel) }
         is MensajesUiState.Error -> {
             ErrorScreen(retryAction)
         }
@@ -50,13 +53,13 @@ fun MensajesScreen(
 }
 @Composable
 fun Mensajes(navController: NavController, modifier: Modifier = Modifier,
-             mesnajes : List<MensajesData>){
+             mesnajes : List<MensajesData>, messagesViewModel: MessagesViewModel){
         Box(modifier.fillMaxSize()) {
         LazyColumn(modifier = Modifier.fillMaxWidth(0.9f).align(Alignment.TopCenter)) {
             items(mesnajes) { message ->
                 Card(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp).heightIn(min = 50.dp)
                     .clickable{
-                     //   navController.navigate("Chat/${message.imageUserRef}/${message.nameUser}")
+                      navController.navigate("Chat/${messagesViewModel._correo}/${message.correo}")
                     }) {
                     var lastmess =  if (message.lastMessage.length > 15) {
                         "${message.lastMessage.take(15)}..."

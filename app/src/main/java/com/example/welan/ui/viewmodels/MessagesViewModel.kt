@@ -22,8 +22,10 @@ sealed interface MensajesUiState {
 class MessagesViewModel( correo: String,open val weLanRepository: WeLanRepository) : ViewModel() {
 
     var mensajesUiState : MensajesUiState by mutableStateOf(MensajesUiState.Loading)
+    var _correo : String = ""
     init {
         getMensajes(correo)
+        _correo = correo
     }
     fun getMensajes(correo : String){
         viewModelScope.launch {
