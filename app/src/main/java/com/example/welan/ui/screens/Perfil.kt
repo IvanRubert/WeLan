@@ -41,7 +41,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -65,9 +64,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.welan.R
 import com.example.welan.data.GuardarUsuario
-import com.example.welan.data.UserExist
-import com.example.welan.data.UserType
-import com.example.welan.data.UsuarioJson
 import com.example.welan.model.BusinessUserEdit
 import com.example.welan.model.BusinessUserWeLan
 import com.example.welan.model.CommonUserEdit
@@ -109,7 +105,6 @@ fun PerfilUser(user: CommonUserWeLan, navController: NavController, modifier: Mo
                             modifier = Modifier
                                 .clip(CircleShape)
                                 .size(100.dp)
-                                .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
                         )
                     } else {
                         Image(
@@ -119,13 +114,14 @@ fun PerfilUser(user: CommonUserWeLan, navController: NavController, modifier: Mo
                             modifier = Modifier
                                 .clip(CircleShape)
                                 .size(100.dp)
-                                .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
                         )
                     }
+                    Spacer(Modifier.padding(bottom = 8.dp))
                     Button(
                         onClick = { navController.navigate("UserWeLanEdit") },
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
-                    ) { Text("Modificar perfil") }
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
+                        modifier = Modifier.padding(horizontal = 8.dp)
+                    ) { Text(text = "Modificar perfil", textAlign = TextAlign.Center) }
                 }
                 Column(modifier = Modifier.padding(top = 8.dp, end = 16.dp, bottom = 16.dp)) {
                     Text(
@@ -311,7 +307,7 @@ fun PerfilEmpresa(user: BusinessUserWeLan, navController: NavController, modifie
                 runBlocking{
                     GuardarUsuario(context, "", "")
                 }
-                navControllerPrincipal.navigate("Login") {
+                navControllerPrincipal.navigate("Contenedor_Principal") {
                     popUpTo(0){
                         inclusive = true
                     }
@@ -774,6 +770,7 @@ fun AddPasswordDialog(user: CommonUserWeLan, userViewModel: UserViewModel, onDis
 
 @Composable
 fun AddInterestDialogInteres(type: String, list: SnapshotStateList<Interes>, onDismiss: () -> Unit){
+    var interes by remember { mutableStateOf("") }
     var interestTF by remember { mutableStateOf(Interes("", primaryColor.value.toLong())) }
     var isError by remember { mutableStateOf(false) }
     var eMessage = ""
@@ -784,8 +781,8 @@ fun AddInterestDialogInteres(type: String, list: SnapshotStateList<Interes>, onD
         text = {
             Column {
                 OutlinedTextField(
-                    value = interestTF.nombre,
-                    onValueChange = { interestTF.nombre = it },
+                    value = interes,
+                    onValueChange = { interes = it },
                     isError = isError,
                     singleLine = true,
                     label = {Text(text = type)},
@@ -805,6 +802,7 @@ fun AddInterestDialogInteres(type: String, list: SnapshotStateList<Interes>, onD
         confirmButton = {
             TextButton(
                 onClick = {
+                    interestTF.nombre = interes
                     if (interestTF.nombre.isNotBlank()){
                         val temp = interestTF.nombre.trim().lowercase().toCharArray()
                         temp[0] = temp[0].uppercaseChar()

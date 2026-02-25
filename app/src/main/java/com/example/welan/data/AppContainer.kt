@@ -1,8 +1,8 @@
 package com.example.welan.data
 
-import com.example.welan.network.NoticiasGetApiService
-import com.example.welan.network.MensajesWelanApiService
+import com.example.welan.network.NoticiasWeLanGetApiService
 import com.example.welan.network.SerOProdWeLanGetApiService
+import com.example.welan.network.SerOProdWeLanPostApiService
 import com.example.welan.network.UserWeLanGetApiService
 import com.example.welan.network.UserWeLanPostApiService
 import com.example.welan.network.UserWeLanPutApiService
@@ -33,9 +33,6 @@ class DefaultAppContainer: AppContainer{
     private val retrofitpostUserService: UserWeLanPostApiService by lazy {
         retrofit.create(UserWeLanPostApiService::class.java)
     }
-    private val retrofitNoticia: NoticiasGetApiService by lazy {
-        retrofit.create(NoticiasGetApiService::class.java)
-    }
     private val retrofitputUserService: UserWeLanPutApiService by lazy {
         retrofit.create(UserWeLanPutApiService::class.java)
     }
@@ -44,14 +41,22 @@ class DefaultAppContainer: AppContainer{
         retrofit.create(SerOProdWeLanGetApiService::class.java)
     }
 
+    private val retrofitPostSerOProdService: SerOProdWeLanPostApiService by lazy {
+        retrofit.create(SerOProdWeLanPostApiService::class.java)
+    }
+
+    private val retrofitgetNoticiaService: NoticiasWeLanGetApiService by lazy {
+        retrofit.create(NoticiasWeLanGetApiService::class.java)
+    }
+
     override val weLanRepository by lazy {
         NetworkWeLanRepository(
             retrofitgetUserService,
             retrofitpostUserService,
             retrofitputUserService,
             retrofitgetSerOProdService,
-            retrofitNoticia,
-            retrofitgetMessage
+            retrofitPostSerOProdService,
+            retrofitgetNoticiaService
         )
     }
 }

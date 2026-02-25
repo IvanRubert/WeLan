@@ -11,10 +11,12 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.welan.WeLanApplication
 import com.example.welan.data.WeLanRepository
 import com.example.welan.model.Envio
+import com.example.welan.model.ProductoOServicio
 import com.example.welan.model.SerOProd
 import com.example.welan.model.Servicio
 import com.example.welan.model.Unidad
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
@@ -30,12 +32,15 @@ open class SerOProdViewModel(open val weLanRepository: WeLanRepository): ViewMod
     var serOProdUiState: SerOProdUiState by mutableStateOf(SerOProdUiState.Loading)
         private set
 
-    private var _seroprodSelected: MutableStateFlow<SerOProd> = MutableStateFlow(Servicio("","", "", "", 0.00f, Unidad.UNIDADES, Envio.POSSIBILIDADENVIO))
+    private var _seroprodSelected: MutableStateFlow<SerOProd> = MutableStateFlow(Servicio(null,"", "", "", 0.00f, Unidad.UNIDADES, Envio.POSSIBILIDADENVIO))
     val serOProdSelected = _seroprodSelected.asStateFlow()
 
     fun setSerOProdSelected(seroprod: SerOProd){
         _seroprodSelected.value = seroprod
     }
+
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage
 
     init {
         getSerOProdFiltro("")
@@ -46,8 +51,8 @@ open class SerOProdViewModel(open val weLanRepository: WeLanRepository): ViewMod
             serOProdUiState = SerOProdUiState.Loading
             val repuesta = weLanRepository.getSerOProd()
             repuesta.fold(
-                onSuccess = { user ->
-                    serOProdUiState = SerOProdUiState.Success(user)
+                onSuccess = { serOProd ->
+                    serOProdUiState = SerOProdUiState.Success(serOProd)
                 },
                 onFailure = { error ->
                     serOProdUiState = SerOProdUiState.Error(error)
@@ -64,13 +69,28 @@ open class SerOProdViewModel(open val weLanRepository: WeLanRepository): ViewMod
                 serOProdUiState = SerOProdUiState.Loading
                 val repuesta = weLanRepository.getSerOProdFiltro(nombre)
                 repuesta.fold(
-                    onSuccess = { user ->
-                        serOProdUiState = SerOProdUiState.Success(user)
+                    onSuccess = { serOProd ->
+                        serOProdUiState = SerOProdUiState.Success(serOProd)
                     },
                     onFailure = { error ->
                         serOProdUiState = SerOProdUiState.Error(error)
                     }
                 )
+            }
+        }
+    }
+
+    fun postSerOProd(
+        serOProd: ProductoOServicio
+    ){
+        viewModelScope.launch {
+            val repuesta = weLanRepository.postSerOProd(serOProd)
+            if (!repuesta) {
+                if (serOProd.tipo == "Producto")  {
+                    _errorMessage.value = "Error al crear el producto"
+                } else {
+                    _errorMessage.value = "Error al crear el servicio"
+                }
             }
         }
     }

@@ -6,9 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -17,13 +16,13 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
@@ -34,12 +33,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.welan.R
 import com.example.welan.model.Envio
+import com.example.welan.model.Producto
 import com.example.welan.ui.componentes.base64ToImageBitmap
 import com.example.welan.ui.theme.primaryColor
 import com.example.welan.ui.theme.secondaryColor
 import com.example.welan.ui.viewmodels.SerOProdViewModel
-import androidx.compose.runtime.collectAsState
-import com.example.welan.model.Producto
 
 
 @Composable
@@ -49,27 +47,22 @@ fun SevicioProducto(serOProdViewModel: SerOProdViewModel, modifier: Modifier, na
     var errorDireccion by remember { mutableStateOf(false) }
     val selectedFserOProd by serOProdViewModel.serOProdSelected.collectAsState()
 
-    Box(modifier = modifier.fillMaxWidth().fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize()) {
         Column {
-            if (base64ToImageBitmap(selectedFserOProd.pathImage) != null) {
+            if (selectedFserOProd.pathImage != null) {
                 Image(
-                    bitmap = base64ToImageBitmap(selectedFserOProd.pathImage)!!,
-                    contentDescription = selectedFserOProd.nombre,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .size(100.dp)
-                        .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
+                    bitmap = base64ToImageBitmap(selectedFserOProd.pathImage!!)!!,
+                    contentDescription = "ServicioOProducto",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.fillMaxWidth().height(200.dp)
                 )
             } else {
+                val imagendef = if (selectedFserOProd is Producto) painterResource(R.drawable.ic_producto) else painterResource(R.drawable.ic_servicio)
                 Image(
-                    painter = painterResource(R.drawable.imaguserdef),
-                    contentDescription = selectedFserOProd.nombre,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .size(100.dp)
-                        .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
+                    painter = imagendef,
+                    contentDescription = "ServicioOProducto",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.fillMaxWidth().height(200.dp)
                 )
             }
             Text(
