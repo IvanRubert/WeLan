@@ -41,6 +41,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -63,6 +64,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.welan.R
+import com.example.welan.data.GuardarUsuario
+import com.example.welan.data.UserExist
+import com.example.welan.data.UserType
+import com.example.welan.data.UsuarioJson
 import com.example.welan.model.BusinessUserEdit
 import com.example.welan.model.BusinessUserWeLan
 import com.example.welan.model.CommonUserEdit
@@ -73,10 +78,13 @@ import com.example.welan.ui.componentes.compPassword
 import com.example.welan.ui.componentes.imageUriToBase64
 import com.example.welan.ui.theme.primaryColor
 import com.example.welan.ui.viewmodels.UserViewModel
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun PerfilUser(user: CommonUserWeLan, navController: NavController, modifier: Modifier, navControllerPrincipal: NavHostController) {
     var intereses: List<Interes> = emptyList()
+    val context = LocalContext.current
+
     Box {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -167,6 +175,9 @@ fun PerfilUser(user: CommonUserWeLan, navController: NavController, modifier: Mo
         }
         Button(
             onClick = {
+                runBlocking{
+                    GuardarUsuario(context, "", "")
+                }
                 navControllerPrincipal.navigate("Login") {
                     popUpTo(0){
                         inclusive = true
@@ -186,6 +197,7 @@ fun PerfilUser(user: CommonUserWeLan, navController: NavController, modifier: Mo
 @Composable
 fun PerfilEmpresa(user: BusinessUserWeLan, navController: NavController, modifier: Modifier, navControllerPrincipal: NavHostController) {
     var servicios: List<String> = emptyList()
+    val context = LocalContext.current
     Box {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -296,6 +308,9 @@ fun PerfilEmpresa(user: BusinessUserWeLan, navController: NavController, modifie
         }
         Button(
             onClick = {
+                runBlocking{
+                    GuardarUsuario(context, "", "")
+                }
                 navControllerPrincipal.navigate("Login") {
                     popUpTo(0){
                         inclusive = true
