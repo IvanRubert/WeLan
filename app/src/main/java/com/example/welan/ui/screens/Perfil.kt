@@ -311,7 +311,7 @@ fun PerfilEmpresa(user: BusinessUserWeLan, navController: NavController, modifie
                 runBlocking{
                     GuardarUsuario(context, "", "")
                 }
-                navControllerPrincipal.navigate("Login") {
+                navControllerPrincipal.navigate("Contenedor_Principal") {
                     popUpTo(0){
                         inclusive = true
                     }
@@ -774,6 +774,7 @@ fun AddPasswordDialog(user: CommonUserWeLan, userViewModel: UserViewModel, onDis
 
 @Composable
 fun AddInterestDialogInteres(type: String, list: SnapshotStateList<Interes>, onDismiss: () -> Unit){
+    var interes by remember { mutableStateOf("") }
     var interestTF by remember { mutableStateOf(Interes("", primaryColor.value.toLong())) }
     var isError by remember { mutableStateOf(false) }
     var eMessage = ""
@@ -784,8 +785,8 @@ fun AddInterestDialogInteres(type: String, list: SnapshotStateList<Interes>, onD
         text = {
             Column {
                 OutlinedTextField(
-                    value = interestTF.nombre,
-                    onValueChange = { interestTF.nombre = it },
+                    value = interes,
+                    onValueChange = { interes = it },
                     isError = isError,
                     singleLine = true,
                     label = {Text(text = type)},
@@ -805,6 +806,7 @@ fun AddInterestDialogInteres(type: String, list: SnapshotStateList<Interes>, onD
         confirmButton = {
             TextButton(
                 onClick = {
+                    interestTF.nombre = interes
                     if (interestTF.nombre.isNotBlank()){
                         val temp = interestTF.nombre.trim().lowercase().toCharArray()
                         temp[0] = temp[0].uppercaseChar()
