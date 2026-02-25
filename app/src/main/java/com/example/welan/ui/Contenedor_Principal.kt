@@ -149,7 +149,7 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
     ) { innerPadding ->
         var showDialogChanges by remember { mutableStateOf(false) }
 
-        NavHost(navController = navController, startDestination = "Perfil") {
+        NavHost(navController = navController, startDestination = "MenuPrincipal") {
             composable("MenuPrincipal") {
                 MenuPrincipalScreen(noticiaViewModel,retryAction = { serOProdViewModel.getSerOProd() },Modifier.padding(innerPadding))
             }
