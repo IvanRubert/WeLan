@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -72,7 +73,7 @@ fun CrearServicioProducto(modifier: Modifier, navController: NavHostController, 
     var errorunidadmedida by remember { mutableStateOf(false) }
     var errorenvio by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    var image :String? by remember { mutableStateOf("") }
+    var image :String? by remember { mutableStateOf(null) }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -185,7 +186,7 @@ fun CrearServicioProducto(modifier: Modifier, navController: NavHostController, 
                         bitmap = base64ToImageBitmap(image!!)!!,
                         contentDescription = "ServicioOProducto",
                         contentScale = ContentScale.FillWidth,
-                        modifier = Modifier.height(50.dp)
+                        modifier = Modifier.height(100.dp).widthIn(max = 100.dp).padding(10.dp)
                     )
                 } else {
                     val imagendef = if (!choose) painterResource(R.drawable.ic_producto) else painterResource(R.drawable.ic_servicio)
@@ -193,7 +194,7 @@ fun CrearServicioProducto(modifier: Modifier, navController: NavHostController, 
                         painter = imagendef,
                         contentDescription = "ServicioOProducto",
                         contentScale = ContentScale.FillWidth,
-                        modifier = Modifier.height(50.dp)
+                        modifier = Modifier.height(100.dp).padding(10.dp)
                     )
                 }
             }
@@ -223,7 +224,7 @@ fun CrearServicioProducto(modifier: Modifier, navController: NavHostController, 
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth().padding(start = 40.dp, end = 40.dp, bottom = 5.dp)
             ) {
-                Column(modifier = Modifier.weight(0.5f).padding(20.dp)) {
+                Column(modifier = Modifier.weight(4f)) {
                     Text(
                         text = "Precio:",
                         fontSize = 18.sp,
@@ -254,8 +255,8 @@ fun CrearServicioProducto(modifier: Modifier, navController: NavHostController, 
                         )
                     }
                 }
-                Spacer(Modifier.padding(end = 8.dp))
-                Column(modifier = Modifier.weight(0.5f)) {
+                Spacer(Modifier.weight(1f))
+                Column(modifier = Modifier.weight(5f)) {
                     if (choose) {
                         Text(
                             text = "Tipo de Unidad:",

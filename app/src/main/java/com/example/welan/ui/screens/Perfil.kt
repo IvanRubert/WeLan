@@ -218,7 +218,6 @@ fun PerfilEmpresa(user: BusinessUserWeLan, navController: NavController, modifie
                             modifier = Modifier
                                 .clip(CircleShape)
                                 .size(100.dp)
-                                .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
                         )
                     } else {
                         Image(
@@ -228,12 +227,13 @@ fun PerfilEmpresa(user: BusinessUserWeLan, navController: NavController, modifie
                             modifier = Modifier
                                 .clip(CircleShape)
                                 .size(100.dp)
-                                .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
                         )
                     }
+                    Spacer(Modifier.padding(bottom = 8.dp))
                     Button(
                         onClick = { navController.navigate("UserWeLanEdit") },
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
+                        modifier = Modifier.padding(horizontal = 8.dp)
                     ) { Text("Modificar perfil") }
                 }
                 Column(modifier = Modifier.padding(top = 8.dp, end = 16.dp, bottom = 16.dp)) {
@@ -368,7 +368,6 @@ fun UserEdit( userViewModel: UserViewModel, user: CommonUserWeLan, navController
                             modifier = Modifier
                                 .clip(CircleShape)
                                 .size(100.dp)
-                                .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
                         )
                     } else {
                         Image(
@@ -378,14 +377,15 @@ fun UserEdit( userViewModel: UserViewModel, user: CommonUserWeLan, navController
                             modifier = Modifier
                                 .clip(CircleShape)
                                 .size(100.dp)
-                                .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
                         )
                     }
+                    Spacer(Modifier.padding(bottom = 8.dp))
                     Button(
                         onClick = {
                             launcher.launch("image/*")
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
+                        modifier = Modifier.padding(horizontal = 8.dp)
                     ) { Text("Cambiar imagen") }
                 }
                 Column(modifier = Modifier.padding(top = 8.dp, end = 16.dp, bottom = 16.dp)) {
@@ -559,7 +559,6 @@ fun BusinessEdit(userViewModel: UserViewModel, user: BusinessUserWeLan, navContr
                             modifier = Modifier
                                 .clip(CircleShape)
                                 .size(100.dp)
-                                .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
                         )
                     } else {
                         Image(
@@ -569,14 +568,15 @@ fun BusinessEdit(userViewModel: UserViewModel, user: BusinessUserWeLan, navContr
                             modifier = Modifier
                                 .clip(CircleShape)
                                 .size(100.dp)
-                                .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
                         )
                     }
+                    Spacer(Modifier.padding(bottom = 8.dp))
                     Button(
                         onClick = {
                             launcher.launch("image/*")
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
+                        modifier = Modifier.padding(horizontal = 8.dp)
                     ) { Text("Cambiar imagen") }
                 }
                 Column(modifier = Modifier.padding(top = 8.dp, end = 16.dp, bottom = 16.dp)) {
