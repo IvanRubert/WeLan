@@ -41,7 +41,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -65,9 +64,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.welan.R
 import com.example.welan.data.GuardarUsuario
-import com.example.welan.data.UserExist
-import com.example.welan.data.UserType
-import com.example.welan.data.UsuarioJson
 import com.example.welan.model.BusinessUserEdit
 import com.example.welan.model.BusinessUserWeLan
 import com.example.welan.model.CommonUserEdit
@@ -109,7 +105,6 @@ fun PerfilUser(user: CommonUserWeLan, navController: NavController, modifier: Mo
                             modifier = Modifier
                                 .clip(CircleShape)
                                 .size(100.dp)
-                                .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
                         )
                     } else {
                         Image(
@@ -119,13 +114,14 @@ fun PerfilUser(user: CommonUserWeLan, navController: NavController, modifier: Mo
                             modifier = Modifier
                                 .clip(CircleShape)
                                 .size(100.dp)
-                                .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
                         )
                     }
+                    Spacer(Modifier.padding(bottom = 8.dp))
                     Button(
                         onClick = { navController.navigate("UserWeLanEdit") },
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
-                    ) { Text("Modificar perfil") }
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
+                        modifier = Modifier.padding(horizontal = 8.dp)
+                    ) { Text(text = "Modificar perfil", textAlign = TextAlign.Center) }
                 }
                 Column(modifier = Modifier.padding(top = 8.dp, end = 16.dp, bottom = 16.dp)) {
                     Text(
