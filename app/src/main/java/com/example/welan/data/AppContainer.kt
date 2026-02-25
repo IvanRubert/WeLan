@@ -1,5 +1,5 @@
 package com.example.welan.data
-
+import com.example.welan.network.MensajesWelanApiService
 import com.example.welan.network.NoticiasWeLanGetApiService
 import com.example.welan.network.SerOProdWeLanGetApiService
 import com.example.welan.network.SerOProdWeLanPostApiService
@@ -56,7 +56,8 @@ class DefaultAppContainer: AppContainer{
             retrofitputUserService,
             retrofitgetSerOProdService,
             retrofitPostSerOProdService,
-            retrofitgetNoticiaService
+            retrofitgetNoticiaService,
+            retrofitgetMessage
         )
     }
 }
