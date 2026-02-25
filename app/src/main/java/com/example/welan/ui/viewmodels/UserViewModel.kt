@@ -10,7 +10,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.welan.WeLanApplication
-import com.example.welan.data.GaurdarUsuario
+import com.example.welan.data.GuardarUsuario
 import com.example.welan.data.WeLanRepository
 import com.example.welan.model.BusinessUserEdit
 import com.example.welan.model.BusinessUserWeLan
@@ -73,7 +73,7 @@ open class UserViewModel(open val weLanRepository: WeLanRepository): ViewModel()
             val repuesta = weLanRepository.getCommonUserValidate(email, password)
             repuesta.fold(
                 onSuccess = { user ->
-                    GaurdarUsuario(context, email, "User")
+                    GuardarUsuario(context, email, "User")
                     commonUserUiState = CommonUserUiState.Success(user)
                 },
                 onFailure = { error ->
@@ -159,7 +159,7 @@ open class UserViewModel(open val weLanRepository: WeLanRepository): ViewModel()
             repuesta.fold(
                 onSuccess = { user ->
                     businessUserUiState = BusinessUserUiState.Success(user)
-                    GaurdarUsuario(context, email, "Business")
+                    GuardarUsuario(context, email, "Business")
                 },
                 onFailure = { error ->
                     businessUserUiState = BusinessUserUiState.Error(error)

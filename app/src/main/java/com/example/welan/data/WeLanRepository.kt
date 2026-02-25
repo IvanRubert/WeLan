@@ -53,8 +53,7 @@ class NetworkWeLanRepository(
     @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun getCommonUserValidate(email: String, password: String): Result<CommonUserWeLan> {
         return try {
-            //var correo = reemplazararroba(email)
-            var passwordEnc = Encriptador.cifrar(password)
+            val passwordEnc = Encriptador.cifrar(password)
             val respuesta = userWeLanGetApiService.getCommonUserValidate(email, passwordEnc)
             if (respuesta.isSuccessful) {
                 respuesta.body()?.let { user ->
@@ -70,8 +69,7 @@ class NetworkWeLanRepository(
 
     override suspend fun getCommonUser(email: String): Result<CommonUserWeLan> {
         return try {
-            var correo = reemplazararroba(email)
-            val respuesta = userWeLanGetApiService.getCommonUser(correo)
+            val respuesta = userWeLanGetApiService.getCommonUser(email)
             if (respuesta.isSuccessful) {
                 respuesta.body()?.let { user ->
                     Result.success(user)
@@ -103,7 +101,7 @@ class NetworkWeLanRepository(
     @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun postCommonUser(user: CreateCommonUserDTO): Boolean {
         try {
-            var passwordEnc = Encriptador.cifrar(user.passHash)
+            val passwordEnc = Encriptador.cifrar(user.passHash)
             user.passHash = passwordEnc
             val respuesta = userWeLanPostApiService.postCommonUser(user)
             if (respuesta.isSuccessful) {
@@ -119,9 +117,8 @@ class NetworkWeLanRepository(
     @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun putCommonUserPassword(email: String, password: String): Result<CommonUserWeLan> {
         return try {
-            var correo = reemplazararroba(email)
-            var passwordEnc = Encriptador.cifrar(password)
-            val respuesta = userWeLanPutApiService.putCommonUserpassword(correo, passwordEnc)
+            val passwordEnc = Encriptador.cifrar(password)
+            val respuesta = userWeLanPutApiService.putCommonUserpassword(email, passwordEnc)
             if (respuesta.isSuccessful) {
                 respuesta.body()?.let { user ->
                     Result.success(user.copy(passHash = Encriptador.descifrar(user.passHash)))
@@ -152,8 +149,7 @@ class NetworkWeLanRepository(
 
     override suspend fun getBusinessUserValidate(email: String, organizacion: String): Result<BusinessUserWeLan> {
         return try {
-            var correo = reemplazararroba(email)
-            val respuesta = userWeLanGetApiService.getBusinessUserValidate(correo, organizacion)
+            val respuesta = userWeLanGetApiService.getBusinessUserValidate(email, organizacion)
             if (respuesta.isSuccessful) {
                 respuesta.body()?.let { user ->
                     Result.success(user)
@@ -168,8 +164,7 @@ class NetworkWeLanRepository(
 
     override suspend fun getBusinessUser(email: String): Result<BusinessUserWeLan> {
         return try {
-            var correo = reemplazararroba(email)
-            val respuesta = userWeLanGetApiService.getBusinessUser(correo)
+            val respuesta = userWeLanGetApiService.getBusinessUser(email)
             if (respuesta.isSuccessful) {
                 respuesta.body()?.let { user ->
                     Result.success(user)
@@ -237,9 +232,9 @@ class NetworkWeLanRepository(
                     lista.add(
                         Producto(
                             correo = seroprod.correo,
-                            pathImage = seroprod.pathImage,
+                            pathImage = seroprod.img_path?:"",
                             nombre = seroprod.nombre,
-                            descripcion = seroprod.descripcion,
+                            descripcion = seroprod.descripcion?:"",
                             precio = seroprod.precio,
                             tipo_precio = tipoPrecio,
                             envio = envio
@@ -248,10 +243,10 @@ class NetworkWeLanRepository(
                 } else {
                     lista.add(
                         Servicio(
-                            seroprod.pathImage,
+                            seroprod.img_path?:"",
                             seroprod.nombre,
                             seroprod.correo,
-                            seroprod.descripcion,
+                            seroprod.descripcion?:"",
                             seroprod.precio,
                             tipo_precio = tipoPrecio,
                             envio = envio
@@ -290,9 +285,9 @@ class NetworkWeLanRepository(
                     lista.add(
                         Producto(
                             correo = seroprod.correo,
-                            pathImage = seroprod.pathImage,
+                            pathImage = seroprod.img_path?:"",
                             nombre = seroprod.nombre,
-                            descripcion = seroprod.descripcion,
+                            descripcion = seroprod.descripcion?:"",
                             precio = seroprod.precio,
                             tipo_precio = tipoPrecio,
                             envio = envio
@@ -301,10 +296,10 @@ class NetworkWeLanRepository(
                 } else {
                     lista.add(
                         Servicio(
-                            seroprod.pathImage,
+                            seroprod.img_path?:"",
                             seroprod.nombre,
                             seroprod.correo,
-                            seroprod.descripcion,
+                            seroprod.descripcion?:"",
                             seroprod.precio,
                             tipo_precio = tipoPrecio,
                             envio = envio

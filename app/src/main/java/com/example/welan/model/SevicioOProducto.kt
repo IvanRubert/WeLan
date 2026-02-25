@@ -16,7 +16,7 @@ sealed class SerOProd {
     abstract val nombre: String
     abstract val correo: String
     abstract val descripcion: String
-    abstract val precio: Double
+    abstract val precio: Float
     abstract val tipo_precio: Unidad
     abstract val envio: Envio
 }
@@ -27,7 +27,7 @@ data class Servicio(
     override val nombre: String,
     override val correo: String,
     override val descripcion: String,
-    override val precio: Double,
+    override val precio: Float,
     override val tipo_precio: Unidad,
     override val envio: Envio,
 ) : SerOProd()
@@ -38,19 +38,19 @@ data class Producto(
     override val nombre: String,
     override val correo: String,
     override val descripcion: String,
-    override val precio: Double,
+    override val precio: Float,
     override val tipo_precio: Unidad,
     override val envio: Envio,
 ) : SerOProd()
 
 @Serializable
 data class ProductoOServicio(
-    val pathImage: String,
-    val nombre: String,
-    val correo: String,
-    val descripcion: String,
-    val precio: Double,
+    val precio: Float,
+    val tipo: String,
     val tipo_precio: String,
+    val img_path: String?,
+    val descripcion: String?,
     val envio: String,
-    val tipo: String
+    val correo: String,
+    val nombre: String
 )

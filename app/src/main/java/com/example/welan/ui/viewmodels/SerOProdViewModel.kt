@@ -17,8 +17,6 @@ import com.example.welan.model.Unidad
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
-import java.io.IOException
 
 
 sealed interface SerOProdUiState {
@@ -32,7 +30,7 @@ open class SerOProdViewModel(open val weLanRepository: WeLanRepository): ViewMod
     var serOProdUiState: SerOProdUiState by mutableStateOf(SerOProdUiState.Loading)
         private set
 
-    private var _seroprodSelected: MutableStateFlow<SerOProd> = MutableStateFlow(Servicio("","", "", "", 0.0, Unidad.UNIDADES, Envio.POSSIBILIDADENVIO))
+    private var _seroprodSelected: MutableStateFlow<SerOProd> = MutableStateFlow(Servicio("","", "", "", 0.00f, Unidad.UNIDADES, Envio.POSSIBILIDADENVIO))
     val serOProdSelected = _seroprodSelected.asStateFlow()
 
     fun setSerOProdSelected(seroprod: SerOProd){

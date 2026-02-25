@@ -6,10 +6,10 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface SerOProdWeLanGetApiService {
-    @GET("getservicios")
+    @GET("/getservicios_productos")
     suspend fun getSerOProd(): Response<List<ProductoOServicio>>
 
-    @GET("getservicios/{nombre}")
+    @GET("/getservicios_productos/{nombre}")
     suspend fun getSerOProdFiltro(
         @Path("nombre") nombre: String,
     ): Response<List<ProductoOServicio>>

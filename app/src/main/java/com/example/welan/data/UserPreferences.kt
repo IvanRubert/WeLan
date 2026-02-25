@@ -15,7 +15,7 @@ object UserPreferencesKeys {
     val TYPE = stringPreferencesKey("type")
 }
 
-suspend fun GaurdarUsuario(context: Context, email: String, type: String) {
+suspend fun GuardarUsuario(context: Context, email: String, type: String) {
     context.dataStore.edit { prefs ->
         prefs[UserPreferencesKeys.EMAIL] = email
         prefs[UserPreferencesKeys.TYPE] = type
