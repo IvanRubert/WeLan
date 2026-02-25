@@ -22,7 +22,7 @@ interface UserWeLanGetApiService {
     @GET("/businessUser")
     suspend fun getBusinessUserValidate(
         @Query("email") email: String,
-        @Query("organizacion") organizacion: String
+        @Query("certificate") certificate: String
     ): Response<BusinessUserWeLan>
 
     @GET("/businessUser/validated/{email}")

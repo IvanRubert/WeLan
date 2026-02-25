@@ -354,10 +354,10 @@ fun Login(navController: NavController,modifier: Modifier, userViewModel: UserVi
                     }
                 } else {
                     if (esCorreoValido(emailEmpresa)) {
-                        val organizacion: String = "certificado def"
+                        val certificate: String = "certificado def"
 
-                        if (organizacion != "") {
-                            userViewModel.getBusinessUserValidate(emailEmpresa, organizacion, context)
+                        if (certificate != "") {
+                            userViewModel.getBusinessUserValidate(emailEmpresa, certificate, context)
                         }
                     } else {
                         errorEmailEmpresa = true

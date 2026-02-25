@@ -149,13 +149,12 @@ open class UserViewModel(open val weLanRepository: WeLanRepository): ViewModel()
 
     fun getBusinessUserValidate(
         email: String,
-        // Esta variable es del certificado
-        organizacion: String,
+        certificate: String,
         context: Context
     ){
         viewModelScope.launch {
             businessUserUiState = BusinessUserUiState.Loading
-            val repuesta = weLanRepository.getBusinessUserValidate(email, organizacion)
+            val repuesta = weLanRepository.getBusinessUserValidate(email, certificate)
             repuesta.fold(
                 onSuccess = { user ->
                     businessUserUiState = BusinessUserUiState.Success(user)
