@@ -59,6 +59,7 @@ fun CreateForo(modifier: Modifier, navController: NavHostController, foroViewMod
     var image :String? by remember { mutableStateOf(null) }
     val admins = rememberSaveable { mutableStateListOf<String>().apply{addAll(listOf(usuario.correo,))}}
     val intereses = rememberSaveable { mutableStateListOf<Interes>().apply{addAll(emptyList())}}
+    val interes = rememberSaveable { mutableStateListOf<String>().apply{addAll(emptyList())}}
     var errortitulo by remember { mutableStateOf(false) }
     var errorimage by remember { mutableStateOf(false) }
     var showDialogAdd by remember { mutableStateOf(false) }
@@ -181,7 +182,10 @@ fun CreateForo(modifier: Modifier, navController: NavHostController, foroViewMod
                 errortitulo = titulo == ""
                 errorimage = image == null
                 if (!errortitulo && !errorimage) {
-                    val foro = ForoDTO(titulo, image!!, intereses, admins)
+                    intereses.forEach { inter ->
+                        interes.add(inter.nombre)
+                    }
+                    val foro = ForoDTO(titulo, image!!, interes, admins)
                     foroViewModel.postForo(foro)
                     foroViewModel.getForo()
                     navController.popBackStack()

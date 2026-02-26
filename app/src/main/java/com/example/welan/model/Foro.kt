@@ -16,6 +16,6 @@ data class Foro(
 data class ForoDTO(
     val titulo: String,
     val pathImage: String,
-    val intereses: List<Interes>?,
+    val intereses: List<String>?,
     val administradores: List<String>?,
 )
