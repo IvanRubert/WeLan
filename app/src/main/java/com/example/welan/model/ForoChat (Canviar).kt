@@ -1,5 +1,15 @@
 package com.example.welan.model
 
+import kotlinx.serialization.Serializable
+
+
+@Serializable
+data class SendForoMessageDTO(
+    val idForo: Int ,
+    val correoOrigen: String,
+    val message: String
+)
+
 data class ForoChat(
     val origin: String,
     val message: String

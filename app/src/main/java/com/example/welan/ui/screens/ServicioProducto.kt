@@ -206,13 +206,13 @@ fun SevicioProducto(
                                          "kilogramo"
                                      }
                                  }
-                                 chatVm.postChat("Hola, me gustaria comprar el ${tipo}: ${selectedFserOProd.nombre}, ${envio}, con un precio de ${selectedFserOProd.precio} por ${tipounidad} €")
+                                 chatVm.postChat("Hola, me gustaria comprar el ${tipo}: ${selectedFserOProd.nombre}, ${envio}, con un precio de ${selectedFserOProd.precio} € por ${tipounidad}")
                                var user = userViewModel.getBusinessUserMessage(selectedFserOProd.correo)
                                 messagesViewModel.mensajeSelected = MensajesData(
                                     img_conversation = user!!.pathImage!!,
                                     nombre = user!!.nombre,
                                     correo = selectedFserOProd.correo,
-                                    lastMessage = "Hola, me gustaria comprar el ${tipo}: ${selectedFserOProd.nombre}, ${envio}, con un precio de ${selectedFserOProd.precio} por ${tipounidad} €",
+                                    lastMessage = "Hola, me gustaria comprar el ${tipo}: ${selectedFserOProd.nombre}, ${envio}, con un precio de ${selectedFserOProd.precio} € por ${tipounidad}",
                                     dateLastMessage = LocalDateTime.now()
                                 )
                              }else {
@@ -248,7 +248,7 @@ fun SevicioProducto(
                                      }
                                      else -> {}
                                  }
-                                 chatVm.postChat("Hola, me gustaria comprar el ${tipo}: ${selectedFserOProd.nombre}, ${envio}, con un precio de ${selectedFserOProd.precio} por ${tipounidad}")
+                                 chatVm.postChat("Hola, me gustaria comprar el ${tipo}: ${selectedFserOProd.nombre}, ${envio}, con un precio de ${selectedFserOProd.precio} € por ${tipounidad}")
 
                                      var user =
                                          userViewModel.getBusinessUserMessage(selectedFserOProd.correo)
@@ -256,7 +256,7 @@ fun SevicioProducto(
                                          img_conversation = user!!.pathImage!!,
                                          nombre = user!!.nombre,
                                          correo = selectedFserOProd.correo,
-                                         lastMessage = "Hola, me gustaria comprar el ${tipo}: ${selectedFserOProd.nombre}, ${envio}, con un precio de ${selectedFserOProd.precio} por ${tipounidad} €",
+                                         lastMessage = "Hola, me gustaria comprar el ${tipo}: ${selectedFserOProd.nombre}, ${envio}, con un precio de ${selectedFserOProd.precio} € por ${tipounidad}",
                                          dateLastMessage = LocalDateTime.now()
                                      )
                                  }
