@@ -27,8 +27,8 @@ data class MensajesData @RequiresApi(Build.VERSION_CODES.O) constructor(
 )
 
 object LocalDateTimeSerializer : KSerializer<LocalDateTime> {
-    // Usamos ISO_DATE_TIME para soportar el offset (+00:00)
     @RequiresApi(Build.VERSION_CODES.O)
+    // Usamos el formateador flexible por defecto
     private val formatter = DateTimeFormatter.ISO_DATE_TIME
 
     override val descriptor = PrimitiveSerialDescriptor("LocalDateTime", PrimitiveKind.STRING)
@@ -36,13 +36,20 @@ object LocalDateTimeSerializer : KSerializer<LocalDateTime> {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun deserialize(decoder: Decoder): LocalDateTime {
         val string = decoder.decodeString()
-        // Parseamos considerando el offset y convertimos a Local
-        return java.time.OffsetDateTime.parse(string, formatter).toLocalDateTime()
+        return try {
+            // Intento 1: Si trae Offset (ej. 2026-02-22T00:00:00Z)
+            java.time.OffsetDateTime.parse(string).toLocalDateTime()
+        } catch (e: Exception) {
+            // Intento 2: Si es una fecha local pura (ej. 2026-02-22T00:00:00)
+            java.time.LocalDateTime.parse(string)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun serialize(encoder: Encoder, value: LocalDateTime) {
-        encoder.encodeString(value.atOffset(java.time.ZoneOffset.UTC).format(formatter))
+        // Al serializar, tú decides si quieres guardarlo con o sin la 'Z'
+        // Para consistencia con lo que recibes, podrías usar simplemente:
+        encoder.encodeString(value.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
     }
 }
 
@@ -51,13 +58,3 @@ data class ChatMessage(
     val message: String
 )
 
-fun getChatMessages(): List<ChatMessage>{
-    return listOf(
-        ChatMessage("Pepe Gil", "Hola, como estas?"),
-        ChatMessage("Carlos García", "Bien, y tu?"),
-        ChatMessage("Carlos García", "Como va el trabajo?"),
-        ChatMessage("Pepe Gil", "Es un poco estresante como siempre"),
-        ChatMessage("Pepe Gil", "pero me adapto bien"),
-        ChatMessage("Carlos García", "Quedamos para tomar algo?")
-    )
-}
