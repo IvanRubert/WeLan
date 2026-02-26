@@ -265,7 +265,7 @@ fun AdminsForoDialog(onDismiss: () -> Unit, list: SnapshotStateList<String>, mes
                             errorText = "Correo ya esta insertado"
                             return@launch
                         }
-                        val (existe) = messagesViewModel.validarCorreoYMensaje(correo)
+                        val (existe, mensaje) = messagesViewModel.validarCorreoYMensaje(correo)
                         if (!existe) {
                             isError = true
                             errorText = "Error: El correo no existe"
