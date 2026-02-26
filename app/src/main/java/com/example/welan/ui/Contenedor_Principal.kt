@@ -661,9 +661,6 @@ fun DialogDiscardChanges(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
-    val openAlertDialog = remember { mutableStateOf(false) }
-    val context = LocalContext.current
-    val activity = context as Activity
     AlertDialog(
         text = {
             Text(text = "¿Quieres descartar los cambios?")
