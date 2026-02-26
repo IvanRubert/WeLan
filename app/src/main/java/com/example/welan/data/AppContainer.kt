@@ -24,7 +24,7 @@ interface AppContainer {
 }
 
 class DefaultAppContainer: AppContainer{
-    private val baseUrl = "http://odinmigordin.hopto.org:8081/"
+    private val baseUrl = "http://welanapi.duckdns.org/"
 
     private val retrofit = Retrofit.Builder()
         .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))

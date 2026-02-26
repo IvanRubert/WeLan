@@ -238,7 +238,7 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
                 val title = backStackEntry.arguments?.getString("title")
                 topBarTitle = title ?: ""
                 foroChatVm.foroId = selected.id_foro
-                foroChatVm.correo = datos.correo
+                foroChatVm.correo = userWelan.correo
                 LaunchedEffect(selected.id_foro) { foroChatVm.getChat() }
                 ForoChat(
                     userWelan, Modifier.padding(innerPadding),
