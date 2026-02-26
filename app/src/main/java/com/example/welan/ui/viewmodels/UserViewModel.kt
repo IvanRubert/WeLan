@@ -146,6 +146,12 @@ open class UserViewModel(open val weLanRepository: WeLanRepository): ViewModel()
             )
         }
     }
+    suspend fun getBusinessUserMessage(email: String): BusinessUserWeLan? {
+        // No usamos launch aquí, dejamos que quien llame a la función decida el scope
+        val respuesta = weLanRepository.getBusinessUser(email)
+
+        return respuesta.getOrNull() // Devuelve el usuario o null si falló
+    }
 
     fun getBusinessUserValidate(
         email: String,

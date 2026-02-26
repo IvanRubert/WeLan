@@ -263,6 +263,9 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
                     serOProdViewModel,
                     Modifier.padding(innerPadding),
                     navController,
+                    mensajesViewModel,
+                    chatVm,
+                    userViewModel
                 )
             }
             composable("CrearServicioProducto") {
