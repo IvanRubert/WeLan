@@ -88,15 +88,25 @@ private fun ChatContent(
     LazyColumn(state = listState,
         horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.fillMaxSize()) {
         items(chat) { message ->
-            if (message.correo == originUser.correo){
-                Row(horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth(0.8f).padding(vertical = 8.dp)) {
-                    Surface(color = Color.Transparent,
-                        shape = RoundedCornerShape(topStart = 24.dp,
+            if (message.correo == originUser.correo) {
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth(0.8f).padding(vertical = 8.dp)
+                ) {
+                    Surface(
+                        color = Color.Transparent,
+                        shape = RoundedCornerShape(
+                            topStart = 24.dp,
                             topEnd = 16.dp,
                             bottomStart = 24.dp,
                             bottomEnd = 0.dp
-                        ), border = BorderStroke(1.dp, MaterialTheme.colorScheme.onPrimary)) {
-                        Text(text = message.mensaje, modifier = Modifier.padding(8.dp).widthIn(max = 200.dp))
+                        ), border = BorderStroke(1.dp, MaterialTheme.colorScheme.onPrimary)
+                    ) {
+                        Text(
+                            text = message.mensaje!!,
+                            modifier = Modifier.padding(8.dp).widthIn(max = 200.dp)
+                        )
                     }
                     Spacer(Modifier.padding(horizontal = 8.dp))
                     val originBitmap = originUser.pathImage?.let { base64ToImageBitmap(it) }
@@ -107,7 +117,7 @@ private fun ChatContent(
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .clip(CircleShape)
-                                .size(100.dp)
+                                .requiredSize(40.dp)
                                 .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
                         )
                     } else {
@@ -117,14 +127,19 @@ private fun ChatContent(
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .clip(CircleShape)
-                                .size(100.dp)
+                                .requiredSize(40.dp)
                                 .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
                         )
                     }
                 }
             } else {
-                Row(horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth(0.8f).padding(vertical = 8.dp)) {
-                    val otherUserBitmap = if (destinationImgRef.isNotBlank()) base64ToImageBitmap(destinationImgRef) else null
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth(0.8f).padding(vertical = 8.dp)
+                ) {
+                    val otherUserBitmap =
+                        if (destinationImgRef.isNotBlank()) base64ToImageBitmap(destinationImgRef) else null
                     if (otherUserBitmap != null) {
                         Image(
                             bitmap = otherUserBitmap,
@@ -145,16 +160,23 @@ private fun ChatContent(
                         )
                     }
                     Spacer(Modifier.padding(horizontal = 8.dp))
-                    Surface(color = Color.Transparent,
-                        shape = RoundedCornerShape(topEnd = 24.dp,
+                    Surface(
+                        color = Color.Transparent,
+                        shape = RoundedCornerShape(
+                            topEnd = 24.dp,
                             topStart = 16.dp,
                             bottomEnd = 24.dp,
                             bottomStart = 0.dp
-                        ), border = BorderStroke(1.dp, MaterialTheme.colorScheme.onPrimary)) {
-                        Text(text = message.mensaje, modifier = Modifier.padding(8.dp).widthIn(max = 200.dp))
+                        ), border = BorderStroke(1.dp, MaterialTheme.colorScheme.onPrimary)
+                    ) {
+                        Text(
+                            text = message.mensaje!!,
+                            modifier = Modifier.padding(8.dp).widthIn(max = 200.dp)
+                        )
                     }
                 }
             }
         }
     }
+
 }

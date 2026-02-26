@@ -43,12 +43,10 @@ class ChatViewModel(open val weLanRepository: WeLanRepository): ViewModel() {
     var correo1 : String = ""
     var correo2 : String = ""
 
-    fun getChat() {
-        if (correo2.isEmpty()) return
-        val email2 = correo2
+    fun getChat(){
         viewModelScope.launch {
             chatUiState = ChatUiState.Loading
-            val respuesta = weLanRepository.getChat(correo1, email2)
+            val respuesta = weLanRepository.getChat(correo1, correo2)
             respuesta.fold(
                 onSuccess = { lista ->
                     _chat.clear()
@@ -65,7 +63,7 @@ class ChatViewModel(open val weLanRepository: WeLanRepository): ViewModel() {
             )
             while(isActive){
                 delay(5000)
-                val respuesta = weLanRepository.getChat(correo1, email2)
+                val respuesta = weLanRepository.getChat(correo1, correo2)
                 respuesta.fold(
                     onSuccess = { lista ->
                         _chat.clear()

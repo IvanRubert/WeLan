@@ -8,8 +8,8 @@ import java.time.LocalDateTime
 @Serializable
 data class chatDTO(
     var correo : String,
-    var mensaje : String,
+    var mensaje : String ?,
     @SerialName("fecha")
     @Serializable(with = LocalDateTimeSerializer::class)
-    val dateLastMessage: LocalDateTime
+    val dateLastMessage: LocalDateTime ? 
 )

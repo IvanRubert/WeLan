@@ -13,17 +13,22 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Serializable
+data class MensajesDataCreateDTO(
+    val correoOrigen : String ,
+    val correoDestino : String ,
+)
+@Serializable
 data class MensajesData @RequiresApi(Build.VERSION_CODES.O) constructor(
     val img_conversation: String,
     val nombre: String,
     val correo: String,
 
     @SerialName("lastMessage") // <--- Forzamos que lea "lastMessage" del JSON
-    val lastMessage: String,
+    val lastMessage: String?,
 
     @SerialName("fecha")
     @Serializable(with = LocalDateTimeSerializer::class)
-    val dateLastMessage: LocalDateTime // Esta será tu fecha real
+    val dateLastMessage: LocalDateTime? // Esta será tu fecha real
 )
 
 object LocalDateTimeSerializer : KSerializer<LocalDateTime> {
