@@ -217,7 +217,7 @@ class NetworkWeLanRepository(
             val body = respuesta.body() ?: return Result.failure(Exception("Respuesta vacía"))
             val lista = mutableListOf<SerOProd>()
             body.forEach { seroprod ->
-                val tipoPrecio = when (seroprod.tipo_precio) {
+                val tipoPrecio = when (seroprod.tipoPrecio) {
                     "UNIDAD" -> Unidad.UNIDADES
                     "HORAS" -> Unidad.HORAS
                     "KILOGRAMOS" -> Unidad.KILOGRAMOS
@@ -270,7 +270,7 @@ class NetworkWeLanRepository(
             val body = respuesta.body() ?: return Result.failure(Exception("Respuesta vacía"))
             val lista = mutableListOf<SerOProd>()
             body.forEach { seroprod ->
-                val tipoPrecio = when (seroprod.tipo_precio) {
+                val tipoPrecio = when (seroprod.tipoPrecio) {
                     "UNIDAD" -> Unidad.UNIDADES
                     "HORAS" -> Unidad.HORAS
                     "KILOGRAMOS" -> Unidad.KILOGRAMOS

@@ -47,7 +47,7 @@ data class Producto(
 data class ProductoOServicio(
     val precio: Float,
     val tipo: String,
-    val tipo_precio: String,
+    val tipoPrecio: String,
     val img_path: String?,
     val descripcion: String?,
     val envio: String,
