@@ -1,11 +1,8 @@
 package com.example.welan.network
 
 import com.example.welan.model.Foro
-import com.example.welan.model.SendForoMessageDTO
 import retrofit2.Response
-import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface ForoWeLanGetApiService {
