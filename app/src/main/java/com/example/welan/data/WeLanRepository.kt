@@ -21,15 +21,15 @@ import com.example.welan.model.SendForoChatDTO
 import com.example.welan.model.SerOProd
 import com.example.welan.model.Servicio
 import com.example.welan.model.Unidad
-import com.example.welan.model.UserWelan
-import com.example.welan.network.ForoWeLanGetApiService
-import com.example.welan.network.MensajesWelanGetApiService
+import com.example.welan.model.UserWelanDTO
 import com.example.welan.model.chatDTO
 import com.example.welan.model.sendchatDTO
+import com.example.welan.network.ForoWeLanGetApiService
 import com.example.welan.network.ForoWeLanPostApiService
 import com.example.welan.network.GetChatsWelanApiService
 import com.example.welan.network.GetForoChatsWelanApiService
 import com.example.welan.network.GetUsersByEmailListApiService
+import com.example.welan.network.MensajesWelanGetApiService
 import com.example.welan.network.NoticiasWeLanGetApiService
 import com.example.welan.network.PostChatApiService
 import com.example.welan.network.PostForoChatApiService
@@ -71,7 +71,7 @@ interface WeLanRepository {
     suspend fun postMessage(conversacion : MensajesDataCreateDTO)
     suspend fun getForoChat(idForo: Int) : Result<List<ForoChatDTO>>
     suspend fun postForoChat(chat : SendForoChatDTO) : ForoChatDTO
-    suspend fun getUsersByEmailList(emailList : List<String>) : List<UserWelan>
+    suspend fun getUsersByEmailList(emailList : List<String>) : List<UserWelanDTO>
 
 }
 
@@ -518,7 +518,7 @@ class NetworkWeLanRepository(
         } as ForoChatDTO
     }
 
-    override suspend fun getUsersByEmailList(emailList: List<String>): List<UserWelan> {
+    override suspend fun getUsersByEmailList(emailList: List<String>): List<UserWelanDTO> {
         return try {
             val respuesta = getUsersByEmailListApiService.getUsersByEmailList(emailList)
             if(respuesta.isSuccessful){
@@ -528,6 +528,6 @@ class NetworkWeLanRepository(
             }
         } catch (e: Exception) {
             emptyList()
-        } as List<UserWelan>
+        } as List<UserWelanDTO>
     }
 }

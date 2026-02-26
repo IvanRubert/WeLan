@@ -98,6 +98,7 @@ import com.example.welan.ui.viewmodels.MessagesViewModel
 import com.example.welan.ui.viewmodels.NoticiasViewModel
 import com.example.welan.ui.viewmodels.SerOProdViewModel
 import com.example.welan.ui.viewmodels.UserViewModel
+import androidx.compose.runtime.collectAsState
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -227,9 +228,12 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
                 "ForoChat/{title}", arguments = listOf(
                 navArgument("title") { type = NavType.StringType }
             )) { backStackEntry ->
+                val selected = foroViewModel.foroSelected.collectAsState().value
                 val title = backStackEntry.arguments?.getString("title")
                 topBarTitle = title ?: ""
-
+                foroChatVm.foroId = selected.id_foro
+                foroChatVm.correo = datos.correo
+                LaunchedEffect(selected.id_foro) { foroChatVm.getChat() }
                 ForoChat(
                     datos, Modifier.padding(innerPadding),
                     foroChatVm

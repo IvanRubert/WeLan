@@ -40,7 +40,7 @@ import com.example.welan.ui.viewmodels.ForoChatViewModel
 
 @Composable
 fun ForoChat(originUser: UserWelan, modifier: Modifier = Modifier,
-         viewModel: ForoChatViewModel,
+         viewModel: ForoChatViewModel
 ) {
     val listState = rememberLazyListState()
     val chatUiState = viewModel.chatUiState
@@ -98,7 +98,7 @@ private fun ForoChatContent(
     LazyColumn(state = listState,
         horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.fillMaxSize()) {
         items(chat){ message ->
-            if (message.correo == originUser.nombre){
+            if (message.correo == originUser.correo){
                 Row(
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically,
@@ -148,13 +148,13 @@ private fun ForoChatContent(
                     }
                 }
             } else{
-                val user = viewModel.usersList.filter { message.correo == it.correo }.first()
+                val user = viewModel.usersList.firstOrNull { message.correo == it.correo }
                 Row(horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth(0.8f).padding(vertical = 8.dp)) {
                     Column {
-                        Text(user.nombre)
+                        Text(user?.nombre?:"NULL")
                         Spacer(Modifier.padding(start = 8.dp, top = 8.dp))
                         Row {
-                            val originBitmap = originUser.pathImage?.let { base64ToImageBitmap(it) }
+                            val originBitmap = user?.pathImage?.let { base64ToImageBitmap(it) }
                             if (originBitmap != null) {
                                 Image(
                                     bitmap = originBitmap,
@@ -174,6 +174,7 @@ private fun ForoChatContent(
                                         .requiredSize(40.dp)
                                 )
                             }
+                            Spacer(Modifier.padding(horizontal = 8.dp))
                             Surface(
                                 color = Color.Transparent,
                                 shape = RoundedCornerShape(

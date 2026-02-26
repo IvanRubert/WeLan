@@ -15,7 +15,7 @@ import com.example.welan.WeLanApplication
 import com.example.welan.data.WeLanRepository
 import com.example.welan.model.ForoChatDTO
 import com.example.welan.model.SendForoChatDTO
-import com.example.welan.model.UserWelan
+import com.example.welan.model.UserWelanDTO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.isActive
@@ -39,7 +39,7 @@ class ForoChatViewModel(open val weLanRepository: WeLanRepository): ViewModel() 
     private val _scrollToEnd = MutableSharedFlow<Unit>()
     val scrollToEnd = _scrollToEnd
 
-    private var _usersList = mutableStateListOf<UserWelan>()
+    private var _usersList = mutableStateListOf<UserWelanDTO>()
     val usersList = _usersList
 
     var foroId : Int = 0

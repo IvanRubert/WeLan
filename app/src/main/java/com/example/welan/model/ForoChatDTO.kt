@@ -13,3 +13,10 @@ data class ForoChatDTO(
     @Serializable(with = LocalDateTimeSerializer::class)
     val dateLastMessage: LocalDateTime ? 
 )
+
+@Serializable
+data class UserWelanDTO(
+    val pathImage: String?,
+    val nombre: String,
+    val correo: String
+)
