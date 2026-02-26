@@ -1,5 +1,8 @@
 package com.example.welan.ui.screens
 
+import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,19 +37,37 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.welan.R
 import com.example.welan.model.Envio
+import com.example.welan.model.MensajesData
 import com.example.welan.model.Producto
+import com.example.welan.model.Servicio
+import com.example.welan.model.Unidad
 import com.example.welan.ui.componentes.base64ToImageBitmap
 import com.example.welan.ui.theme.primaryColor
 import com.example.welan.ui.theme.secondaryColor
+import com.example.welan.ui.viewmodels.ChatViewModel
+import com.example.welan.ui.viewmodels.MessagesViewModel
 import com.example.welan.ui.viewmodels.SerOProdViewModel
+import com.example.welan.ui.viewmodels.UserViewModel
+import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 
+@SuppressLint("SuspiciousIndentation")
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun SevicioProducto(serOProdViewModel: SerOProdViewModel, modifier: Modifier, navController: NavHostController) {
+fun SevicioProducto(
+    serOProdViewModel: SerOProdViewModel,
+    modifier: Modifier,
+    navController: NavHostController,
+    messagesViewModel: MessagesViewModel,
+    chatVm: ChatViewModel,
+    userViewModel: UserViewModel
+) {
     var direccion by remember { mutableStateOf("") }
     var envio by remember { mutableStateOf(false) }
     var errorDireccion by remember { mutableStateOf(false) }
     val selectedFserOProd by serOProdViewModel.serOProdSelected.collectAsState()
+    val scope = rememberCoroutineScope()
 
     Box(modifier = modifier.fillMaxSize()) {
         Column {
@@ -146,11 +168,102 @@ fun SevicioProducto(serOProdViewModel: SerOProdViewModel, modifier: Modifier, na
 
             Button(
                 onClick = {
+
                     if ((direccion == "" && envio) || (direccion == "" && selectedFserOProd.envio == Envio.OBLIGACIONENVIO)) {
                         errorDireccion = true
                     } else {
-                        navController.popBackStack()
+                        scope.launch {
+                        val (existe, tieneMensaje) = messagesViewModel.validarCorreoYMensaje(serOProdViewModel.serOProdSelected.value.correo)
+
+
+                             if (tieneMensaje) {
+                                 chatVm.correo1 = messagesViewModel._correo
+                                 chatVm.correo2 = serOProdViewModel.serOProdSelected.value.correo
+                                 var tipo = if (serOProdViewModel.serOProdSelected.value is Servicio){
+                                      "Servicio"
+                                 }else{
+                                     "Producto"
+                                 }
+
+                                 var envio = when(serOProdViewModel.serOProdSelected.value.envio){
+                                     Envio.NOENVIO -> {
+                                        "sin posibilidad de envio"
+                                     }
+                                     Envio.POSSIBILIDADENVIO -> {
+                                         "con posibilidad de envio"
+                                     }
+
+                                     else -> {"con envio obligatorio" }
+                                 }
+                                 var tipounidad = when(selectedFserOProd.tipo_precio){
+                                     Unidad.UNIDADES -> {
+                                         "unidad"
+                                     }
+                                     Unidad.HORAS -> {
+                                         "hora"
+                                     }
+                                     Unidad.KILOGRAMOS -> {
+                                         "kilogramo"
+                                     }
+                                 }
+                                 chatVm.postChat("Hola, me gustaria comprar el ${tipo}: ${selectedFserOProd.nombre}, ${envio}, con un precio de ${selectedFserOProd.precio} por ${tipounidad} €")
+                               var user = userViewModel.getBusinessUserMessage(selectedFserOProd.correo)
+                                messagesViewModel.mensajeSelected = MensajesData(
+                                    img_conversation = user!!.pathImage!!,
+                                    nombre = user!!.nombre,
+                                    correo = selectedFserOProd.correo,
+                                    lastMessage = "Hola, me gustaria comprar el ${tipo}: ${selectedFserOProd.nombre}, ${envio}, con un precio de ${selectedFserOProd.precio} por ${tipounidad} €",
+                                    dateLastMessage = LocalDateTime.now()
+                                )
+                             }else {
+
+                                messagesViewModel.createMessage(serOProdViewModel.serOProdSelected.value.correo)
+                                chatVm.correo1 = messagesViewModel._correo
+                                chatVm.correo2 = serOProdViewModel.serOProdSelected.value.correo
+                                 var tipo = if (serOProdViewModel.serOProdSelected.value is Servicio){
+                                     "Servicio"
+                                 }else{
+                                     "Producto"
+                                 }
+
+                                 var envio = when(serOProdViewModel.serOProdSelected.value.envio){
+                                     Envio.NOENVIO -> {
+                                         "sin posibilidad de envio"
+                                     }
+                                     Envio.POSSIBILIDADENVIO -> {
+                                         "con posibilidad de envio"
+                                     }
+
+                                     else -> {"con envio obligatorio" }
+                                 }
+                                 var tipounidad = when(selectedFserOProd.tipo_precio){
+                                     Unidad.UNIDADES -> {
+                                         "unidad"
+                                     }
+                                     Unidad.HORAS -> {
+                                         "hora"
+                                     }
+                                     Unidad.KILOGRAMOS -> {
+                                         "kilogramo"
+                                     }
+                                     else -> {}
+                                 }
+                                 chatVm.postChat("Hola, me gustaria comprar el ${tipo}: ${selectedFserOProd.nombre}, ${envio}, con un precio de ${selectedFserOProd.precio} por ${tipounidad}")
+
+                                     var user =
+                                         userViewModel.getBusinessUserMessage(selectedFserOProd.correo)
+                                     messagesViewModel.mensajeSelected = MensajesData(
+                                         img_conversation = user!!.pathImage!!,
+                                         nombre = user!!.nombre,
+                                         correo = selectedFserOProd.correo,
+                                         lastMessage = "Hola, me gustaria comprar el ${tipo}: ${selectedFserOProd.nombre}, ${envio}, con un precio de ${selectedFserOProd.precio} por ${tipounidad} €",
+                                         dateLastMessage = LocalDateTime.now()
+                                     )
+                                 }
+                            navController.navigate("Chat")
+                        }
                     }
+
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
