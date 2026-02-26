@@ -15,7 +15,7 @@ data class Foro(
 @Serializable
 data class ForoDTO(
     val titulo: String,
-    val pathImage: String,
-    val intereses: List<String>?,
-    val administradores: List<String>?,
-)
+    val interesList: List<String>,
+    val correosList: List<String>,
+    val pathImage: String
+    )
