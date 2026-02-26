@@ -98,6 +98,7 @@ import com.example.welan.ui.viewmodels.MessagesViewModel
 import com.example.welan.ui.viewmodels.NoticiasViewModel
 import com.example.welan.ui.viewmodels.SerOProdViewModel
 import com.example.welan.ui.viewmodels.UserViewModel
+import androidx.compose.runtime.collectAsState
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -143,7 +144,7 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
     var topBarTitle by remember { mutableStateOf("") }
     var topBarImg by remember { mutableStateOf<String?>(null) }
     val serOProdViewModel: SerOProdViewModel = viewModel(factory = SerOProdViewModel.Factory)
-    val foroChatVm: ForoChatViewModel = viewModel()
+    val foroChatVm: ForoChatViewModel = viewModel(factory = ForoChatViewModel.provideFactory())
     val chatVm: ChatViewModel = viewModel(factory = ChatViewModel.provideFactory())
 
     Scaffold(
@@ -233,9 +234,12 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
                 "ForoChat/{title}", arguments = listOf(
                 navArgument("title") { type = NavType.StringType }
             )) { backStackEntry ->
+                val selected = foroViewModel.foroSelected.collectAsState().value
                 val title = backStackEntry.arguments?.getString("title")
                 topBarTitle = title ?: ""
-
+                foroChatVm.foroId = selected.id_foro
+                foroChatVm.correo = datos.correo
+                LaunchedEffect(selected.id_foro) { foroChatVm.getChat() }
                 ForoChat(
                     userWelan, Modifier.padding(innerPadding),
                     foroChatVm
@@ -550,7 +554,7 @@ fun MyNaviagationBar(
                         keyboardActions = KeyboardActions(
                             onSend = {
                                 if (textField.isNotBlank()) {
-                                    foroChatVm.addMessage(textField, usuarionombre)
+                                    foroChatVm.postChat(textField)
                                 }
                                 textField = ""
                             }
@@ -560,7 +564,7 @@ fun MyNaviagationBar(
                     IconButton(
                         onClick = {
                             if (textField.isNotBlank()) {
-                                foroChatVm.addMessage(textField, usuarionombre)
+                                foroChatVm.postChat(textField)
                             }
                             textField = ""
                         },

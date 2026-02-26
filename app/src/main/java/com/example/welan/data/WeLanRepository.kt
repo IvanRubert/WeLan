@@ -10,23 +10,29 @@ import com.example.welan.model.CreateBusinessUserDTO
 import com.example.welan.model.CreateCommonUserDTO
 import com.example.welan.model.Envio
 import com.example.welan.model.Foro
+import com.example.welan.model.ForoChatDTO
 import com.example.welan.model.ForoDTO
 import com.example.welan.model.MensajesData
 import com.example.welan.model.MensajesDataCreateDTO
 import com.example.welan.model.NoticiDTO
 import com.example.welan.model.Producto
 import com.example.welan.model.ProductoOServicio
+import com.example.welan.model.SendForoChatDTO
 import com.example.welan.model.SerOProd
 import com.example.welan.model.Servicio
 import com.example.welan.model.Unidad
-import com.example.welan.network.ForoWeLanGetApiService
-import com.example.welan.network.MensajesWelanGetApiService
+import com.example.welan.model.UserWelanDTO
 import com.example.welan.model.chatDTO
 import com.example.welan.model.sendchatDTO
+import com.example.welan.network.ForoWeLanGetApiService
 import com.example.welan.network.ForoWeLanPostApiService
 import com.example.welan.network.GetChatsWelanApiService
+import com.example.welan.network.GetForoChatsWelanApiService
+import com.example.welan.network.GetUsersByEmailListApiService
+import com.example.welan.network.MensajesWelanGetApiService
 import com.example.welan.network.NoticiasWeLanGetApiService
 import com.example.welan.network.PostChatApiService
+import com.example.welan.network.PostForoChatApiService
 import com.example.welan.network.PostMensajesWelanApiService
 import com.example.welan.network.SerOProdWeLanGetApiService
 import com.example.welan.network.SerOProdWeLanPostApiService
@@ -62,8 +68,11 @@ interface WeLanRepository {
     suspend fun postForo(foro: ForoDTO): Boolean
     suspend fun getForoFiltro(nombre: String): Result<List<Foro>>
     suspend fun postChat(chat : sendchatDTO) : chatDTO
-
     suspend fun postMessage(conversacion : MensajesDataCreateDTO)
+    suspend fun getForoChat(idForo: Int) : Result<List<ForoChatDTO>>
+    suspend fun postForoChat(chat : SendForoChatDTO) : ForoChatDTO
+    suspend fun getUsersByEmailList(emailList : List<String>) : List<UserWelanDTO>
+
 }
 
 class NetworkWeLanRepository(
@@ -78,7 +87,10 @@ class NetworkWeLanRepository(
     private val foroWeLanPostApiService: ForoWeLanPostApiService,
     private val chatsWelanApiService: GetChatsWelanApiService,
     private val chatsPostApiService : PostChatApiService,
-    private val postMensajesWelanApiService : PostMensajesWelanApiService
+    private val postMensajesWelanApiService : PostMensajesWelanApiService,
+    private val getForoChatsWelanApiService : GetForoChatsWelanApiService,
+    private val foroChatsPostApiService : PostForoChatApiService,
+    private val getUsersByEmailListApiService : GetUsersByEmailListApiService
 ): WeLanRepository {
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -471,5 +483,51 @@ class NetworkWeLanRepository(
         } catch (e: Exception) {
             Result.failure(e)
         }
+    }
+
+    override suspend fun getForoChat(idForo: Int): Result<List<ForoChatDTO>> {
+        return try {
+            val respuesta = getForoChatsWelanApiService.getConversation(idForo)
+            if (respuesta.isSuccessful) {
+                respuesta.body()?.let { chat ->
+                    Result.success(chat)
+                } ?: Result.failure(Exception("Respuesta vacia"))
+            } else {
+                Result.failure(Exception("Error: ${respuesta.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override suspend fun postForoChat(chat : SendForoChatDTO): ForoChatDTO{
+        return try {
+            val respuesta = foroChatsPostApiService.postChat (chat)
+            if (respuesta.isSuccessful) {
+                ForoChatDTO(
+                    correo = chat.correoOrigen,
+                    mensaje = chat.message,
+                    dateLastMessage = LocalDateTime.now()
+                )
+            } else {
+                throw Exception("No se ha podido enviar el mensaje")
+            }
+        } catch (e: Exception) {
+            e.message
+        } as ForoChatDTO
+    }
+
+    override suspend fun getUsersByEmailList(emailList: List<String>): List<UserWelanDTO> {
+        return try {
+            val respuesta = getUsersByEmailListApiService.getUsersByEmailList(emailList)
+            if(respuesta.isSuccessful){
+                respuesta.body()
+            }else {
+                emptyList()
+            }
+        } catch (e: Exception) {
+            emptyList()
+        } as List<UserWelanDTO>
     }
 }

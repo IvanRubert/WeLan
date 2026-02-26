@@ -117,7 +117,6 @@ private fun ChatContent(
                             modifier = Modifier
                                 .clip(CircleShape)
                                 .requiredSize(40.dp)
-//                                .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
                         )
                     } else {
                         Image(
@@ -127,7 +126,6 @@ private fun ChatContent(
                             modifier = Modifier
                                 .clip(CircleShape)
                                 .requiredSize(40.dp)
-//                                .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
                         )
                     }
                 }
