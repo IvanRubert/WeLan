@@ -10,6 +10,7 @@ import com.example.welan.model.CreateBusinessUserDTO
 import com.example.welan.model.CreateCommonUserDTO
 import com.example.welan.model.Envio
 import com.example.welan.model.Foro
+import com.example.welan.model.ForoChatDTO
 import com.example.welan.model.ForoDTO
 import com.example.welan.model.MensajesData
 import com.example.welan.model.MensajesDataCreateDTO
@@ -25,6 +26,7 @@ import com.example.welan.model.chatDTO
 import com.example.welan.model.sendchatDTO
 import com.example.welan.network.ForoWeLanPostApiService
 import com.example.welan.network.GetChatsWelanApiService
+import com.example.welan.network.GetForoChatsWelanApiService
 import com.example.welan.network.NoticiasWeLanGetApiService
 import com.example.welan.network.PostChatApiService
 import com.example.welan.network.PostMensajesWelanApiService
@@ -62,8 +64,9 @@ interface WeLanRepository {
     suspend fun postForo(foro: ForoDTO): Boolean
     suspend fun getForoFiltro(nombre: String): Result<List<Foro>>
     suspend fun postChat(chat : sendchatDTO) : chatDTO
-
     suspend fun postMessage(conversacion : MensajesDataCreateDTO)
+    suspend fun getForoChat(idForo: Int) : Result<List<ForoChatDTO>>
+
 }
 
 class NetworkWeLanRepository(
@@ -78,7 +81,8 @@ class NetworkWeLanRepository(
     private val foroWeLanPostApiService: ForoWeLanPostApiService,
     private val chatsWelanApiService: GetChatsWelanApiService,
     private val chatsPostApiService : PostChatApiService,
-    private val postMensajesWelanApiService : PostMensajesWelanApiService
+    private val postMensajesWelanApiService : PostMensajesWelanApiService,
+    private val getForoChatsWelanApiService : GetForoChatsWelanApiService
 ): WeLanRepository {
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -465,6 +469,21 @@ class NetworkWeLanRepository(
                 return respuesta.body().let { comp ->
                     Result.success(comp) as Result<Boolean>
                 }
+            } else {
+                Result.failure(Exception("Error: ${respuesta.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getForoChat(idForo: Int): Result<List<ForoChatDTO>> {
+        return try {
+            val respuesta = getForoChatsWelanApiService.getConversation(idForo)
+            if (respuesta.isSuccessful) {
+                respuesta.body()?.let { chat ->
+                    Result.success(chat)
+                } ?: Result.failure(Exception("Respuesta vacia"))
             } else {
                 Result.failure(Exception("Error: ${respuesta.code()}"))
             }
