@@ -3,6 +3,7 @@ package com.example.welan.ui.screens
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,9 +14,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -31,30 +34,61 @@ import androidx.compose.ui.unit.dp
 import com.example.welan.R
 import com.example.welan.model.UserWelan
 import com.example.welan.ui.componentes.base64ToImageBitmap
+import com.example.welan.ui.viewmodels.ChatUiState
 import com.example.welan.ui.viewmodels.ChatViewModel
 
 @Composable
-fun Chat(originUser: UserWelan, destinationImgRef: Int, destinationName: String, modifier: Modifier = Modifier,
-         viewModel: ChatViewModel){
+fun Chat(originUser: UserWelan, destinationImgRef: String, destinationName: String, modifier: Modifier = Modifier,
+         viewModel: ChatViewModel) {
     val listState = rememberLazyListState()
+    val chatUiState = viewModel.chatUiState
+    val chat = viewModel.chat
 
-    LaunchedEffect(viewModel.chat.size) {
-        if (viewModel.chat.isNotEmpty()) {
-            listState.scrollToItem(viewModel.chat.size - 1)
+    LaunchedEffect(chat.size) {
+        if (chat.isNotEmpty()) {
+            listState.scrollToItem(chat.size - 1)
         }
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.scrollToEnd.collect {
-            if (viewModel.chat.isNotEmpty()) {
-                listState.animateScrollToItem(viewModel.chat.size - 1)
+    when {
+        chatUiState is ChatUiState.Loading && chat.isEmpty() -> {
+            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
             }
         }
+        chatUiState is ChatUiState.Error && chat.isEmpty() -> {
+            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(
+                    text = "Error al cargar el chat",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+        }
+        else -> ChatContent(
+            originUser = originUser,
+            destinationImgRef = destinationImgRef,
+            destinationName = destinationName,
+            modifier = modifier,
+            viewModel = viewModel,
+            listState = listState
+        )
     }
+}
+
+@Composable
+private fun ChatContent(
+    originUser: UserWelan,
+    destinationImgRef: String,
+    destinationName: String,
+    modifier: Modifier,
+    viewModel: ChatViewModel,
+    listState: LazyListState
+) {
+    val chat = viewModel.chat
     LazyColumn(state = listState,
         horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.fillMaxSize()) {
-        items(viewModel.chat){ message ->
-            if (message.origin == originUser.nombre){
+        items(chat) { message ->
+            if (message.correo == originUser.correo){
                 Row(horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth(0.8f).padding(vertical = 8.dp)) {
                     Surface(color = Color.Transparent,
                         shape = RoundedCornerShape(topStart = 24.dp,
@@ -62,12 +96,13 @@ fun Chat(originUser: UserWelan, destinationImgRef: Int, destinationName: String,
                             bottomStart = 24.dp,
                             bottomEnd = 0.dp
                         ), border = BorderStroke(1.dp, MaterialTheme.colorScheme.onPrimary)) {
-                        Text(text = message.message, modifier = Modifier.padding(8.dp).widthIn(max = 200.dp))
+                        Text(text = message.mensaje, modifier = Modifier.padding(8.dp).widthIn(max = 200.dp))
                     }
                     Spacer(Modifier.padding(horizontal = 8.dp))
-                    if (originUser.pathImage != null) {
+                    val originBitmap = originUser.pathImage?.let { base64ToImageBitmap(it) }
+                    if (originBitmap != null) {
                         Image(
-                            bitmap = base64ToImageBitmap(originUser.pathImage!!)!!,
+                            bitmap = originBitmap,
                             contentDescription = originUser.nombre,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
@@ -87,16 +122,28 @@ fun Chat(originUser: UserWelan, destinationImgRef: Int, destinationName: String,
                         )
                     }
                 }
-            } else{
+            } else {
                 Row(horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth(0.8f).padding(vertical = 8.dp)) {
-                    Image(
-                        painter = painterResource(destinationImgRef),
-                        contentDescription = destinationName,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .requiredSize(40.dp)
-                    )
+                    val otherUserBitmap = if (destinationImgRef.isNotBlank()) base64ToImageBitmap(destinationImgRef) else null
+                    if (otherUserBitmap != null) {
+                        Image(
+                            bitmap = otherUserBitmap,
+                            contentDescription = destinationName,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .requiredSize(40.dp)
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(R.drawable.imaguserdef),
+                            contentDescription = destinationName,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .requiredSize(40.dp)
+                        )
+                    }
                     Spacer(Modifier.padding(horizontal = 8.dp))
                     Surface(color = Color.Transparent,
                         shape = RoundedCornerShape(topEnd = 24.dp,
@@ -104,7 +151,7 @@ fun Chat(originUser: UserWelan, destinationImgRef: Int, destinationName: String,
                             bottomEnd = 24.dp,
                             bottomStart = 0.dp
                         ), border = BorderStroke(1.dp, MaterialTheme.colorScheme.onPrimary)) {
-                        Text(text = message.message, modifier = Modifier.padding(8.dp).widthIn(max = 200.dp))
+                        Text(text = message.mensaje, modifier = Modifier.padding(8.dp).widthIn(max = 200.dp))
                     }
                 }
             }

@@ -1,7 +1,9 @@
 package com.example.welan.data
+import com.example.welan.network.GetChatsWelanApiService
 import com.example.welan.network.ForoWeLanGetApiService
 import com.example.welan.network.MensajesWelanGetApiService
 import com.example.welan.network.NoticiasWeLanGetApiService
+import com.example.welan.network.PostChatApiService
 import com.example.welan.network.SerOProdWeLanGetApiService
 import com.example.welan.network.SerOProdWeLanPostApiService
 import com.example.welan.network.UserWeLanGetApiService
@@ -54,6 +56,13 @@ class DefaultAppContainer: AppContainer{
         retrofit.create(ForoWeLanGetApiService::class.java)
     }
 
+    private val retrofitgetChatsService: GetChatsWelanApiService by lazy {
+        retrofit.create(GetChatsWelanApiService::class.java)
+    }
+
+    private val retrofitPostApiService: PostChatApiService by lazy {
+        retrofit.create(PostChatApiService::class.java)
+    }
 
     override val weLanRepository by lazy {
         NetworkWeLanRepository(
@@ -64,7 +73,10 @@ class DefaultAppContainer: AppContainer{
             retrofitPostSerOProdService,
             retrofitgetNoticiaService,
             retrofitgetMessage,
-            retrofitgetForoService
+            retrofitgetForoService,
+            retrofitgetChatsService,
+            retrofitPostApiService
+
         )
     }
 }

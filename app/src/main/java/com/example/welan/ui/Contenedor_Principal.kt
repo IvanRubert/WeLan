@@ -1,6 +1,8 @@
 package com.example.welan.ui
 
+import android.os.Build
 import androidx.activity.compose.BackHandler
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -68,6 +70,7 @@ import com.example.welan.R
 import com.example.welan.model.BusinessUserWeLan
 import com.example.welan.model.CommonUserWeLan
 import com.example.welan.model.UserWelan
+import com.example.welan.ui.componentes.base64ToImageBitmap
 import com.example.welan.ui.screens.BusinessEdit
 import com.example.welan.ui.screens.Chat
 import com.example.welan.ui.screens.CrearServicioProducto
@@ -97,6 +100,7 @@ import com.example.welan.ui.viewmodels.SerOProdViewModel
 import com.example.welan.ui.viewmodels.UserViewModel
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Contenedor_Screen(
     navControllerPrincipal: NavHostController,
@@ -127,6 +131,7 @@ fun Contenedor_Screen(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewModel: UserViewModel, datos: UserWelan) {
 
@@ -136,15 +141,15 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
     val mensajesViewModel : MessagesViewModel = viewModel(factory = MessagesViewModel.provideFactory(datos.correo))
     val foroViewModel : ForoViewModel = viewModel(factory = ForoViewModel.Factory)
     var topBarTitle by remember { mutableStateOf("") }
-    var topBarImg by remember { mutableIntStateOf(R.drawable.welan_logo) }
+    var topBarImg by remember { mutableStateOf<String?>(null) }
     val serOProdViewModel: SerOProdViewModel = viewModel(factory = SerOProdViewModel.Factory)
-    val chatVm: ChatViewModel = viewModel()
     val foroChatVm: ForoChatViewModel = viewModel()
+    val chatVm: ChatViewModel = viewModel(factory = ChatViewModel.provideFactory())
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = Color.Transparent,
-        topBar = { MyTopAppBar(currentRoute, navController, topBarImg, topBarTitle) },
+        topBar = { MyTopAppBar(currentRoute, navController, topBarImg , topBarTitle) },
         bottomBar = { MyNaviagationBar(navController, currentRoute, datos.nombre, chatVm, foroChatVm) }
     ) { innerPadding ->
         var showDialogChanges by remember { mutableStateOf(false) }
@@ -230,21 +235,17 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
                     foroChatVm
                 )
             }
-            composable(
-                "Chat/{destinationImgRef}/{destinationName}", arguments = listOf(
-                    navArgument("destinationImgRef") { type = NavType.IntType },
-                    navArgument("destinationName") { type = NavType.StringType }
-                )) { backStackEntry ->
-                val img = backStackEntry.arguments?.getInt("destinationImgRef")
-                val nameDestination = backStackEntry.arguments?.getString("destinationName")
-
-                topBarTitle = nameDestination ?: ""
-                topBarImg = img!!
-
+            composable("Chat") {
+                val selected = mensajesViewModel.mensajeSelected
+                topBarTitle = selected.nombre ?: ""
+                topBarImg = selected.img_conversation
+                chatVm.correo1 = datos.correo
+                chatVm.correo2 = selected.correo
+                LaunchedEffect(selected.correo) { chatVm.getChat() }
                 Chat(
                     datos,
-                    img,
-                    nameDestination ?: "",
+                    selected.img_conversation,
+                    selected.nombre ?: "",
                     Modifier.padding(innerPadding),
                     chatVm
                 )
@@ -286,7 +287,7 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
 fun MyTopAppBar(
     currentRoute: String?,
     navController: NavHostController,
-    image: Int,
+    image: String?,
     title: String
 ) {
     when (currentRoute) {
@@ -326,7 +327,7 @@ fun MyTopAppBar(
             )
         }
 
-        "Chat/{destinationImgRef}/{destinationName}" -> {
+        "Chat" -> {
             CenterAlignedTopAppBar(
                 modifier = Modifier.background(apptopBarGradient),
                 title = {
@@ -334,14 +335,25 @@ fun MyTopAppBar(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        Image(
-                            painter = painterResource(image),
-                            contentDescription = title,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(CircleShape)
-                        )
+                        if (image != null) {
+                            Image(
+                                bitmap = base64ToImageBitmap(image)!!,
+                                contentDescription = title,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(CircleShape)
+                            )
+                        }else{
+                            Image(
+                                painter = painterResource(R.drawable.welan_logo),
+                                contentDescription = title,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(CircleShape)
+                            )
+                        }
                         Spacer(Modifier.padding(8.dp))
                         if (title.length > 20) {
                             Text(text = "${title.take(15)}...")
@@ -496,6 +508,7 @@ fun MyTopAppBar(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MyNaviagationBar(
     navController: NavHostController,
@@ -552,7 +565,7 @@ fun MyNaviagationBar(
                 }
             }
         }
-        "Chat/{destinationImgRef}/{destinationName}" -> {
+        "Chat" -> {
             var textField by remember { mutableStateOf("") }
 
             BottomAppBar(
@@ -574,7 +587,7 @@ fun MyNaviagationBar(
                         keyboardActions = KeyboardActions(
                             onSend = {
                                 if (textField.isNotBlank()) {
-                                    chatVm.addMessage(textField, usuarionombre)
+                                    chatVm.postChat(textField)
                                 }
                                 textField = ""
                             }
@@ -584,7 +597,7 @@ fun MyNaviagationBar(
                     IconButton(
                         onClick = {
                             if (textField.isNotBlank()) {
-                                chatVm.addMessage(textField, usuarionombre)
+                                chatVm.postChat(textField)
                             }
                             textField = ""
                         },
