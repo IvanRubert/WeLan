@@ -1,5 +1,7 @@
 package com.example.welan.ui.viewmodels
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,7 +13,10 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.welan.WeLanApplication
 import com.example.welan.data.WeLanRepository
 import com.example.welan.model.MensajesData
+import com.example.welan.ui.screens.Mensajes
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 
 sealed interface MensajesUiState {
@@ -23,6 +28,15 @@ class MessagesViewModel( correo: String,open val weLanRepository: WeLanRepositor
 
     var mensajesUiState : MensajesUiState by mutableStateOf(MensajesUiState.Loading)
     var _correo : String = ""
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    var mensajeSelected : MensajesData = MensajesData(
+        img_conversation = "",
+        nombre = "",
+        correo = "",
+        lastMessage = "",
+        dateLastMessage = LocalDateTime.now()
+    )
     init {
         getMensajes(correo)
         _correo = correo

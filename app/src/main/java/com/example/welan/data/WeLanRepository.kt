@@ -16,18 +16,25 @@ import com.example.welan.model.ProductoOServicio
 import com.example.welan.model.SerOProd
 import com.example.welan.model.Servicio
 import com.example.welan.model.Unidad
+import com.example.welan.model.chatDTO
+import com.example.welan.model.sendchatDTO
+import com.example.welan.network.GetChatsWelanApiService
 import com.example.welan.network.MensajesWelanApiService
 import com.example.welan.network.NoticiasWeLanGetApiService
+import com.example.welan.network.PostChatApiService
 import com.example.welan.network.SerOProdWeLanGetApiService
 import com.example.welan.network.SerOProdWeLanPostApiService
 import com.example.welan.network.UserWeLanGetApiService
 import com.example.welan.network.UserWeLanPostApiService
 import com.example.welan.network.UserWeLanPutApiService
 import com.example.welan.ui.componentes.Encriptador
+import com.example.welan.ui.componentes.reemplazararroba
+import java.time.LocalDateTime
 
 
 interface WeLanRepository {
 
+    suspend fun getChat(email: String,email2 : String) : Result<List<chatDTO>>
     suspend fun getCommonUserValidate(email: String, password: String): Result<CommonUserWeLan>
     suspend fun getCommonUser(email: String): Result<CommonUserWeLan>
     suspend fun postCommonUser(user: CreateCommonUserDTO): Boolean
@@ -45,6 +52,7 @@ interface WeLanRepository {
     suspend fun postSerOProd(serOProd: ProductoOServicio): Boolean
     suspend fun getNoticias(): Result<List<NoticiDTO>>
     suspend fun getMensajes(email: String): Result<List<MensajesData>>
+    suspend fun postChat(chat : sendchatDTO) : chatDTO
 }
 
 class NetworkWeLanRepository(
@@ -54,7 +62,9 @@ class NetworkWeLanRepository(
     private val serOProdWeLanGetApiService: SerOProdWeLanGetApiService,
     private val serOProdWeLanPostApiService: SerOProdWeLanPostApiService,
     private val noticiasGetApiService: NoticiasWeLanGetApiService,
-    private val mensajesGetApiService : MensajesWelanApiService
+    private val mensajesGetApiService : MensajesWelanApiService,
+    private val chatsWelanApiService: GetChatsWelanApiService,
+    private val chatsPostApiService : PostChatApiService
 ): WeLanRepository {
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -347,5 +357,36 @@ class NetworkWeLanRepository(
         } catch (e: Exception) {
             Result.failure(e)
         }
+    }
+    override suspend fun getChat(email: String, email2: String): Result<List<chatDTO>> {
+        return try {
+            val respuesta = chatsWelanApiService.getConversation(email,email2)
+            if (respuesta.isSuccessful) {
+                respuesta.body()?.let { chat ->
+                    Result.success(chat)
+                } ?: Result.failure(Exception("Respuesta vacia"))
+            } else {
+                Result.failure(Exception("Error: ${respuesta.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    @RequiresApi(Build.VERSION_CODES.O)
+    override suspend fun postChat(chat : sendchatDTO): chatDTO{
+        return try {
+            val respuesta = chatsPostApiService.postChat (chat)
+            if (respuesta.isSuccessful) {
+                chatDTO(
+                    correo = chat.correoOrigen,
+                    mensaje = chat.message,
+                    dateLastMessage = LocalDateTime.now()
+                )
+            } else {
+                throw Exception("No se ha podido enviar el mensaje")
+            }
+        } catch (e: Exception) {
+            e.message
+        } as chatDTO
     }
 }

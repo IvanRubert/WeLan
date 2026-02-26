@@ -1,7 +1,8 @@
 package com.example.welan.ui.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,8 +31,8 @@ import com.example.welan.model.MensajesData
 import com.example.welan.ui.componentes.base64ToImageBitmap
 import com.example.welan.ui.viewmodels.MensajesUiState
 import com.example.welan.ui.viewmodels.MessagesViewModel
-import com.example.welan.ui.viewmodels.NoticiasUiState
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MensajesScreen(
       mensajesViewModel: MessagesViewModel,
@@ -51,6 +51,7 @@ fun MensajesScreen(
         is MensajesUiState.Loading -> {LoadingScreen()}
     }
 }
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Mensajes(navController: NavController, modifier: Modifier = Modifier,
              mesnajes : List<MensajesData>, messagesViewModel: MessagesViewModel){
@@ -59,7 +60,8 @@ fun Mensajes(navController: NavController, modifier: Modifier = Modifier,
             items(mesnajes) { message ->
                 Card(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp).heightIn(min = 50.dp)
                     .clickable{
-                      navController.navigate("Chat/${messagesViewModel._correo}/${message.correo}")
+                        messagesViewModel.mensajeSelected = message
+                        navController.navigate("Chat")
                     }) {
                     var lastmess =  if (message.lastMessage.length > 15) {
                         "${message.lastMessage.take(15)}..."

@@ -9,9 +9,7 @@ import java.io.ByteArrayOutputStream
 
 fun base64ToImageBitmap(base64String: String): ImageBitmap? {
     return try {
-        // Si viene con "data:image/png;base64,..." lo limpiamos
         val cleanBase64 = base64String.substringAfter("base64,", base64String)
-
         val decodedBytes = Base64.decode(cleanBase64, Base64.DEFAULT)
         val bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
 
@@ -22,11 +20,9 @@ fun base64ToImageBitmap(base64String: String): ImageBitmap? {
     }
 }
 
-
 fun imageUriToBase64(context: Context, uri: android.net.Uri): String {
     val inputStream = context.contentResolver.openInputStream(uri)
     val byteArrayOutputStream = ByteArrayOutputStream()
-
     inputStream?.let {
         val buffer = ByteArray(1024)
         var length: Int
