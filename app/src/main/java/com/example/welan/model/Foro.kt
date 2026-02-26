@@ -11,3 +11,12 @@ data class Foro(
     val administradores: List<String>?,
     val total_mensajes: Long
 )
+
+@Serializable
+data class ForoDTO(
+    val titulo: String,
+    val pathImage: String,
+    val descripcion: String?,
+    val intereses: List<Interes>?,
+    val administradores: List<String>?,
+)

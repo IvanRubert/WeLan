@@ -10,6 +10,7 @@ import com.example.welan.model.CreateBusinessUserDTO
 import com.example.welan.model.CreateCommonUserDTO
 import com.example.welan.model.Envio
 import com.example.welan.model.Foro
+import com.example.welan.model.ForoDTO
 import com.example.welan.model.MensajesData
 import com.example.welan.model.MensajesDataCreateDTO
 import com.example.welan.model.NoticiDTO
@@ -22,6 +23,7 @@ import com.example.welan.network.ForoWeLanGetApiService
 import com.example.welan.network.MensajesWelanGetApiService
 import com.example.welan.model.chatDTO
 import com.example.welan.model.sendchatDTO
+import com.example.welan.network.ForoWeLanPostApiService
 import com.example.welan.network.GetChatsWelanApiService
 import com.example.welan.network.NoticiasWeLanGetApiService
 import com.example.welan.network.PostChatApiService
@@ -57,6 +59,7 @@ interface WeLanRepository {
     suspend fun getNoticias(): Result<List<NoticiDTO>>
     suspend fun getMensajes(email: String): Result<List<MensajesData>>
     suspend fun getForo(): Result<List<Foro>>
+    suspend fun postForo(foro: ForoDTO): Boolean
     suspend fun getForoFiltro(nombre: String): Result<List<Foro>>
     suspend fun postChat(chat : sendchatDTO) : chatDTO
 
@@ -72,52 +75,11 @@ class NetworkWeLanRepository(
     private val noticiasWeLanGetApiService: NoticiasWeLanGetApiService,
     private val mensajesWeLanGetApiService: MensajesWelanGetApiService,
     private val foroWeLanGetApiService: ForoWeLanGetApiService,
+    private val foroWeLanPostApiService: ForoWeLanPostApiService,
     private val chatsWelanApiService: GetChatsWelanApiService,
     private val chatsPostApiService : PostChatApiService,
     private val postMensajesWelanApiService : PostMensajesWelanApiService
 ): WeLanRepository {
-    @RequiresApi(Build.VERSION_CODES.O)
-    override suspend fun postMessage( conversacion : MensajesDataCreateDTO) {
-         try {
-
-            val respuesta = postMensajesWelanApiService.postMensajes(conversacion)
-
-        } catch (e: Exception) {
-
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    override suspend fun validateCorreo(email: String):  Result<Boolean> {
-        return try {
-
-            val respuesta = mensajesWeLanGetApiService.validateUser(email)
-            if (respuesta.isSuccessful) {
-                return respuesta.body().let { comp ->
-                    Result.success(comp) as Result<Boolean>
-                }
-            } else {
-                Result.failure(Exception("Error: ${respuesta.code()}"))
-            }
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-    @RequiresApi(Build.VERSION_CODES.O)
-    override suspend fun validateMensaje(email1: String, email2: String):  Result<Boolean>{
-        return try {
-            val respuesta = mensajesWeLanGetApiService.validateConversacion(email1, email2)
-            if (respuesta.isSuccessful) {
-                return respuesta.body().let { comp ->
-                    Result.success(comp) as Result<Boolean>
-                }
-            } else {
-                Result.failure(Exception("Error: ${respuesta.code()}"))
-            }
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun getCommonUserValidate(email: String, password: String): Result<CommonUserWeLan> {
@@ -417,6 +379,15 @@ class NetworkWeLanRepository(
         }
     }
 
+    override suspend fun postForo(foro: ForoDTO): Boolean {
+        return try {
+            val respuesta = foroWeLanPostApiService.postForo(foro)
+            respuesta.isSuccessful
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     override suspend fun getForoFiltro(nombre: String): Result<List<Foro>> {
         return try {
             val respuesta = foroWeLanGetApiService.getForosFiltro(nombre)
@@ -431,6 +402,7 @@ class NetworkWeLanRepository(
             Result.failure(e)
         }
     }
+
     override suspend fun getChat(email: String, email2: String): Result<List<chatDTO>> {
         return try {
             val respuesta = chatsWelanApiService.getConversation(email,email2)
@@ -445,6 +417,7 @@ class NetworkWeLanRepository(
             Result.failure(e)
         }
     }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun postChat(chat : sendchatDTO): chatDTO{
         return try {
@@ -461,5 +434,42 @@ class NetworkWeLanRepository(
         } catch (e: Exception) {
             e.message
         } as chatDTO
+    }
+
+    override suspend fun postMessage( conversacion : MensajesDataCreateDTO) {
+        try {
+            postMensajesWelanApiService.postMensajes(conversacion)
+        } catch (e: Exception) { }
+    }
+
+    override suspend fun validateCorreo(email: String):  Result<Boolean> {
+        return try {
+
+            val respuesta = mensajesWeLanGetApiService.validateUser(email)
+            if (respuesta.isSuccessful) {
+                return respuesta.body().let { comp ->
+                    Result.success(comp) as Result<Boolean>
+                }
+            } else {
+                Result.failure(Exception("Error: ${respuesta.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun validateMensaje(email1: String, email2: String):  Result<Boolean>{
+        return try {
+            val respuesta = mensajesWeLanGetApiService.validateConversacion(email1, email2)
+            if (respuesta.isSuccessful) {
+                return respuesta.body().let { comp ->
+                    Result.success(comp) as Result<Boolean>
+                }
+            } else {
+                Result.failure(Exception("Error: ${respuesta.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }

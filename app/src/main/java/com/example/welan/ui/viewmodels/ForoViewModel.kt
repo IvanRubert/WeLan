@@ -11,6 +11,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.welan.WeLanApplication
 import com.example.welan.data.WeLanRepository
 import com.example.welan.model.Foro
+import com.example.welan.model.ForoDTO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -68,6 +69,16 @@ open class ForoViewModel(open val weLanRepository: WeLanRepository): ViewModel()
                         foroUiState = ForoUiState.Error(error)
                     }
                 )
+            }
+        }
+    }
+
+    fun postForo(foro: ForoDTO){
+        viewModelScope.launch {
+            foroUiState = ForoUiState.Loading
+            val repuesta = weLanRepository.postForo(foro)
+            if (repuesta) {
+
             }
         }
     }
