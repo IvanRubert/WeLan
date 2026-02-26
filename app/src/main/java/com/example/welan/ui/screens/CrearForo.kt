@@ -185,9 +185,8 @@ fun CreateForo(modifier: Modifier, navController: NavHostController, foroViewMod
                     intereses.forEach { inter ->
                         interes.add(inter.nombre)
                     }
-                    val foro = ForoDTO(titulo, admins, interes,image!!)
+                    val foro = ForoDTO(titulo,  interes,admins,image!!)
                     foroViewModel.postForo(foro)
-                    foroViewModel.getForo()
                     navController.popBackStack()
                 }
             },

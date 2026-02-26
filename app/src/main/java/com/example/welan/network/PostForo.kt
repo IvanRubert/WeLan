@@ -7,7 +7,7 @@ import retrofit2.http.POST
 
 interface ForoWeLanPostApiService {
 
-    @POST("/newForo")
+    @POST("newForo")
     suspend fun postForo(
         @Body foro: ForoDTO
     ): Response<Unit>

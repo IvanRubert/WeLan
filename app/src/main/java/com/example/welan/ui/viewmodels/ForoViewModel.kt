@@ -81,6 +81,7 @@ open class ForoViewModel(open val weLanRepository: WeLanRepository): ViewModel()
         viewModelScope.launch {
             foroUiState = ForoUiState.Loading
             val repuesta = weLanRepository.postForo(foro)
+            getForo()
             if (!repuesta) {
                 _errorMessage.value = "No se a podido crear el foro"
             }
