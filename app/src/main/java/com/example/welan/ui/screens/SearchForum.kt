@@ -45,6 +45,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.welan.model.Foro
@@ -160,14 +161,35 @@ fun SearchForum(navController: NavHostController, modifier: Modifier, forochat: 
                                 }
                                 Text(foro.titulo)
                                 if (!foro.intereses.isNullOrEmpty()) {
-                                    Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-                                        foro.intereses.forEach { interes ->
-                                            TextButton(
-                                                onClick = {},
-                                                shape = RoundedCornerShape(20.dp),
-                                                colors = ButtonDefaults.textButtonColors(containerColor = Color(interes.color))
+                                    val filas = foro.intereses.chunked(2)
+                                    Column(verticalArrangement = Arrangement.spacedBy(8.dp),
+                                        modifier = Modifier.padding(vertical = 8.dp)) {
+                                        filas.forEach {pareja ->
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.spacedBy(8.dp)
                                             ) {
-                                                Text(text ="#${interes.nombre}", color = White)
+                                                pareja.forEach { interes ->
+                                                    Box(modifier = Modifier.weight(1f)) {
+                                                        TextButton(
+                                                            onClick = {},
+                                                            shape = RoundedCornerShape(20.dp),
+                                                            colors = ButtonDefaults.textButtonColors(
+                                                                containerColor = Color(interes.color)
+                                                            ),
+                                                            modifier = Modifier.fillMaxWidth(0.9f)
+                                                        ) {
+                                                            Text(
+                                                                text = "#${interes.nombre}",
+                                                                color = White,
+                                                                textAlign = TextAlign.Center
+                                                            )
+                                                        }
+                                                    }
+                                                }
+                                                if (pareja.size == 1) {
+                                                    Spacer(modifier = Modifier.weight(1f))
+                                                }
                                             }
                                         }
                                     }
