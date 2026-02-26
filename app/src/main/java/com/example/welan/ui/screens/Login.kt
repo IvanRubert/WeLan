@@ -61,6 +61,7 @@ import com.example.welan.ui.viewmodels.UserViewModel
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
+import com.example.welan.data.UserExist
 import com.example.welan.ui.viewmodels.BusinessUserUiState
 import com.example.welan.ui.viewmodels.CommonUserUiState
 import kotlinx.coroutines.launch
@@ -79,6 +80,7 @@ fun Login(navController: NavController,modifier: Modifier, userViewModel: UserVi
     var errorCertificado by remember { mutableStateOf(false) }
     var showError by remember { mutableStateOf(false) }
     var currentMessage by remember { mutableStateOf<String?>(null) }
+    var existuser by remember { mutableStateOf(false) }
     val errorMessage by userViewModel.errorMessage.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -93,16 +95,22 @@ fun Login(navController: NavController,modifier: Modifier, userViewModel: UserVi
         when {
             commonState is CommonUserUiState.Success -> {
                 hasNavigated = true
-                navController.navigate("Contenedor_Principal") {
-                    popUpTo("Login") { inclusive = true }
-                    launchSingleTop = true
+                existuser = UserExist(context)
+                if (existuser) {
+                    navController.navigate("Contenedor_Principal") {
+                        popUpTo("Login") { inclusive = true }
+                        launchSingleTop = true
+                    }
                 }
             }
             businessState is BusinessUserUiState.Success -> {
                 hasNavigated = true
-                navController.navigate("Contenedor_Principal") {
-                    popUpTo("Login") { inclusive = true }
-                    launchSingleTop = true
+                existuser = UserExist(context)
+                if (existuser) {
+                    navController.navigate("Contenedor_Principal") {
+                        popUpTo("Login") { inclusive = true }
+                        launchSingleTop = true
+                    }
                 }
             }
         }
@@ -195,7 +203,6 @@ fun Login(navController: NavController,modifier: Modifier, userViewModel: UserVi
                 .fillMaxWidth(0.75F)
                 .fillMaxHeight(0.75f),
             shape = RoundedCornerShape(40.dp),
-
             ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -262,8 +269,6 @@ fun Login(navController: NavController,modifier: Modifier, userViewModel: UserVi
                             modifier = Modifier.fillMaxWidth(0.9f),
                             singleLine = true,
                             colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimary, unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary),
-
-
                         )
                         Text(
                             text = if (errorPassword) "Error: La contraseña no cumple los parametros necesarios" else "",
@@ -346,6 +351,7 @@ fun Login(navController: NavController,modifier: Modifier, userViewModel: UserVi
                     if (esCorreoValido(email)) {
                         if (compPassword(password)) {
                             userViewModel.getCommonUserValidate(email, password, context)
+                            navController.navigate("Contenedor_Principal")
                         } else {
                             errorPassword = true
                         }
@@ -359,6 +365,7 @@ fun Login(navController: NavController,modifier: Modifier, userViewModel: UserVi
                         if (certificate != "") {
                             userViewModel.getBusinessUserValidate(emailEmpresa, certificate, context)
                         }
+                        navController.navigate("Contenedor_Principal")
                     } else {
                         errorEmailEmpresa = true
                     }

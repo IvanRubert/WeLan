@@ -50,14 +50,14 @@ import com.example.welan.model.UserWelan
 import com.example.welan.ui.componentes.base64ToImageBitmap
 import com.example.welan.ui.componentes.imageUriToBase64
 import com.example.welan.ui.viewmodels.ForoViewModel
-import com.example.welan.ui.viewmodels.MessagesViewModel
+import com.example.welan.ui.viewmodels.UserViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun CreateForo(modifier: Modifier, navController: NavHostController, foroViewModel: ForoViewModel, usuario: UserWelan, messagesViewModel: MessagesViewModel) {
+fun CreateForo(modifier: Modifier, navController: NavHostController, foroViewModel: ForoViewModel, usuario: UserWelan, userViewModel: UserViewModel) {
     var titulo by rememberSaveable { mutableStateOf("") }
     var image :String? by remember { mutableStateOf(null) }
-    val admins = rememberSaveable { mutableStateListOf<String>().apply{addAll(listOf(usuario.correo))}}
+    val admins = rememberSaveable { mutableStateListOf<String>().apply{addAll(listOf(usuario.correo,))}}
     val intereses = rememberSaveable { mutableStateListOf<Interes>().apply{addAll(emptyList())}}
     var errortitulo by remember { mutableStateOf(false) }
     var errorimage by remember { mutableStateOf(false) }
@@ -183,6 +183,7 @@ fun CreateForo(modifier: Modifier, navController: NavHostController, foroViewMod
                 if (!errortitulo && !errorimage) {
                     val foro = ForoDTO(titulo, image!!, intereses, admins)
                     foroViewModel.postForo(foro)
+                    foroViewModel.getForo()
                     navController.popBackStack()
                 }
             },
@@ -195,7 +196,7 @@ fun CreateForo(modifier: Modifier, navController: NavHostController, foroViewMod
             AdminsForoDialog(
                 onDismiss = { showDialogPut = false },
                 list = admins,
-                messagesViewModel = messagesViewModel
+                userViewModel = userViewModel
             )
         }
 
@@ -210,7 +211,7 @@ fun CreateForo(modifier: Modifier, navController: NavHostController, foroViewMod
 }
 
 @Composable
-fun AdminsForoDialog(onDismiss: () -> Unit, list: SnapshotStateList<String>, messagesViewModel: MessagesViewModel) {
+fun AdminsForoDialog(onDismiss: () -> Unit, list: SnapshotStateList<String>, userViewModel: UserViewModel) {
     var correo by remember { mutableStateOf("") }
     var isError by remember { mutableStateOf(false) }
     var errorText by remember { mutableStateOf<String?>(null) }
@@ -252,23 +253,22 @@ fun AdminsForoDialog(onDismiss: () -> Unit, list: SnapshotStateList<String>, mes
                         if (correo.isBlank()) {
                             isError = true
                             errorText = "Introduce un correo"
-                            return@launch
-                        }
-                        isError = false
-                        errorText = null
-                        if (!list.contains(correo)){
-                            isError = false
-                            list.add(correo)
-                            onDismiss.invoke()
-                        }else {
-                            isError = true
-                            errorText = "Correo ya esta insertado"
-                            return@launch
-                        }
-                        val (existe, mensaje) = messagesViewModel.validarCorreoYMensaje(correo)
-                        if (!existe) {
-                            isError = true
-                            errorText = "Error: El correo no existe"
+                        } else {
+                            val existe = userViewModel.validarCorreo(correo)
+                            if (!existe) {
+                                isError = true
+                                errorText = "Error: El correo no existe"
+                            } else {
+                                if (!list.contains(correo)){
+                                    isError = false
+                                    list.add(correo)
+                                    onDismiss.invoke()
+                                    errorText = null
+                                }else {
+                                    isError = true
+                                    errorText = "Correo ya esta insertado"
+                                }
+                            }
                         }
                     }
                 }

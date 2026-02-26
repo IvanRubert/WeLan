@@ -73,8 +73,8 @@ open class UserViewModel(open val weLanRepository: WeLanRepository): ViewModel()
             val repuesta = weLanRepository.getCommonUserValidate(email, password)
             repuesta.fold(
                 onSuccess = { user ->
-                    GuardarUsuario(context, email, "User")
                     commonUserUiState = CommonUserUiState.Success(user)
+                    GuardarUsuario(context, email, "User")
                 },
                 onFailure = { error ->
                     commonUserUiState = CommonUserUiState.Error(error)
@@ -199,6 +199,15 @@ open class UserViewModel(open val weLanRepository: WeLanRepository): ViewModel()
                     businessUserUiState = BusinessUserUiState.Error(error)
                 }
             )
+        }
+    }
+
+    suspend fun validarCorreo(correo: String): Boolean {
+        return try {
+            val existe = weLanRepository.validateCorreo(correo)
+            existe.isSuccess
+        } catch (_: Exception) {
+            false
         }
     }
 

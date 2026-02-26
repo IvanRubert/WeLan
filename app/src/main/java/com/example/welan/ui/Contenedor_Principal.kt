@@ -207,7 +207,7 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
                     navController,
                     foroViewModel,
                     userWelan,
-                    mensajesViewModel
+                    userViewModel
                 )
             }
             composable("Mensajes") {
