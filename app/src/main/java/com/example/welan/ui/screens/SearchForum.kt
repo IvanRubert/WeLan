@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -18,6 +17,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Message
@@ -154,14 +156,14 @@ fun SearchForum(navController: NavHostController, modifier: Modifier, forochat: 
                             },
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Row(modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
+                        Row(modifier = Modifier.fillMaxWidth().height(120.dp)) {
                             Image(
                                 bitmap = base64ToImageBitmap(foro.pathImage)!!,
                                 contentDescription = "",
                                 modifier = Modifier
                                     .fillMaxHeight()
                                     .width(100.dp)
-                                    .heightIn(max = 120.dp)
+                                    .heightIn(max = 100.dp)
                                     .clip(RoundedCornerShape(12.dp)),
                                 contentScale = ContentScale.Crop
                             )
@@ -185,40 +187,38 @@ fun SearchForum(navController: NavHostController, modifier: Modifier, forochat: 
                                 }
                                 Text(foro.titulo)
                                 if (!foro.intereses.isNullOrEmpty()) {
-                                    val filas = foro.intereses.chunked(2)
-                                    Column(verticalArrangement = Arrangement.spacedBy(8.dp),
-                                        modifier = Modifier.padding(vertical = 8.dp)) {
-                                        filas.forEach {pareja ->
-                                            Row(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                            ) {
-                                                pareja.forEach { interes ->
-                                                    Box(modifier = Modifier.weight(1f)) {
-                                                        TextButton(
-                                                            onClick = {},
-                                                            shape = RoundedCornerShape(20.dp),
-                                                            colors = ButtonDefaults.textButtonColors(
-                                                                containerColor = Color(interes.color)
-                                                            ),
-                                                            modifier = Modifier.fillMaxWidth(0.9f)
-                                                        ) {
-                                                            Text(
-                                                                text = "#${interes.nombre}",
-                                                                color = White,
-                                                                textAlign = TextAlign.Center
-                                                            )
-                                                        }
-                                                    }
-                                                }
-                                                if (pareja.size == 1) {
-                                                    Spacer(modifier = Modifier.weight(1f))
+                                    val filas = foro.intereses
+                                    Card(modifier = Modifier
+                                            .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+                                            .height(80.dp)
+                                    ) {
+                                        LazyVerticalStaggeredGrid(
+                                            columns = StaggeredGridCells.Fixed(2),
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .padding(vertical = 8.dp, horizontal = 8.dp),
+                                            verticalItemSpacing = 8.dp,
+                                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                        ) {
+                                            items(filas) { interes ->
+                                                TextButton(
+                                                    onClick = {},
+                                                    shape = RoundedCornerShape(20.dp),
+                                                    colors = ButtonDefaults.textButtonColors(
+                                                        containerColor = Color(interes.color)
+                                                    ),
+                                                    modifier = Modifier.fillMaxWidth()
+                                                ) {
+                                                    Text(
+                                                        text = "#${interes.nombre}",
+                                                        color = White,
+                                                        textAlign = TextAlign.Center
+                                                    )
                                                 }
                                             }
                                         }
                                     }
                                 }
-
                             }
                         }
                     }
