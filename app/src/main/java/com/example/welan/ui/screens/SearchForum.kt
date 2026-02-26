@@ -43,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -158,15 +159,15 @@ fun SearchForum(navController: NavHostController, modifier: Modifier, forochat: 
 
                                 }
                                 Text(foro.titulo)
-                                if (foro.intereses.isNullOrEmpty()) {
+                                if (!foro.intereses.isNullOrEmpty()) {
                                     Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-                                        foro.intereses!!.forEach { interes ->
+                                        foro.intereses.forEach { interes ->
                                             TextButton(
                                                 onClick = {},
                                                 shape = RoundedCornerShape(20.dp),
                                                 colors = ButtonDefaults.textButtonColors(containerColor = Color(interes.color))
                                             ) {
-                                                Text(text ="#${interes.nombre}")
+                                                Text(text ="#${interes.nombre}", color = White)
                                             }
                                         }
                                     }
