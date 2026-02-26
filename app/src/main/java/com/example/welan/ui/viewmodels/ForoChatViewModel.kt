@@ -13,10 +13,9 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.welan.WeLanApplication
 import com.example.welan.data.WeLanRepository
-import com.example.welan.model.ForoChat
 import com.example.welan.model.ForoChatDTO
-import com.example.welan.model.getForoChats
-import com.example.welan.model.sendchatDTO
+import com.example.welan.model.SendForoChatDTO
+import com.example.welan.model.UserWelan
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.isActive
@@ -39,6 +38,9 @@ class ForoChatViewModel(open val weLanRepository: WeLanRepository): ViewModel() 
 
     private val _scrollToEnd = MutableSharedFlow<Unit>()
     val scrollToEnd = _scrollToEnd
+
+    private var _usersList = mutableStateListOf<UserWelan>()
+    val usersList = _usersList
 
     var foroId : Int = 0
     var correo : String = ""
@@ -95,12 +97,18 @@ class ForoChatViewModel(open val weLanRepository: WeLanRepository): ViewModel() 
 
             viewModelScope.launch {
                 try {
-                    val mensajePost = sendchatDTO(correo,correo2!!,mensaje)
-                    weLanRepository.postChat(mensajePost)
+                    val mensajePost = SendForoChatDTO(foroId, correo, mensaje)
+                    weLanRepository.postForoChat(mensajePost)
                 } catch (e : Exception){
                     _chat.remove(_nuevoMensaje)
                 }
             }
+        }
+    }
+
+    fun getUsers(correosList: List<String>){
+        viewModelScope.launch {
+            _usersList.addAll(weLanRepository.getUsersByEmailList(correosList))
         }
     }
 
