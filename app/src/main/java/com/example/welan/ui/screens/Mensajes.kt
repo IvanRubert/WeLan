@@ -82,9 +82,9 @@ fun Mensajes(navController: NavHostController, modifier: Modifier = Modifier,
                         messagesViewModel.mensajeSelected = message
                         navController.navigate("Chat")
                     }) {
-                    var lastmess =  if (message.lastMessage.isNullOrBlank()){""
-                        }else if(message.lastMessage.length > 15) {
-                        "${message.lastMessage.take(15)}..."
+                    val lastmess =  if (message.lastMessage.isNullOrBlank()){""
+                        }else if(message.lastMessage.length > 25) {
+                        "${message.lastMessage.take(25)}..."
                     } else {
                         message.lastMessage
                     }
@@ -108,7 +108,7 @@ fun Mensajes(navController: NavHostController, modifier: Modifier = Modifier,
                                 text = message.nombre,
                                 style = MaterialTheme.typography.titleMedium,
                                 textAlign = TextAlign.Start,
-                                modifier = Modifier.fillMaxWidth(0.9f)
+                                modifier = Modifier.fillMaxWidth(0.9f).padding(start = 8.dp)
                                 )
                             Row (
                                 modifier = Modifier.fillMaxWidth()
@@ -116,9 +116,9 @@ fun Mensajes(navController: NavHostController, modifier: Modifier = Modifier,
                                 Text(
                                     text = lastmess,
                                     style = MaterialTheme.typography.titleSmall,
-                                    fontSize = 8.sp,
-                                    textAlign = TextAlign.Start,
-                                    modifier = Modifier.weight(0.2f)
+                                    fontSize = 12.sp,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.weight(0.4f)
                                 )
 
                                 Text(

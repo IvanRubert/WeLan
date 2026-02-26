@@ -10,11 +10,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -118,7 +117,7 @@ private fun ChatContent(
                             modifier = Modifier
                                 .clip(CircleShape)
                                 .requiredSize(40.dp)
-                                .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
+//                                .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
                         )
                     } else {
                         Image(
@@ -128,7 +127,7 @@ private fun ChatContent(
                             modifier = Modifier
                                 .clip(CircleShape)
                                 .requiredSize(40.dp)
-                                .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
+//                                .padding(top = 16.dp, end = 16.dp, bottom = 8.dp)
                         )
                     }
                 }
