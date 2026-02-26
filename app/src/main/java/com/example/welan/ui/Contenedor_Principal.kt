@@ -237,7 +237,7 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
             }
             composable("Chat") {
                 val selected = mensajesViewModel.mensajeSelected
-                topBarTitle = selected.nombre ?: ""
+                topBarTitle = selected.nombre
                 topBarImg = selected.img_conversation
                 chatVm.correo1 = datos.correo
                 chatVm.correo2 = selected.correo
@@ -245,7 +245,7 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
                 Chat(
                     datos,
                     selected.img_conversation,
-                    selected.nombre ?: "",
+                    selected.nombre ,
                     Modifier.padding(innerPadding),
                     chatVm
                 )
@@ -257,6 +257,9 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
                     serOProdViewModel,
                     Modifier.padding(innerPadding),
                     navController,
+                    mensajesViewModel,
+                    chatVm,
+                    userViewModel
                 )
             }
             composable("CrearServicioProducto") {
