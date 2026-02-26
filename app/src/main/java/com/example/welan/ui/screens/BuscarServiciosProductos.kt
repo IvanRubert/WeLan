@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.FilterAlt
@@ -37,9 +36,6 @@ import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.isTraversalGroup
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -217,7 +213,7 @@ fun BuscarServicioProducto(servoprod: List<SerOProd>, servoprodViewModal: SerOPr
                         .weight(2f)
                         .height(50.dp)
                         .offset(y = (-7).dp)
-                    )
+                )
             }
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
@@ -246,38 +242,5 @@ fun FABS(modifier: Modifier, navController: NavHostController) {
         contentColor = MaterialTheme.colorScheme.onPrimary,
     ) {
         Icon(Icons.Filled.Add, "Crear servicio o producto")
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SimpleSearchBar(
-    textFieldState: TextFieldState,
-    onSearch: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier.semantics { isTraversalGroup = true }
-    ) {
-        SearchBar(
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .semantics { traversalIndex = 0f },
-            inputField = {
-                SearchBarDefaults.InputField(
-                    query = textFieldState.text.toString(),
-                    onQueryChange = { textFieldState.edit { replace(0, length, it) } },
-                    onSearch = {
-                        onSearch(textFieldState.text.toString())
-                    },
-                    expanded = false,
-                    onExpandedChange = { false },
-                    placeholder = { Text("Search") }
-                )
-            },
-            expanded = false,
-            onExpandedChange = { },
-        ) {
-        }
     }
 }

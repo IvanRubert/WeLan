@@ -1,5 +1,6 @@
 package com.example.welan.data
-import com.example.welan.network.MensajesWelanApiService
+import com.example.welan.network.ForoWeLanGetApiService
+import com.example.welan.network.MensajesWelanGetApiService
 import com.example.welan.network.NoticiasWeLanGetApiService
 import com.example.welan.network.SerOProdWeLanGetApiService
 import com.example.welan.network.SerOProdWeLanPostApiService
@@ -22,10 +23,6 @@ class DefaultAppContainer: AppContainer{
         .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
         .baseUrl(baseUrl)
         .build()
-
-    private val retrofitgetMessage: MensajesWelanApiService by lazy {
-        retrofit.create(MensajesWelanApiService::class.java)
-    }
     private val retrofitgetUserService: UserWeLanGetApiService by lazy {
         retrofit.create(UserWeLanGetApiService::class.java)
     }
@@ -49,6 +46,15 @@ class DefaultAppContainer: AppContainer{
         retrofit.create(NoticiasWeLanGetApiService::class.java)
     }
 
+    private val retrofitgetMessage: MensajesWelanGetApiService by lazy {
+        retrofit.create(MensajesWelanGetApiService::class.java)
+    }
+
+    private val retrofitgetForoService: ForoWeLanGetApiService by lazy {
+        retrofit.create(ForoWeLanGetApiService::class.java)
+    }
+
+
     override val weLanRepository by lazy {
         NetworkWeLanRepository(
             retrofitgetUserService,
@@ -57,7 +63,8 @@ class DefaultAppContainer: AppContainer{
             retrofitgetSerOProdService,
             retrofitPostSerOProdService,
             retrofitgetNoticiaService,
-            retrofitgetMessage
+            retrofitgetMessage,
+            retrofitgetForoService
         )
     }
 }

@@ -81,7 +81,7 @@ import com.example.welan.ui.screens.MensajesScreen
 import com.example.welan.ui.screens.MenuPrincipalScreen
 import com.example.welan.ui.screens.PerfilEmpresa
 import com.example.welan.ui.screens.PerfilUser
-import com.example.welan.ui.screens.SearchForum
+import com.example.welan.ui.screens.SearchForum_Screen
 import com.example.welan.ui.screens.SevicioProducto
 import com.example.welan.ui.screens.SevicioProducto_Screen
 import com.example.welan.ui.screens.UserEdit
@@ -91,6 +91,7 @@ import com.example.welan.ui.theme.secondaryColor
 import com.example.welan.ui.viewmodels.BusinessUserUiState
 import com.example.welan.ui.viewmodels.ChatViewModel
 import com.example.welan.ui.viewmodels.CommonUserUiState
+import com.example.welan.ui.viewmodels.ForoChatViewModel
 import com.example.welan.ui.viewmodels.ForoViewModel
 import com.example.welan.ui.viewmodels.MessagesViewModel
 import com.example.welan.ui.viewmodels.NoticiasViewModel
@@ -135,11 +136,12 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
     val noticiaViewModel : NoticiasViewModel = viewModel(factory = NoticiasViewModel.Factory)
     val mensajesViewModel : MessagesViewModel = viewModel(factory = MessagesViewModel.provideFactory(datos.correo))
+    val foroViewModel : ForoViewModel = viewModel(factory = ForoViewModel.Factory)
     var topBarTitle by remember { mutableStateOf("") }
     var topBarImg by remember { mutableIntStateOf(R.drawable.welan_logo) }
     val serOProdViewModel: SerOProdViewModel = viewModel(factory = SerOProdViewModel.Factory)
     val chatVm: ChatViewModel = viewModel()
-    val foroChatVm: ForoViewModel = viewModel()
+    val foroChatVm: ForoChatViewModel = viewModel()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -211,7 +213,12 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
                 BackHandler {
                     showDialogChanges = true
                 }
-                SearchForum(navController, modifier = Modifier.padding(innerPadding))
+                SearchForum_Screen(
+                    foroViewModel,
+                    navController,
+                    modifier = Modifier.padding(innerPadding),
+                    retryAction = { foroViewModel.getForoFiltro("") }
+                )
             }
             composable(
                 "ForoChat/{title}", arguments = listOf(
@@ -497,7 +504,7 @@ fun MyNaviagationBar(
     currentRoute: String?,
     usuarionombre: String,
     chatVm: ChatViewModel,
-    foroChatVm: ForoViewModel
+    foroChatVm: ForoChatViewModel
 
     ) {
     when (currentRoute) {

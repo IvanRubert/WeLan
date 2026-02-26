@@ -9,6 +9,7 @@ import com.example.welan.model.CommonUserWeLan
 import com.example.welan.model.CreateBusinessUserDTO
 import com.example.welan.model.CreateCommonUserDTO
 import com.example.welan.model.Envio
+import com.example.welan.model.Foro
 import com.example.welan.model.MensajesData
 import com.example.welan.model.NoticiDTO
 import com.example.welan.model.Producto
@@ -16,7 +17,8 @@ import com.example.welan.model.ProductoOServicio
 import com.example.welan.model.SerOProd
 import com.example.welan.model.Servicio
 import com.example.welan.model.Unidad
-import com.example.welan.network.MensajesWelanApiService
+import com.example.welan.network.ForoWeLanGetApiService
+import com.example.welan.network.MensajesWelanGetApiService
 import com.example.welan.network.NoticiasWeLanGetApiService
 import com.example.welan.network.SerOProdWeLanGetApiService
 import com.example.welan.network.SerOProdWeLanPostApiService
@@ -45,6 +47,8 @@ interface WeLanRepository {
     suspend fun postSerOProd(serOProd: ProductoOServicio): Boolean
     suspend fun getNoticias(): Result<List<NoticiDTO>>
     suspend fun getMensajes(email: String): Result<List<MensajesData>>
+    suspend fun getForo(): Result<List<Foro>>
+    suspend fun getForoFiltro(nombre: String): Result<List<Foro>>
 }
 
 class NetworkWeLanRepository(
@@ -53,8 +57,9 @@ class NetworkWeLanRepository(
     private val userWeLanPutApiService: UserWeLanPutApiService,
     private val serOProdWeLanGetApiService: SerOProdWeLanGetApiService,
     private val serOProdWeLanPostApiService: SerOProdWeLanPostApiService,
-    private val noticiasGetApiService: NoticiasWeLanGetApiService,
-    private val mensajesGetApiService : MensajesWelanApiService
+    private val noticiasWeLanGetApiService: NoticiasWeLanGetApiService,
+    private val mensajesWeLanGetApiService: MensajesWelanGetApiService,
+    private val foroWeLanGetApiService: ForoWeLanGetApiService
 ): WeLanRepository {
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -92,17 +97,13 @@ class NetworkWeLanRepository(
 
     @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun postCommonUser(user: CreateCommonUserDTO): Boolean {
-        try {
+        return try {
             val passwordEnc = Encriptador.cifrar(user.passHash)
             user.passHash = passwordEnc
             val respuesta = userWeLanPostApiService.postCommonUser(user)
-            if (respuesta.isSuccessful) {
-               return true
-            } else {
-               return false
-            }
+            respuesta.isSuccessful
         } catch (e: Exception) {
-            return false
+            false
         }
     }
 
@@ -169,21 +170,15 @@ class NetworkWeLanRepository(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun postBusinessUser(user: CreateBusinessUserDTO): Boolean {
-        try {
+        return try {
             val respuesta = userWeLanPostApiService.postBusinessUser(user)
-            if (respuesta.isSuccessful) {
-                return true
-            } else {
-                return false
-            }
+            respuesta.isSuccessful
         } catch (e: Exception) {
-            return false
+            false
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun putBusinessUser(user: BusinessUserEdit): Result<BusinessUserWeLan> {
         return try {
             val respuesta = userWeLanPutApiService.putBusinessUser(user)
@@ -306,22 +301,17 @@ class NetworkWeLanRepository(
     }
 
     override suspend fun postSerOProd(serOProd: ProductoOServicio): Boolean {
-        try {
+        return try {
             val respuesta = serOProdWeLanPostApiService.postSerOProd(serOProd)
-            if (respuesta.isSuccessful) {
-                return true
-            } else {
-                return false
-            }
+            respuesta.isSuccessful
         } catch (e: Exception) {
-            return false
+            false
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun getNoticias(): Result<List<NoticiDTO>> {
         return try {
-            val respuesta = noticiasGetApiService.getNoticias()
+            val respuesta = noticiasWeLanGetApiService.getNoticias()
             if (respuesta.isSuccessful) {
                 respuesta.body()?.let { noticia ->
                     Result.success(noticia)
@@ -336,10 +326,40 @@ class NetworkWeLanRepository(
 
     override suspend fun getMensajes(email: String): Result<List<MensajesData>> {
         return try {
-            val respuesta = mensajesGetApiService.getMensajes(email)
+            val respuesta = mensajesWeLanGetApiService.getMensajes(email)
             if (respuesta.isSuccessful) {
                 respuesta.body()?.let { mensaje ->
                     Result.success(mensaje)
+                } ?: Result.failure(Exception("Respuesta vacia"))
+            } else {
+                Result.failure(Exception("Error: ${respuesta.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getForo(): Result<List<Foro>> {
+        return try {
+            val respuesta = foroWeLanGetApiService.getForos()
+            if (respuesta.isSuccessful) {
+                respuesta.body()?.let { forolist ->
+                    Result.success(forolist)
+                } ?: Result.failure(Exception("Respuesta vacia"))
+            } else {
+                Result.failure(Exception("Error: ${respuesta.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getForoFiltro(nombre: String): Result<List<Foro>> {
+        return try {
+            val respuesta = foroWeLanGetApiService.getForosFiltro(nombre)
+            if (respuesta.isSuccessful) {
+                respuesta.body()?.let { forolist ->
+                    Result.success(forolist)
                 } ?: Result.failure(Exception("Respuesta vacia"))
             } else {
                 Result.failure(Exception("Error: ${respuesta.code()}"))

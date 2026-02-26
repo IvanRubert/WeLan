@@ -24,11 +24,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.welan.model.UserWelan
-import com.example.welan.ui.viewmodels.ForoViewModel
+import com.example.welan.ui.viewmodels.ForoChatViewModel
 
 @Composable
 fun ForoChat(originUser: UserWelan, modifier: Modifier = Modifier,
-         viewModel: ForoViewModel
+         viewModel: ForoChatViewModel
 ){
     val listState = rememberLazyListState()
 

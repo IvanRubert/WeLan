@@ -13,23 +13,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Message
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.StarBorder
-import androidx.compose.material.icons.filled.StarRate
 import androidx.compose.material.icons.outlined.FilterAlt
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -40,60 +41,96 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.welan.model.Foro
-import com.example.welan.model.getListProvisianlList
+import com.example.welan.ui.componentes.base64ToImageBitmap
+import com.example.welan.ui.viewmodels.ForoUiState
+import com.example.welan.ui.viewmodels.ForoViewModel
 
 @Composable
-fun SearchForum(navController: NavHostController, modifier: Modifier){
-    val textFieldState = remember { TextFieldState() }
-    var searchResults by remember { mutableStateOf(emptyList<Foro>()) }
-    val filtroComentarios: List<Foro> = if (searchResults.isEmpty() && textFieldState.text.isEmpty()) {
-        getListProvisianlList()
-    } else {
-        filtroForo(textFieldState)
+fun SearchForum_Screen(
+    foroViewModel: ForoViewModel,
+    navController: NavHostController,
+    retryAction: () -> Unit,
+    modifier: Modifier,
+) {
+    when (foroViewModel.foroUiState) {
+        is ForoUiState.Success -> {
+            SearchForum(
+                navController,
+                modifier,
+                (foroViewModel.foroUiState as ForoUiState.Success).data,
+                foroViewModel
+            )
+        }
+        is ForoUiState.Error -> {
+            ErrorScreen(retryAction)
+        }
+
+        is ForoUiState.Loading -> {
+            LoadingScreen()
+        }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchForum(navController: NavHostController, modifier: Modifier, forochat: List<Foro>, foroViewModel: ForoViewModel){
+    var query by remember { mutableStateOf("") }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = modifier) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                SimpleSearchBar(
-                    textFieldState = textFieldState,
-                    onSearch = { query ->
-                        searchResults = if (query.isNotBlank()) {
-                            filtroComentarios
-                        } else emptyList()
-                    },
+                SearchBar(
                     modifier = Modifier
-                        .padding(start = 10.dp, bottom = 10.dp)
-                        .weight(0.85f),
-
-                )
+                        .weight(8f)
+                        .padding(start = 10.dp)
+                        .offset(y = (-15).dp),
+                    inputField = {
+                        SearchBarDefaults.InputField(
+                            query = query,
+                            onSearch = {
+                                foroViewModel.getForoFiltro(query)
+                            },
+                            onQueryChange = {query = it},
+                            expanded = false,
+                            onExpandedChange = {},
+                            placeholder = { Text("Buscar por Nombre") }
+                        )
+                    },
+                    expanded = false,
+                    onExpandedChange = {}
+                ) {}
                 Icon(
                     imageVector = Icons.Outlined.FilterAlt,
                     contentDescription = "Filtrado",
                     tint = Black,
                     modifier = Modifier
                         .padding(top = 25.dp, end = 10.dp, bottom = 10.dp)
-                        .weight(0.15f)
+                        .weight(2f)
                         .height(50.dp)
+                        .offset(y = (-7).dp)
                 )
             }
             LazyColumn {
-                items(filtroComentarios) { foro ->
+                items(forochat) { foro ->
                     Card(
                         modifier = Modifier.padding(8.dp).fillMaxWidth()
-                            .clickable{navController.navigate("ForoChat/${foro.titulo}")},
+                            .clickable{
+                                foroViewModel.setForoSelected(foro)
+                                navController.navigate("ForoChat/${foro.titulo}")
+                            },
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Row(modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
                             Image(
-                                painter = painterResource(foro.image),
+                                bitmap = base64ToImageBitmap(foro.pathImage)!!,
                                 contentDescription = "",
                                 modifier = Modifier
                                     .fillMaxHeight()
@@ -101,7 +138,6 @@ fun SearchForum(navController: NavHostController, modifier: Modifier){
                                     .heightIn(max = 120.dp)
                                     .clip(RoundedCornerShape(12.dp)),
                                 contentScale = ContentScale.Crop
-
                             )
                             Spacer(modifier = Modifier.width(20.dp))
                             Column(modifier = Modifier.padding(start = 10.dp)) {
@@ -109,7 +145,6 @@ fun SearchForum(navController: NavHostController, modifier: Modifier){
                                     modifier = Modifier.fillMaxWidth(),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    StarRate(foro.rate)
                                     Spacer(modifier = Modifier.weight(0.95f))
                                     Icon(
                                         imageVector = Icons.AutoMirrored.Filled.Message,
@@ -117,23 +152,26 @@ fun SearchForum(navController: NavHostController, modifier: Modifier){
                                     )
                                     Spacer(modifier = Modifier.weight(0.05f))
                                     Text(
-                                        "${foro.mountmessage}+",
+                                        "${foro.total_mensajes}",
                                         modifier = Modifier.padding(end = 5.dp)
                                     )
 
                                 }
                                 Text(foro.titulo)
-                                Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-                                    foro.categorias.forEach { categori ->
-                                        TextButton(
-                                            onClick = {},
-                                            shape = RoundedCornerShape(20.dp),
-                                            colors = ButtonDefaults.textButtonColors(containerColor = categori.color)
-                                        ) {
-                                            Text(categori.content)
+                                if (foro.intereses.isNullOrEmpty()) {
+                                    Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+                                        foro.intereses!!.forEach { interes ->
+                                            TextButton(
+                                                onClick = {},
+                                                shape = RoundedCornerShape(20.dp),
+                                                colors = ButtonDefaults.textButtonColors(containerColor = Color(interes.color))
+                                            ) {
+                                                Text(text ="#${interes.nombre}")
+                                            }
                                         }
                                     }
                                 }
+
                             }
                         }
                     }
@@ -156,22 +194,4 @@ fun FABSForo(modifier: Modifier, navController: NavHostController) {
     ) {
         Icon(Icons.Filled.Add, "Crear Foro")
     }
-}
-@Composable
-fun StarRate(rate : Int){
-    for (i in 1 .. 5){
-        if (i <= rate){
-            Icon(imageVector = Icons.Filled.StarRate, contentDescription = "",
-                tint = Black
-            )
-        }else{
-            Icon(imageVector = Icons.Filled.StarBorder, contentDescription = "",
-                tint = Black
-                )
-        }
-    }
-}
-@Composable
-fun filtroForo(textFieldState: TextFieldState): List<Foro>{
-    return getListProvisianlList().filter { it.titulo.contains(textFieldState.text.toString(), ignoreCase = true) }
 }
