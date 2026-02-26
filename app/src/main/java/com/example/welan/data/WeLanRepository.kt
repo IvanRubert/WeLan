@@ -30,7 +30,6 @@ import com.example.welan.network.UserWeLanGetApiService
 import com.example.welan.network.UserWeLanPostApiService
 import com.example.welan.network.UserWeLanPutApiService
 import com.example.welan.ui.componentes.Encriptador
-import com.example.welan.ui.componentes.reemplazararroba
 import java.time.LocalDateTime
 
 
@@ -67,7 +66,7 @@ class NetworkWeLanRepository(
     private val serOProdWeLanPostApiService: SerOProdWeLanPostApiService,
     private val noticiasWeLanGetApiService: NoticiasWeLanGetApiService,
     private val mensajesWeLanGetApiService: MensajesWelanGetApiService,
-    private val foroWeLanGetApiService: ForoWeLanGetApiService
+    private val foroWeLanGetApiService: ForoWeLanGetApiService,
     private val chatsWelanApiService: GetChatsWelanApiService,
     private val chatsPostApiService : PostChatApiService
 ): WeLanRepository {
