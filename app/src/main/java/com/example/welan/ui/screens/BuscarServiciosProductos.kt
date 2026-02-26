@@ -55,7 +55,7 @@ import com.example.welan.ui.viewmodels.SerOProdViewModel
 
 @Composable
 fun SevicioProducto_Screen(
-    navControllerPrincipal: NavHostController,
+    navController: NavHostController,
     serOProdViewModel: SerOProdViewModel,
     retryAction: () -> Unit,
     modifier: Modifier,
@@ -66,7 +66,7 @@ fun SevicioProducto_Screen(
             (serOProdViewModel.serOProdUiState as SerOProdUiState.Success).data,
             serOProdViewModel,
             modifier,
-            navControllerPrincipal,
+            navController,
             user
         )
         is SerOProdUiState.Error -> ErrorScreen(retryAction)

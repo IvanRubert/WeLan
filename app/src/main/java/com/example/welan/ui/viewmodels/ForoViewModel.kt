@@ -13,6 +13,7 @@ import com.example.welan.data.WeLanRepository
 import com.example.welan.model.Foro
 import com.example.welan.model.ForoDTO
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
@@ -27,6 +28,9 @@ open class ForoViewModel(open val weLanRepository: WeLanRepository): ViewModel()
 
     var foroUiState: ForoUiState by mutableStateOf(ForoUiState.Loading)
         private set
+
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage
 
     private var _foroSelected: MutableStateFlow<Foro> = MutableStateFlow(Foro(0,"", "", emptyList(), emptyList(), 0))
     val foroSelected = _foroSelected.asStateFlow()
@@ -77,8 +81,8 @@ open class ForoViewModel(open val weLanRepository: WeLanRepository): ViewModel()
         viewModelScope.launch {
             foroUiState = ForoUiState.Loading
             val repuesta = weLanRepository.postForo(foro)
-            if (repuesta) {
-
+            if (!repuesta) {
+                _errorMessage.value = "No se a podido crear el foro"
             }
         }
     }

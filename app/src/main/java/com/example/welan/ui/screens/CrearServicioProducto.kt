@@ -72,8 +72,8 @@ fun CrearServicioProducto(modifier: Modifier, navController: NavHostController, 
     var errorprecio by remember { mutableStateOf(false) }
     var errorunidadmedida by remember { mutableStateOf(false) }
     var errorenvio by remember { mutableStateOf(false) }
-    val context = LocalContext.current
     var image :String? by remember { mutableStateOf(null) }
+    val context = LocalContext.current
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()

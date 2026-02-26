@@ -34,9 +34,12 @@ import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,11 +50,13 @@ import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.example.welan.model.Foro
 import com.example.welan.ui.componentes.base64ToImageBitmap
 import com.example.welan.ui.viewmodels.ForoUiState
 import com.example.welan.ui.viewmodels.ForoViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun SearchForum_Screen(
@@ -83,6 +88,25 @@ fun SearchForum_Screen(
 @Composable
 fun SearchForum(navController: NavHostController, modifier: Modifier, forochat: List<Foro>, foroViewModel: ForoViewModel){
     var query by remember { mutableStateOf("") }
+    var showError by remember { mutableStateOf(false) }
+    var currentMessage by remember { mutableStateOf<String?>(null) }
+    val errorMessage by foroViewModel.errorMessage.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(errorMessage) {
+        errorMessage?.let { message ->
+            coroutineScope.launch {
+                currentMessage = message
+                showError = true
+            }
+        }
+    }
+    if (showError) {
+        Dialog(
+            content = { Text(currentMessage!!) },
+            onDismissRequest = { showError = false }
+        )
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = modifier) {

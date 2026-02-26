@@ -113,7 +113,7 @@ fun Contenedor_Screen(
             is CommonUserUiState.Success -> Contenedor_Principal(
                 navControllerPrincipal,
                 userViewModel,
-                datos = (userViewModel.commonUserUiState as CommonUserUiState.Success).data,
+                userWelan = (userViewModel.commonUserUiState as CommonUserUiState.Success).data,
             )
             is CommonUserUiState.Error -> ErrorScreen(retryAction)
             is CommonUserUiState.Loading -> LoadingScreen()
@@ -123,7 +123,7 @@ fun Contenedor_Screen(
             is BusinessUserUiState.Success -> Contenedor_Principal(
                 navControllerPrincipal,
                 userViewModel,
-                datos = (userViewModel.businessUserUiState as BusinessUserUiState.Success).data,
+                userWelan = (userViewModel.businessUserUiState as BusinessUserUiState.Success).data,
             )
             is BusinessUserUiState.Error -> ErrorScreen(retryAction)
             is BusinessUserUiState.Loading -> LoadingScreen()
@@ -133,12 +133,12 @@ fun Contenedor_Screen(
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewModel: UserViewModel, datos: UserWelan) {
+fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewModel: UserViewModel, userWelan: UserWelan) {
 
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
     val noticiaViewModel : NoticiasViewModel = viewModel(factory = NoticiasViewModel.Factory)
-    val mensajesViewModel : MessagesViewModel = viewModel(factory = MessagesViewModel.provideFactory(datos.correo))
+    val mensajesViewModel : MessagesViewModel = viewModel(factory = MessagesViewModel.provideFactory(userWelan.correo))
     val foroViewModel : ForoViewModel = viewModel(factory = ForoViewModel.Factory)
     var topBarTitle by remember { mutableStateOf("") }
     var topBarImg by remember { mutableStateOf<String?>(null) }
@@ -150,7 +150,7 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
         modifier = Modifier.fillMaxSize(),
         containerColor = Color.Transparent,
         topBar = { MyTopAppBar(currentRoute, navController, topBarImg , topBarTitle) },
-        bottomBar = { MyNaviagationBar(navController, currentRoute, datos.nombre, chatVm, foroChatVm) }
+        bottomBar = { MyNaviagationBar(navController, currentRoute, userWelan.nombre, chatVm, foroChatVm) }
     ) { innerPadding ->
         var showDialogChanges by remember { mutableStateOf(false) }
 
@@ -159,10 +159,10 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
                 MenuPrincipalScreen(noticiaViewModel,retryAction = { noticiaViewModel.getNoticias() },Modifier.padding(innerPadding))
             }
             composable("Perfil") {
-                when (datos) {
+                when (userWelan) {
                     is CommonUserWeLan -> {
                         PerfilUser(
-                            datos,
+                            userWelan,
                             navController,
                             Modifier.padding(innerPadding),
                             navControllerPrincipal
@@ -170,7 +170,7 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
                     }
                     is BusinessUserWeLan -> {
                         PerfilEmpresa(
-                            datos,
+                            userWelan,
                             navController,
                             Modifier.padding(innerPadding),
                             navControllerPrincipal
@@ -183,12 +183,12 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
                 BackHandler {
                     showDialogChanges = true
                 }
-                when (datos) {
+                when (userWelan) {
                     is CommonUserWeLan -> {
-                        UserEdit(userViewModel, datos, navController, Modifier.padding(innerPadding))
+                        UserEdit(userViewModel, userWelan, navController, Modifier.padding(innerPadding))
                     }
                     is BusinessUserWeLan -> {
-                        BusinessEdit(userViewModel, datos, navController, Modifier.padding(innerPadding))
+                        BusinessEdit(userViewModel, userWelan, navController, Modifier.padding(innerPadding))
                     }
                 }
             }
@@ -198,16 +198,22 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
                     serOProdViewModel,
                     retryAction = { serOProdViewModel.getSerOProd() },
                     Modifier.padding(innerPadding),
-                    datos
+                    userWelan
                 )
             }
             composable("CrearForo") {
-                CreateForo(Modifier.padding(innerPadding), navController)
+                CreateForo(
+                    Modifier.padding(innerPadding),
+                    navController,
+                    foroViewModel,
+                    userWelan,
+                    mensajesViewModel
+                )
             }
             composable("Mensajes") {
                 MensajesScreen(
                     mensajesViewModel,
-                    retryAction = { mensajesViewModel.getMensajes(datos.correo)},
+                    retryAction = { mensajesViewModel.getMensajes(userWelan.correo)},
                     navController = navController,
                     modifier =  Modifier . padding (innerPadding)
                 )
@@ -231,21 +237,21 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
                 topBarTitle = title ?: ""
 
                 ForoChat(
-                    datos, Modifier.padding(innerPadding),
+                    userWelan, Modifier.padding(innerPadding),
                     foroChatVm
                 )
             }
             composable("Chat") {
                 val selected = mensajesViewModel.mensajeSelected
-                topBarTitle = selected.nombre ?: ""
+                topBarTitle = selected.nombre
                 topBarImg = selected.img_conversation
-                chatVm.correo1 = datos.correo
+                chatVm.correo1 = userWelan.correo
                 chatVm.correo2 = selected.correo
                 LaunchedEffect(selected.correo) { chatVm.getChat() }
                 Chat(
-                    datos,
+                    userWelan,
                     selected.img_conversation,
-                    selected.nombre ?: "",
+                    selected.nombre,
                     Modifier.padding(innerPadding),
                     chatVm
                 )
@@ -265,7 +271,7 @@ fun Contenedor_Principal(navControllerPrincipal: NavHostController, userViewMode
                         innerPadding
                     ),
                     navController,
-                    datos,
+                    userWelan,
                     serOProdViewModel
                 )
             }
