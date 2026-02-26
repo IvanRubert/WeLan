@@ -14,6 +14,8 @@ import com.example.welan.WeLanApplication
 import com.example.welan.data.WeLanRepository
 import com.example.welan.model.MensajesData
 import com.example.welan.model.MensajesDataCreateDTO
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
@@ -44,6 +46,7 @@ class MessagesViewModel( correo: String,open val weLanRepository: WeLanRepositor
     )
     init {
         getMensajes(correo)
+        refresMessages(correo)
         _correo = correo
     }
     fun getMensajes(correo : String){
@@ -58,6 +61,23 @@ class MessagesViewModel( correo: String,open val weLanRepository: WeLanRepositor
                     mensajesUiState = MensajesUiState.Error(error)
                 }
             )
+        }
+    }
+
+    fun refresMessages(correo : String){
+        viewModelScope.launch {
+            while (isActive) {
+                delay(5000)
+                val respuesta = weLanRepository.getMensajes(correo)
+                respuesta.fold(
+                    onSuccess = { mensajes ->
+                        mensajesUiState = MensajesUiState.Success(mensajes)
+                    },
+                    onFailure = { error ->
+                        mensajesUiState = MensajesUiState.Error(error)
+                    }
+                )
+            }
         }
     }
     suspend fun validarCorreoYMensaje(correo2: String): Pair<Boolean, Boolean> {
