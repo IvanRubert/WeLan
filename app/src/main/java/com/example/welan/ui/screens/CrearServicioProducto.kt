@@ -349,12 +349,12 @@ fun CrearServicioProducto(modifier: Modifier, navController: NavHostController, 
                 if (choose && envio == "") errorenvio = true else errorenvio = false
                 if (!errortitulo && !errordescripcion && !errorprecio && !errorunidadmedida && ((choose && !errorenvio) || (!choose))) {
                     val unidad = when(unidadmedida) {
-                        "Kilogramos " -> "KILOGRAMOS"
+                        "Kilogramos" -> "KILOGRAMOS"
                         "Horas" -> "HORAS"
                         else -> "UNIDAD"
                     }
                     val enviar = when(envio) {
-                        "No enviar " -> "NOENVIO"
+                        "No enviar" -> "NOENVIO"
                         "Posibilidad envio" -> "POSSIBILIDADENVIO"
                         else -> "OBLIGACIONENVIO"
                     }

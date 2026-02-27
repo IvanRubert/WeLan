@@ -156,7 +156,15 @@ fun SevicioProducto(
                 }
                 Box(modifier = Modifier.padding(5.dp).weight(0.25f)) {
                     Text(
-                        text = "${selectedFserOProd.precio.toFloat()}€/${selectedFserOProd.tipo_precio.unidad}",
+                        text = if (selectedFserOProd is Servicio) {
+                            if (selectedFserOProd.tipo_precio == Unidad.UNIDADES) {
+                                "${selectedFserOProd.precio}€/Ser"
+                            } else {
+                                "${selectedFserOProd.precio}€/${selectedFserOProd.tipo_precio.unidad}"
+                            }
+                        } else {
+                            "${selectedFserOProd.precio}€/${selectedFserOProd.tipo_precio.unidad}"
+                        },
                         fontSize = 18.sp,
                         maxLines = 3,
                         lineHeight = 32.sp,
