@@ -307,7 +307,7 @@ fun PerfilEmpresa(user: BusinessUserWeLan, navController: NavController, modifie
                 runBlocking{
                     GuardarUsuario(context, "", "")
                 }
-                navControllerPrincipal.navigate("Contenedor_Principal") {
+                navControllerPrincipal.navigate("Login") {
                     popUpTo(0){
                         inclusive = true
                     }
