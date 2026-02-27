@@ -10,7 +10,6 @@ import org.passay.LengthRule
 import org.passay.CharacterRule
 import org.passay.EnglishCharacterData
 import org.passay.PasswordData
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -64,11 +63,10 @@ fun compPassword(password: String): Boolean{
     return result.isValid
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun parseFecha(fecha: LocalDateTime?): String {
     if (fecha == null) return ""
 
-
     val formatter = DateTimeFormatter.ofPattern("MM/dd/yy HH:mm")
-
     return fecha.format(formatter)
 }

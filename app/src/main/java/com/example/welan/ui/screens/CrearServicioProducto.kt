@@ -353,14 +353,14 @@ fun CrearServicioProducto(modifier: Modifier, navController: NavHostController, 
                         "Horas" -> "HORAS"
                         else -> "UNIDAD"
                     }
-                    val enviar = when(unidadmedida) {
+                    val enviar = when(envio) {
                         "No enviar " -> "NOENVIO"
                         "Posibilidad envio" -> "POSSIBILIDADENVIO"
                         else -> "OBLIGACIONENVIO"
                     }
                     val serOProd = ProductoOServicio(
                         precio = precio.toFloat(),
-                        tipo = if (choose) "Servicio" else "Producto",
+                        tipo = if (!choose) "Servicio" else "Producto",
                         tipoPrecio = unidad,
                         img_path = image,
                         descripcion = descripcion,

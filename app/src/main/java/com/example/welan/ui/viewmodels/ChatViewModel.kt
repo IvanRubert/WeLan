@@ -13,15 +13,12 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.welan.WeLanApplication
 import com.example.welan.data.WeLanRepository
-import com.example.welan.model.ChatMessage
-import com.example.welan.model.NoticiDTO
 import com.example.welan.model.chatDTO
 import com.example.welan.model.sendchatDTO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 

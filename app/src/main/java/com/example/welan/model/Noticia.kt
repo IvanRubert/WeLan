@@ -1,6 +1,5 @@
 package com.example.welan.model
 
-
 import kotlinx.serialization.Serializable
 
 @Serializable

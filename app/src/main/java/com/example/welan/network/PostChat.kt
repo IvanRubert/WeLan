@@ -1,6 +1,5 @@
 package com.example.welan.network
 
-import com.example.welan.model.chatDTO
 import com.example.welan.model.sendchatDTO
 import retrofit2.Response
 import retrofit2.http.Body
